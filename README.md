@@ -1,4 +1,4 @@
-# room-reservation-system — Sistem Reservasi Ruangan
+# RentRoom — Sistem Reservasi Ruangan
 
 Deskripsi singkat:
 Sebuah aplikasi web sederhana untuk memesan kamar/ruangan. Dibangun dengan PHP dan MySQL; siap dijalankan di lingkungan lokal seperti XAMPP.
