@@ -27,8 +27,8 @@
     <script defer src="../../assets/js/charts.js"></script>
 </head>
 <?php
-$active = 'ruangan';
-$crumbs = 'Manajemen | Ruangan';
+$active = 'pengguna';
+$crumbs = 'Manajemen | Pengguna';
 ?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">
@@ -39,15 +39,7 @@ $crumbs = 'Manajemen | Ruangan';
             <main class="content">
                 <section class="hero">
                     <div class="hero-text">
-                        <h1 class="hero-title">Ruangan</h1>
-                    </div>
-                    <div class="hero-actions">
-                        <button class="btn btn--primary">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 5v14M5 12h14" />
-                            </svg>
-                            Tambah Data
-                        </button>
+                        <h1 class="hero-title">Pengguna</h1>
                     </div>
                 </section>
 

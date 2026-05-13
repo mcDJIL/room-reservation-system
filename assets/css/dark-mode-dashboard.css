@@ -1,0 +1,259 @@
+/* Dark Mode Dashboard CSS - Comprehensive dark theme for all dashboard components */
+
+/* Sync data-bs-theme with data-theme for Bootstrap components */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root[data-theme="dark"] body {
+  --bs-body-bg: #0f172a;
+  --bs-body-color: #e2e8f0;
+  --bs-border-color: #1e293b;
+  --bs-secondary-bg: #1e293b;
+}
+
+/* Card styling in dark mode */
+:root[data-theme="dark"] .card {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .card-header {
+  background-color: #0f172a !important;
+  border-bottom-color: #334155;
+  color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .card-body {
+  color: #e2e8f0;
+}
+
+/* Badge styling */
+:root[data-theme="dark"] .badge {
+  background-color: #334155 !important;
+  color: #cbd5e1;
+}
+
+/* Table styling */
+:root[data-theme="dark"] .table {
+  color: #e2e8f0;
+  border-color: #334155;
+}
+
+:root[data-theme="dark"] .table > :not(caption) > * > * {
+  background-color: #1e293b;
+  border-bottom-color: #334155;
+}
+
+:root[data-theme="dark"] .table-hover > tbody > tr:hover {
+  background-color: #334155;
+  color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Text color adjustments */
+:root[data-theme="dark"] .text-secondary {
+  color: #94a3b8 !important;
+}
+
+:root[data-theme="dark"] .text-uppercase {
+  color: #cbd5e1 !important;
+}
+
+/* KPI Cards (custom Adminator components) */
+:root[data-theme="dark"] .kpi-card {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="dark"] .kpi-label {
+  color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .kpi-compare {
+  color: #94a3b8;
+}
+
+:root[data-theme="dark"] .kpi-value {
+  color: #e2e8f0;
+}
+
+/* KPI Icons */
+:root[data-theme="dark"] .kpi-icon {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Chart canvas area */
+:root[data-theme="dark"] .chart-canvas-wrap {
+  background-color: #1e293b;
+}
+
+/* Text inputs and form elements */
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] textarea,
+:root[data-theme="dark"] select {
+  background-color: #0f172a;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+
+:root[data-theme="dark"] input:focus,
+:root[data-theme="dark"] textarea:focus,
+:root[data-theme="dark"] select:focus {
+  background-color: #1e293b;
+  border-color: #60a5fa;
+  color: #e2e8f0;
+}
+
+/* Placeholder text */
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder {
+  color: #64748b;
+}
+
+/* Scrollbar for dark mode */
+:root[data-theme="dark"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* FullCalendar dark mode adjustments */
+:root[data-theme="dark"] .fc {
+  --fc-bg-event-color: #2563eb;
+  --fc-border-color: #334155;
+  --fc-button-bg-color: #1e293b;
+  --fc-button-border-color: #334155;
+  --fc-button-hover-bg-color: #334155;
+  --fc-button-hover-border-color: #475569;
+  --fc-button-active-bg-color: #2563eb;
+  --fc-button-active-border-color: #2563eb;
+  --fc-button-text-color: #e2e8f0;
+  --fc-event-bg-color: #2563eb;
+  --fc-event-border-color: #1e40af;
+  --fc-event-text-color: #ffffff;
+  --fc-event-selected-overlay-color: rgba(37, 99, 235, 0.25);
+  --fc-highlight-bg-color: rgba(37, 99, 235, 0.1);
+  --fc-neutral-bg-color: #1e293b;
+  --fc-neutral-text-color: #e2e8f0;
+  --fc-page-bg-color: #0f172a;
+  --fc-text-color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .fc-button-primary {
+  background-color: #2563eb;
+  border-color: #1e40af;
+}
+
+:root[data-theme="dark"] .fc-button-primary:not(:disabled):active,
+:root[data-theme="dark"] .fc-button-primary:not(:disabled).fc-button-active {
+  background-color: #1d4ed8;
+  border-color: #1e3a8a;
+}
+
+:root[data-theme="dark"] .fc-button-primary:not(:disabled):hover {
+  background-color: #1e40af;
+  border-color: #1e3a8a;
+}
+
+:root[data-theme="dark"] .fc-daygrid-day {
+  background-color: #1e293b;
+  border-color: #334155;
+}
+
+:root[data-theme="dark"] .fc-daygrid-day-frame {
+  background-color: #1e293b;
+}
+
+:root[data-theme="dark"] .fc-daygrid-day-number {
+  color: #cbd5e1;
+}
+
+:root[data-theme="dark"] .fc-daygrid-day.fc-day-other {
+  background-color: #0f172a;
+  opacity: 0.5;
+}
+
+:root[data-theme="dark"] .fc-col-header-cell {
+  background-color: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+:root[data-theme="dark"] .fc-timegrid-slot {
+  height: 3em;
+  border-color: #334155;
+}
+
+:root[data-theme="dark"] .fc-timegrid-slot-label {
+  color: #94a3b8;
+}
+
+/* List group items */
+:root[data-theme="dark"] .list-group-item {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+:root[data-theme="dark"] .list-group-item:hover {
+  background-color: #334155;
+  color: #e2e8f0;
+}
+
+/* Section headers and typography */
+:root[data-theme="dark"] h1,
+:root[data-theme="dark"] h2,
+:root[data-theme="dark"] h3,
+:root[data-theme="dark"] h4,
+:root[data-theme="dark"] h5,
+:root[data-theme="dark"] h6 {
+  color: #f1f5f9;
+}
+
+:root[data-theme="dark"] small {
+  color: #94a3b8;
+}
+
+/* Shadow adjustments for dark mode */
+:root[data-theme="dark"] .shadow-sm {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+:root[data-theme="dark"] .shadow {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Main content background */
+:root[data-theme="dark"] .content {
+  background-color: #0f172a;
+}
+
+/* Shell and layout */
+:root[data-theme="dark"] .shell {
+  background-color: #0f172a;
+}
+
+:root[data-theme="dark"] .main {
+  background-color: #0f172a;
+}

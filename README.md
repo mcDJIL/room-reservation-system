@@ -57,7 +57,14 @@ Buka browser dan kunjungi:
 http://localhost/room-reservation-system/
 ```
 
-7. Hal-hal lain yang berguna
+7. Admin template
+
+- Template admin sudah disiapkan di folder `pages/admin/`.
+- Entry utama admin mengarah ke `pages/admin/index.html`.
+- Halaman PHP admin yang ada sekarang hanya menjadi redirect ringan ke halaman template yang sesuai.
+- Jika kamu ingin mengubah tampilan admin, edit source template di `template-admin/` lalu build ulang, atau ubah file HTML hasil build di `pages/admin/`.
+
+8. Hal-hal lain yang berguna
 - Untuk halaman login/register: buka `pages/auth/login.php` dan `pages/auth/register.php`.
 - Halaman admin ada di `pages/admin/` (akses setelah login sebagai admin).
 - Halaman user ada di `pages/user/`.
