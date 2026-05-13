@@ -1,0 +1,61 @@
+services:
+	app:
+		build:
+			context: .
+			dockerfile: Dockerfile
+		container_name: rentroom-app
+		restart: unless-stopped
+		ports:
+			- "${APP_PORT:-8080}:80"
+		environment:
+			APP_ENV: ${APP_ENV:-production}
+			DB_HOST: mysql
+			DB_NAME: ${MYSQL_DATABASE:-room_reservation_system_db}
+			DB_USER: ${MYSQL_USER:-rentroom}
+			DB_PASS: ${MYSQL_PASSWORD:-change_this_user_password}
+		volumes:
+			- ./:/var/www/html
+		depends_on:
+			mysql:
+				condition: service_healthy
+
+	mysql:
+		image: mysql:8.0
+		container_name: rentroom-mysql
+		restart: unless-stopped
+		ports:
+			- "${MYSQL_PORT:-3306}:3306"
+		environment:
+			MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change_this_root_password}
+			MYSQL_DATABASE: ${MYSQL_DATABASE:-room_reservation_system_db}
+			MYSQL_USER: ${MYSQL_USER:-rentroom}
+			MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change_this_user_password}
+		command: --default-authentication-plugin=mysql_native_password
+		volumes:
+			- mysql_data:/var/lib/mysql
+			- ./database:/docker-entrypoint-initdb.d
+		healthcheck:
+			test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-change_this_root_password}"]
+			interval: 10s
+			timeout: 5s
+			retries: 10
+			start_period: 20s
+
+	phpmyadmin:
+		image: phpmyadmin:5-apache
+		container_name: rentroom-phpmyadmin
+		restart: unless-stopped
+		ports:
+			- "${PHPMYADMIN_PORT:-8081}:80"
+		environment:
+			PMA_HOST: mysql
+			PMA_PORT: 3306
+			PMA_USER: root
+			PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change_this_root_password}
+			UPLOAD_LIMIT: 128M
+		depends_on:
+			mysql:
+				condition: service_healthy
+
+volumes:
+	mysql_data:

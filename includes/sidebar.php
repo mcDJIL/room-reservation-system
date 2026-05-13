@@ -1,5 +1,4 @@
 <?php
-// Server-side renderer for Adminator sidebar
 if (!isset($active)) $active = '';
 $NAV = [
   [
@@ -13,6 +12,7 @@ $NAV = [
     'items' => [
       ['key' => 'ruangan', 'text' => 'Ruangan', 'href' => 'rooms.php', 'icon' => 'fa-solid fa-house' ],
       ['key' => 'peminjaman', 'text' => 'Peminjaman', 'href' => 'approvals.php', 'icon' => 'fa-solid fa-house-circle-check' ],
+      ['key' => 'pengguna', 'text' => 'Pengguna', 'href' => 'users.php', 'icon' => 'fa-solid fa-user' ],
     ],
   ],
   [
