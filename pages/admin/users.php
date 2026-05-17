@@ -2,29 +2,7 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Dashboard · 2026 Redesign Preview</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <script>
-        (function () {
-            try {
-                var saved = localStorage.getItem('dash26-theme');
-                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
-            } catch (e) {
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
-        })();
-    </script>
-    <script defer="defer" src="../../assets/js/runtime.js"></script>
-    <script defer="defer" src="../../assets/js/vendor-fullcalendar.js"></script>
-    <script defer="defer" src="../../assets/js/vendor-chartjs.js"></script>
-    <script defer="defer" src="../../assets/js/vendors.js"></script>
-    <script defer="defer" src="../../assets/js/2026.js"></script>
-    <script defer src="../../assets/js/charts.js"></script>
+    <?php include __DIR__ . '/../../includes/header.php'; ?>
 </head>
 <?php
 $active = 'pengguna';
