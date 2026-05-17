@@ -1,0 +1,611 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --primary: #164D6D;
+  --primary-dark: #0d3549;
+  --accent: #486284;
+  --text-dark: #1A202C;
+  --text-mid: #505F76;
+  --text-muted: #90A3BF;
+  --bg-light: #F5F5F5;
+  --bg-offwhite: #FAFBFD;
+  --border-color: #E0E3E5;
+  --badge-bg: #ECEEF0;
+  --badge-text: #444653;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: var(--text-dark);
+  background: #fff;
+}
+
+/* ========== NAVBAR ========== */
+.landing-navbar {
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  padding: 0 4rem;
+  height: 80px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.landing-navbar .navbar-brand {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.landing-navbar .navbar-brand:hover { color: var(--primary); }
+
+.landing-navbar .nav-link {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--accent);
+  font-weight: 500;
+  padding: 0.25rem 0;
+  opacity: 0.9;
+  transition: color 0.2s;
+}
+
+.landing-navbar .nav-link:hover,
+.landing-navbar .nav-link.active {
+  color: var(--text-dark);
+  font-weight: 600;
+  opacity: 1;
+}
+
+.landing-navbar .nav-register {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: underline;
+  opacity: 0.75;
+  font-size: 1rem;
+}
+
+.landing-navbar .nav-register:hover { opacity: 1; }
+
+.nav-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--text-muted);
+  opacity: 0.4;
+  margin: 0 0.5rem;
+}
+
+.btn-login {
+  background: var(--primary);
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border: none;
+  border-radius: 6px;
+  padding: 0.45rem 1.2rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-login:hover { background: var(--primary-dark); color: #fff; }
+
+/* ========== HERO ========== */
+.hero-section {
+  background: #fff;
+  padding: 100px 0 0;
+  overflow: hidden;
+  min-height: 656px;
+  position: relative;
+}
+
+.hero-badge {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent);
+  margin-bottom: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.hero-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+
+.hero-desc {
+  font-size: 1rem;
+  color: var(--text-mid);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 2rem;
+}
+
+.btn-hero-primary {
+  background: var(--primary);
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.75rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-hero-primary:hover { background: var(--primary-dark); color: #fff; }
+
+.btn-hero-outline {
+  background: transparent;
+  color: var(--text-dark);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  border: 2px solid var(--text-dark);
+  border-radius: 6px;
+  padding: 0.65rem 1.75rem;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-hero-outline:hover {
+  background: var(--text-dark);
+  color: #fff;
+}
+
+.hero-image-wrap {
+  position: relative;
+  height: 100%;
+  min-height: 480px;
+}
+
+.hero-image-bg {
+  position: absolute;
+  inset: 0;
+  background: #AAB5C3;
+  border-radius: 63px 0 0 0;
+  overflow: hidden;
+}
+
+.hero-image-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ========== ALUR PEMINJAMAN ========== */
+.alur-section {
+  background: var(--bg-light);
+  padding: 80px 0 100px;
+}
+
+.section-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2.75rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: -0.02em;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-dark);
+  max-width: 520px;
+  line-height: 1.6;
+}
+
+.alur-step-icon {
+  width: 106px;
+  height: 106px;
+  border-radius: 30px;
+  background: rgba(188, 188, 188, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.alur-step-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.75rem;
+}
+
+.alur-step-desc {
+  font-size: 0.875rem;
+  color: var(--text-dark);
+  line-height: 1.75;
+  max-width: 276px;
+  margin: 0 auto;
+}
+
+.alur-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.alur-connector svg {
+  width: 100%;
+  max-width: 300px;
+}
+
+/* ========== DAFTAR RUANGAN ========== */
+.rooms-section {
+  background: var(--bg-offwhite);
+  padding: 80px 0;
+}
+
+.rooms-tabs .nav-link {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  padding: 0.5rem 1rem 1rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.rooms-tabs .nav-link.active {
+  color: var(--text-dark);
+  font-weight: 600;
+  border-bottom: 2px solid var(--text-dark);
+  opacity: 1;
+  background: transparent;
+}
+
+.rooms-tabs .nav-link:hover { opacity: 0.85; }
+
+.rooms-tab-border {
+  border-bottom: 1px solid var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.room-card {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: box-shadow 0.2s;
+}
+
+.room-card:hover { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); }
+
+.room-card-img {
+  position: relative;
+  height: 192px;
+  background: #E6E8EA;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.room-card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.room-availability-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--primary);
+  backdrop-filter: blur(2px);
+}
+
+.room-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.room-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #191C1E;
+  margin-bottom: 6px;
+}
+
+.room-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  color: var(--text-mid);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.room-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.room-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--badge-bg);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--badge-text);
+}
+
+.room-tag svg { flex-shrink: 0; }
+
+.room-card-footer {
+  border-top: 1px solid #C4C5D5;
+  padding-top: 16px;
+  margin-top: auto;
+}
+
+.btn-room-detail {
+  display: block;
+  width: 100%;
+  background: var(--primary);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-room-detail:hover { background: var(--primary-dark); color: #fff; }
+
+.btn-show-more {
+  background: #191C1E;
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1.5rem;
+  letter-spacing: -0.02em;
+  transition: background 0.2s;
+}
+
+.btn-show-more:hover { background: #000; color: #fff; }
+
+.rooms-count-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* ========== KEUNGGULAN KAMI ========== */
+.keunggulan-section {
+  padding: 80px 0;
+  background: #fff;
+}
+
+.keunggulan-img {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.keunggulan-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.keunggulan-icon-wrap {
+  width: 51px;
+  height: 51px;
+  border-radius: 10px;
+  background: #C4C4C4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.keunggulan-item-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
+}
+
+.keunggulan-item-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--text-dark);
+  line-height: 1.75;
+}
+
+/* ========== FOOTER ========== */
+.landing-footer {
+  background: var(--primary);
+  color: #fff;
+  padding: 50px 0 0;
+}
+
+.footer-brand-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+}
+
+.footer-brand-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+.footer-col-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.footer-links a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: #fff; }
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  margin-top: 2.5rem;
+  padding: 1.5rem 0;
+}
+
+.footer-copyright {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.footer-legal-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-legal-links a {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.footer-legal-links a:hover { opacity: 0.8; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1199.98px) {
+  .hero-title { font-size: 2.4rem; }
+  .section-title { font-size: 2.2rem; }
+  .landing-navbar { padding: 0 2rem; }
+}
+
+@media (max-width: 991.98px) {
+  .hero-section { padding-top: 60px; }
+  .hero-title { font-size: 2rem; }
+  .hero-image-wrap { min-height: 360px; }
+  .hero-image-bg { border-radius: 40px 0 0 0; }
+  .alur-connector { display: none; }
+  .section-title { font-size: 2rem; }
+  .rooms-tabs .nav-link { font-size: 1rem; padding: 0.4rem 0.75rem 0.75rem; }
+  .keunggulan-img { min-height: 300px; }
+  .landing-navbar { padding: 0 1.25rem; }
+}
+
+@media (max-width: 767.98px) {
+  .hero-section { padding: 40px 0 0; }
+  .hero-title { font-size: 1.75rem; }
+  .hero-badge { font-size: 0.8rem; }
+  .hero-desc { font-size: 0.925rem; max-width: 100%; }
+  .hero-image-wrap { min-height: 260px; margin-top: 2rem; }
+  .hero-image-bg { border-radius: 24px 0 0 0; }
+  .btn-hero-primary, .btn-hero-outline { font-size: 0.925rem; padding: 0.6rem 1.25rem; }
+  .alur-section { padding: 60px 0; }
+  .alur-step-icon { width: 80px; height: 80px; border-radius: 22px; }
+  .alur-step-title { font-size: 1.2rem; }
+  .section-title { font-size: 1.75rem; }
+  .section-subtitle { font-size: 0.95rem; }
+  .rooms-section { padding: 60px 0; }
+  .rooms-tabs { flex-wrap: nowrap; overflow-x: auto; }
+  .rooms-tabs .nav-link { white-space: nowrap; }
+  .room-card-img { height: 160px; }
+  .keunggulan-section { padding: 60px 0; }
+  .keunggulan-img { min-height: 220px; margin-bottom: 2rem; }
+  .footer-col-title { font-size: 1.1rem; }
+  .footer-bottom { flex-direction: column; gap: 0.75rem; text-align: center; }
+  .footer-legal-links { justify-content: center; flex-wrap: wrap; gap: 1rem; }
+}
+
+@media (max-width: 575.98px) {
+  .hero-title { font-size: 1.5rem; }
+  .section-title { font-size: 1.5rem; }
+  .landing-navbar { height: 64px; }
+  .landing-navbar .navbar-brand { font-size: 1.5rem; }
+  .btn-login { font-size: 0.85rem; padding: 0.35rem 0.9rem; }
+  .alur-step-desc { font-size: 0.825rem; }
+  .room-name { font-size: 1.05rem; }
+  .keunggulan-item-title { font-size: 1.1rem; }
+  .keunggulan-item-desc { font-size: 0.9rem; }
+  .footer-brand-name { font-size: 1.6rem; }
+  .footer-copyright { font-size: 0.85rem; }
+  .footer-legal-links a { font-size: 0.85rem; }
+}
