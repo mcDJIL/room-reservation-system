@@ -1,107 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Sign in · 2026 Redesign Preview</title>
-    <script>
-      (function () {
-        try {
-          var saved = localStorage.getItem('dash26-theme');
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
-        } catch (e) {
-          document.documentElement.setAttribute('data-theme', 'light');
-        }
-      })();
-    </script>
-  <script defer="defer" src="../../assets/js/runtime.js"></script><script defer="defer" src="../../assets/js/vendor-fullcalendar.js"></script><script defer="defer" src="../../assets/js/vendor-chartjs.js"></script><script defer="defer" src="../../assets/js/vendors.js"></script><script defer="defer" src="../../assets/js/2026.js"></script></head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Masuk · SatSet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/auth/login.css">
+  </head>
   <body>
-    <div class="auth-shell">
-      <aside class="auth-aside">
-        <div class="auth-brand">
-          <div class="logo">
-            <svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
-              <path fill="#fff" d="M14.747 9.125c.527-1.426 1.736-2.573 3.317-2.573c1.643 0 2.792 1.085 3.318 2.573l6.077 16.867c.186.496.248.931.248 1.147c0 1.209-.992 2.046-2.139 2.046c-1.303 0-1.954-.682-2.264-1.611l-.931-2.915h-8.62l-.93 2.884c-.31.961-.961 1.642-2.232 1.642c-1.24 0-2.294-.93-2.294-2.17c0-.496.155-.868.217-1.023l6.233-16.867zm.34 11.256h5.891l-2.883-8.992h-.062l-2.946 8.992z"/>
+    <div class="login-page">
+      <div class="login-card">
+
+        <!-- Brand Logo -->
+        <div class="brand-logo">
+          <img src="../../assets/static/images/logo-gradient.svg" alt="SatSet" class="brand-icon">
+          <span class="brand-name">SatSet</span>
+        </div>
+
+        <!-- Page Heading -->
+        <div class="login-heading">
+          <h1 class="login-title">Masuk</h1>
+          <p class="login-subtitle">Akses portal pemesanan perusahaan Anda</p>
+        </div>
+
+        <!-- Login Form -->
+        <form class="login-form" method="POST" action="../../actions/auth_action.php">
+
+          <!-- Alamat Email -->
+          <div class="form-field">
+            <label class="field-label" for="email">Alamat Email</label>
+            <div class="input-wrapper">
+              <input id="email" class="text-input" type="email" name="email"
+                placeholder="nama@perusahaan.com" autocomplete="email" required>
+            </div>
+          </div>
+
+          <!-- Kata Sandi -->
+          <div class="form-field">
+            <div class="field-header">
+              <label class="field-label" for="password">Kata Sandi</label>
+              <a href="#" class="forgot-link">Lupa kata sandi?</a>
+            </div>
+            <div class="input-wrapper">
+              <input id="password" class="text-input password-input" type="password" name="password"
+                placeholder="••••••••" autocomplete="current-password" required>
+              <button type="button" class="password-toggle" id="togglePasswordBtn" aria-label="Tampilkan kata sandi">
+                <svg class="eye-off-icon" width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15.1 10.5L13.65 9.05C13.8 8.26667 13.575 7.53333 12.975 6.85C12.375 6.16667 11.6 5.9 10.65 6.05L9.2 4.6C9.48333 4.46667 9.77083 4.36667 10.0625 4.3C10.3542 4.23333 10.6667 4.2 11 4.2C12.25 4.2 13.3125 4.6375 14.1875 5.5125C15.0625 6.3875 15.5 7.45 15.5 8.7C15.5 9.03333 15.4667 9.34583 15.4 9.6375C15.3333 9.92917 15.2333 10.2167 15.1 10.5ZM18.3 13.65L16.85 12.25C17.4833 11.7667 18.0458 11.2375 18.5375 10.6625C19.0292 10.0875 19.45 9.43333 19.8 8.7C18.9667 7.01667 17.7708 5.67917 16.2125 4.6875C14.6542 3.69583 12.9167 3.2 11 3.2C10.5167 3.2 10.0417 3.23333 9.575 3.3C9.10833 3.36667 8.65 3.46667 8.2 3.6L6.65 2.05C7.33333 1.76667 8.03333 1.55417 8.75 1.4125C9.46667 1.27083 10.2167 1.2 11 1.2C13.5167 1.2 15.7583 1.89583 17.725 3.2875C19.6917 4.67917 21.1167 6.48333 22 8.7C21.6167 9.68333 21.1125 10.5958 20.4875 11.4375C19.8625 12.2792 19.1333 13.0167 18.3 13.65ZM18.8 19.8L14.6 15.65C14.0167 15.8333 13.4292 15.9708 12.8375 16.0625C12.2458 16.1542 11.6333 16.2 11 16.2C8.48333 16.2 6.24167 15.5042 4.275 14.1125C2.30833 12.7208 0.883333 10.9167 0 8.7C0.35 7.81667 0.791667 6.99583 1.325 6.2375C1.85833 5.47917 2.46667 4.8 3.15 4.2L0.4 1.4L1.8 0L20.2 18.4L18.8 19.8ZM4.55 5.6C4.06667 6.03333 3.625 6.50833 3.225 7.025C2.825 7.54167 2.48333 8.1 2.2 8.7C3.03333 10.3833 4.22917 11.7208 5.7875 12.7125C7.34583 13.7042 9.08333 14.2 11 14.2C11.3333 14.2 11.6583 14.1792 11.975 14.1375C12.2917 14.0958 12.6167 14.05 12.95 14L12.05 13.05C11.8667 13.1 11.6917 13.1375 11.525 13.1625C11.3583 13.1875 11.1833 13.2 11 13.2C9.75 13.2 8.6875 12.7625 7.8125 11.8875C6.9375 11.0125 6.5 9.95 6.5 8.7C6.5 8.51667 6.5125 8.34167 6.5375 8.175C6.5625 8.00833 6.6 7.83333 6.65 7.65L4.55 5.6Z" fill="#757684"/>
+                </svg>
+                <svg class="eye-on-icon" width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none">
+                  <path d="M11 12.2C12.25 12.2 13.3125 11.7625 14.1875 10.8875C15.0625 10.0125 15.5 8.95 15.5 7.7C15.5 6.45 15.0625 5.3875 14.1875 4.5125C13.3125 3.6375 12.25 3.2 11 3.2C9.75 3.2 8.6875 3.6375 7.8125 4.5125C6.9375 5.3875 6.5 6.45 6.5 7.7C6.5 8.95 6.9375 10.0125 7.8125 10.8875C8.6875 11.7625 9.75 12.2 11 12.2ZM11 10.2C10.3167 10.2 9.73333 9.95833 9.25 9.475C8.76667 8.99167 8.525 8.40833 8.525 7.725C8.525 7.04167 8.76667 6.45833 9.25 5.975C9.73333 5.49167 10.3167 5.25 11 5.25C11.6833 5.25 12.2667 5.49167 12.75 5.975C13.2333 6.45833 11.6833 10.2 11 10.2ZM11 15.2C8.56667 15.2 6.35 14.5208 4.35 13.1625C2.35 11.8042 0.9 9.98333 0 7.7C0.9 5.41667 2.35 3.59583 4.35 2.2375C6.35 0.879167 8.56667 0.2 11 0.2C13.4333 0.2 15.65 0.879167 17.65 2.2375C19.65 3.59583 21.1 5.41667 22 7.7C21.1 9.98333 19.65 11.8042 17.65 13.1625C15.65 14.5208 13.4333 15.2 11 15.2Z" fill="#757684"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="submit-btn">
+            Masuk
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9.13125 6.75H0V5.25H9.13125L4.93125 1.05L6 0L12 6L6 12L4.93125 10.95L9.13125 6.75Z" fill="white"/>
             </svg>
-          </div>
-          <div class="name">Adminator</div>
-        </div>
-        <div class="auth-aside-body">
-          <span class="auth-aside-eyebrow">2026 · v3.1 preview</span>
-          <h1>The dashboard your team actually wants to open.</h1>
-          <p>Faster builds, cleaner tokens, and a design system that scales from a single chart to a 12-screen ops cockpit.</p>
-          <div class="auth-quote">
-            "We replaced four bespoke admin tools with one Adminator workspace. The dark mode alone earned its keep."
-            <div class="auth-quote-author">
-              <div class="av">SK</div>
-              <div>Sara Kim · Head of Engineering, Northwind</div>
-            </div>
-          </div>
-        </div>
-        <div class="auth-aside-footer">
-          <span>© 2026</span>
-          <span>BUILT IN RIGA, LV</span>
-        </div>
-      </aside>
-      <main class="auth-main">
-        <div class="auth-main-top">
-          <a href="index.html" style="font-size: 12.5px; color: var(--t-muted); display: inline-flex; align-items: center; gap: 6px;">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Back to home
-          </a>
-          <div class="switch-link">New here? <a href="signup.html">Create account</a></div>
+          </button>
+
+        </form>
+
+        <!-- Footer Link -->
+        <div class="login-footer">
+          <span class="footer-text">Belum punya akun?</span>
+          <a href="register.php" class="register-link">Daftar Sekarang</a>
         </div>
 
-        <div class="auth-card">
-          <h2>Welcome back</h2>
-          <p class="sub">Sign in to your Adminator workspace to pick up where you left off.</p>
-
-          <form class="auth-form" onsubmit="event.preventDefault(); window.location='index.html';">
-            <div class="field">
-              <label class="field-label" for="email">Email</label>
-              <div class="input-icon">
-                <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
-                <input id="email" class="input" type="email" placeholder="you@company.com" autocomplete="email" required>
-              </div>
-            </div>
-
-            <div class="field">
-              <div class="field-row">
-                <label class="field-label" for="password">Password</label>
-                <a href="#">Forgot?</a>
-              </div>
-              <div class="input-icon">
-                <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
-                <input id="password" class="input" type="password" placeholder="••••••••" autocomplete="current-password" required>
-              </div>
-            </div>
-
-            <label class="check">
-              <input type="checkbox" checked="checked">
-              <span class="box"></span>
-              Keep me signed in for 30 days
-            </label>
-
-            <button class="btn btn--primary auth-submit" type="submit">
-              Sign in
-              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-            </button>
-          </form>
-
-          <div class="auth-divider">or continue with</div>
-
-          <div class="social-row">
-            <a class="social-btn" href="#" aria-label="Continue with Google"><svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22 12.2c0-.7-.06-1.4-.18-2.04H12v3.86h5.62a4.81 4.81 0 0 1-2.08 3.16v2.62h3.36C20.85 17.96 22 15.36 22 12.2z"/><path fill="#34A853" d="M12 22c2.7 0 4.96-.9 6.62-2.4l-3.36-2.62c-.94.62-2.12.98-3.26.98-2.5 0-4.62-1.7-5.38-3.96H3.16v2.7A10 10 0 0 0 12 22z"/><path fill="#FBBC05" d="M6.62 13.98a6 6 0 0 1 0-3.96V7.32H3.16a10 10 0 0 0 0 9.36z"/><path fill="#EA4335" d="M12 6.04c1.46 0 2.78.5 3.82 1.5l2.86-2.86A10 10 0 0 0 12 2 10 10 0 0 0 3.16 7.32l3.46 2.7C7.38 7.74 9.5 6.04 12 6.04z"/></svg> Google</a>
-            <a class="social-btn" href="#" aria-label="Continue with GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.07 1.83 2.81 1.3 3.5 1 .11-.78.42-1.3.76-1.6-2.66-.3-5.46-1.33-5.46-5.93 0-1.31.47-2.39 1.24-3.23-.13-.3-.54-1.53.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.88.12 3.18.77.84 1.24 1.92 1.24 3.23 0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58A12 12 0 0 0 12 .5z"/></svg> GitHub</a>
-            <a class="social-btn" href="#" aria-label="Continue with Apple"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.18 1.78-3.22 1.86-3.27-1.02-1.49-2.6-1.7-3.16-1.72-1.34-.13-2.62.79-3.3.79-.7 0-1.74-.78-2.86-.75-1.47.02-2.83.86-3.59 2.18-1.54 2.66-.39 6.6 1.1 8.76.74 1.06 1.6 2.25 2.74 2.21 1.1-.05 1.51-.71 2.84-.71s1.7.71 2.86.69c1.18-.02 1.93-1.07 2.65-2.14.84-1.23 1.18-2.43 1.2-2.49-.03-.01-2.3-.88-2.32-3.55zM14.27 5.6c.6-.74 1.01-1.74.9-2.75-.87.04-1.93.58-2.55 1.3-.55.65-1.04 1.69-.91 2.67.97.07 1.96-.49 2.56-1.22z"/></svg> Apple</a>
-          </div>
-        </div>
-
-        <div class="auth-main-bottom">
-          By signing in you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
-        </div>
-      </main>
+      </div>
     </div>
+
+    <script>
+      const toggleBtn = document.getElementById('togglePasswordBtn');
+      const passwordInput = document.getElementById('password');
+      const eyeOff = toggleBtn.querySelector('.eye-off-icon');
+      const eyeOn = toggleBtn.querySelector('.eye-on-icon');
+
+      toggleBtn.addEventListener('click', function () {
+        const isHidden = passwordInput.type === 'password';
+        passwordInput.type = isHidden ? 'text' : 'password';
+        eyeOff.style.display = isHidden ? 'none' : '';
+        eyeOn.style.display = isHidden ? '' : 'none';
+      });
+    </script>
   </body>
 </html>
