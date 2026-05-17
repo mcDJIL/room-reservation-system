@@ -1,0 +1,661 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+/* ===================================================
+   BOOKING PAGE – LAYOUT
+   =================================================== */
+
+* {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.booking-page {
+  background: #fff;
+  padding: 48px 0 80px;
+  min-height: calc(100vh - 80px);
+}
+
+.booking-container {
+  max-width: 1310px;
+  margin: 0 auto;
+  padding: 0 66px;
+}
+
+.booking-page-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #00288E;
+  line-height: 1;
+  margin-bottom: 40px;
+}
+
+/* ===================================================
+   BOOKING FORM CARD
+   =================================================== */
+
+.booking-form-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #191C1E;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ===================================================
+   FORM FIELDS
+   =================================================== */
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.field-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #444653;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+/* Select wrapper */
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #F2F4F6;
+  border: 1px solid #C4C5D5;
+  border-radius: 8px;
+  padding: 12px 40px 12px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #191C1E;
+  line-height: 1.5;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.field-select:focus {
+  border-color: #00288E;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 14px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+/* Date & time input */
+.field-input {
+  width: 100%;
+  background: #F2F4F6;
+  border: 1px solid #C4C5D5;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #191C1E;
+  line-height: 1.5;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field-input:focus {
+  border-color: #00288E;
+}
+
+/* Konfirmasi button */
+.btn-konfirmasi {
+  width: 100%;
+  background: #00288E;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 8px;
+}
+
+.btn-konfirmasi:hover {
+  background: #001e6e;
+}
+
+/* ===================================================
+   ROOM PREVIEW CARD
+   =================================================== */
+
+.room-preview-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.room-preview-img {
+  width: 100%;
+  height: 192px;
+  background: #C4C5D5;
+  overflow: hidden;
+}
+
+.room-preview-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.room-preview-info {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.room-preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.room-preview-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #191C1E;
+  margin: 0;
+}
+
+.availability-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.availability-badge.available {
+  color: #1a7a4a;
+  background: #d4f5e6;
+}
+
+.room-preview-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.room-feature-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #E6E8EA;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #505F76;
+  white-space: nowrap;
+}
+
+.room-feature-tag svg {
+  flex-shrink: 0;
+}
+
+/* ===================================================
+   SCHEDULE CARD
+   =================================================== */
+
+.schedule-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Schedule Header */
+.schedule-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  background: #F2F4F6;
+  border-bottom: 1px solid #C4C5D5;
+  flex-shrink: 0;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.schedule-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #191C1E;
+  margin: 0 0 2px;
+  line-height: 1.4;
+}
+
+.schedule-date {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #505F76;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.schedule-nav-buttons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.schedule-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  border: 1px solid #C4C5D5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  padding: 0;
+}
+
+.schedule-nav-btn:hover {
+  background: #F2F4F6;
+  border-color: #505F76;
+}
+
+/* ===================================================
+   TIMELINE
+   =================================================== */
+
+.timeline-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  flex: 1;
+  max-height: 688px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.timeline-grid {
+  display: flex;
+  align-items: flex-start;
+  min-width: 480px;
+}
+
+/* Time Labels Column */
+.timeline-labels {
+  width: 80px;
+  flex-shrink: 0;
+  border-right: 1px solid #C4C5D5;
+  background: #fff;
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+
+.time-slot-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  border-bottom: 1px solid #E2E8F0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #505F76;
+  line-height: 1;
+}
+
+/* Events Area */
+.timeline-events-area {
+  flex: 1;
+  position: relative;
+  min-height: 704px; /* 11 slots × 64px */
+}
+
+/* Hour grid lines (background rows) */
+.timeline-hour-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hour-line {
+  height: 64px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+/* Current time indicator */
+.current-time-indicator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.current-time-indicator::before {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: #E53E3E;
+  margin-left: 4px;
+}
+
+.current-time-badge {
+  position: absolute;
+  left: 4px;
+  transform: translateY(-50%);
+  background: #00288E;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+}
+
+/* Timeline Events */
+.timeline-event {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  border-radius: 6px;
+  padding: 8px 12px;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.booked-event {
+  background: #D0E1FB;
+  border: none;
+}
+
+.event-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #191C1E;
+  margin: 0 0 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.event-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #505F76;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selected-event {
+  background: #fff;
+  border: 2px dashed #00288E;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.selected-badge {
+  background: #00288E;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.selected-time {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #00288E;
+  margin: 0;
+}
+
+/* ===================================================
+   LEGEND
+   =================================================== */
+
+.schedule-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 16px 24px;
+  background: #E6E8EA;
+  flex-shrink: 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.available-swatch {
+  background: #fff;
+  border: 1px solid #C4C5D5;
+}
+
+.booked-swatch {
+  background: #D0E1FB;
+}
+
+.selected-swatch {
+  background: #fff;
+  border: 2px dashed #00288E;
+}
+
+.legend-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #505F76;
+  white-space: nowrap;
+}
+
+/* ===================================================
+   RESPONSIVE
+   =================================================== */
+
+@media (max-width: 1199.98px) {
+  .booking-container {
+    padding: 0 32px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .booking-page {
+    padding: 36px 0 64px;
+  }
+
+  .booking-container {
+    padding: 0 24px;
+  }
+
+  .booking-page-title {
+    font-size: 1.75rem;
+    margin-bottom: 28px;
+  }
+
+  .schedule-card {
+    height: auto;
+  }
+
+  .timeline-scroll-wrapper {
+    max-height: 520px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .booking-page {
+    padding: 28px 0 56px;
+  }
+
+  .booking-container {
+    padding: 0 16px;
+  }
+
+  .booking-page-title {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+  }
+
+  .booking-form-card {
+    padding: 20px;
+  }
+
+  .room-preview-img {
+    height: 160px;
+  }
+
+  .schedule-header {
+    padding: 16px 20px;
+  }
+
+  .schedule-title {
+    font-size: 1.125rem;
+  }
+
+  .timeline-scroll-wrapper {
+    max-height: 420px;
+  }
+
+  .schedule-legend {
+    gap: 16px;
+    padding: 12px 16px;
+  }
+
+  .btn-konfirmasi {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .booking-container {
+    padding: 0 12px;
+  }
+
+  .booking-page-title {
+    font-size: 1.375rem;
+  }
+
+  .booking-form-card {
+    padding: 16px;
+  }
+
+  .room-preview-info {
+    padding: 16px;
+  }
+
+  .schedule-header {
+    padding: 14px 16px;
+  }
+
+  .schedule-title {
+    font-size: 1rem;
+  }
+
+  .schedule-date {
+    font-size: 0.875rem;
+  }
+
+  .timeline-labels {
+    width: 64px;
+  }
+
+  .time-slot-label {
+    font-size: 0.6875rem;
+  }
+
+  .event-title {
+    font-size: 0.75rem;
+  }
+
+  .event-meta {
+    font-size: 0.6875rem;
+  }
+
+  .schedule-legend {
+    gap: 12px;
+  }
+
+  .legend-label {
+    font-size: 0.5625rem;
+  }
+}
