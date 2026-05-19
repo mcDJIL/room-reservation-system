@@ -59,6 +59,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
   </div>
 </nav>
 
+<?php include 'config/connection.php'; ?>
 <?php include 'includes/user/hero.php'; ?>
 <?php include 'includes/user/alur.php'; ?>
 <?php include 'includes/user/rooms.php'; ?>
