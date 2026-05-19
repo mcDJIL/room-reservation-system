@@ -121,7 +121,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <div class="form-field-group mb-0">
                   <label class="field-label" for="mulai">Mulai</label>
                   <input class="field-input" type="time" id="mulai" name="mulai"
-                         value="09:00">
+                         value="08:00" min="08:00" max="18:00">
                 </div>
               </div>
               <div class="col-6">
