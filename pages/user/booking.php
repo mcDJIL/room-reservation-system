@@ -1,6 +1,28 @@
 <?php
 session_start();
+// date_default_timezone_set('Asia/Jakarta');
 $page_title = 'Reservasi Ruangan – SatSet';
+
+// $conn = mysqli_connect("localhost", "root", "", "db_satset");
+
+// if (!$conn) {
+//     die("Koneksi ke database gagal: " . mysqli_connect_error());
+// }
+
+// // Ambil tanggal hari ini untuk filter data
+// $tanggal_hari_ini = date('Y-m-d');
+
+// // Query untuk mengambil reservasi yang aktif hari ini
+// $query = "SELECT keperluan, mulai, selesai FROM reservasi 
+//           WHERE tanggal = '$tanggal_hari_ini' 
+//           ORDER BY mulai ASC";
+// $result = mysqli_query($conn, $query);
+
+// // Simpan data dari database ke dalam array PHP
+// $list_agenda = [];
+// while ($row = mysqli_fetch_assoc($result)) {
+//     $list_agenda[] = $row;
+// }
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -78,11 +100,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="form-field-group">
               <label class="field-label" for="gedung">Pilih Gedung</label>
               <div class="select-wrapper">
-                <select class="field-select" id="gedung" name="gedung">
+                <select class="field-select" id="gedung" name="gedung" required>
+                  <option value="" disabled selected hidden>Pilih gedung</option>
                   <option value="hq">Gedung Pusat (HQ)</option>
                   <option value="branch1">Gedung Cabang 1</option>
                   <option value="branch2">Gedung Cabang 2</option>
                 </select>
+                <span class="error-message">Harap isi bidang ini</span>
                 <span class="select-chevron">
                   <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
                     <path d="M6 7.4L0 1.4L1.4 0L6 4.6L10.6 0L12 1.4L6 7.4Z" fill="#505F76"/>
@@ -95,11 +119,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="form-field-group">
               <label class="field-label" for="ruangan">Pilih Ruangan</label>
               <div class="select-wrapper">
-                <select class="field-select" id="ruangan" name="ruangan">
+                <select class="field-select" id="ruangan" name="ruangan" required>
+                  <option value="" disabled selected hidden>Pilih ruangan</option>
                   <option value="borobudur">Ruang Meeting Borobudur (8 Org)</option>
                   <option value="prambanan">Ruang Meeting Prambanan (12 Org)</option>
                   <option value="dieng">Ruang Meeting Dieng (6 Org)</option>
                 </select>
+                <span class="error-message">Harap isi bidang ini</span>
                 <span class="select-chevron">
                   <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
                     <path d="M6 7.4L0 1.4L1.4 0L6 4.6L10.6 0L12 1.4L6 7.4Z" fill="#505F76"/>
@@ -112,7 +138,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <div class="form-field-group">
               <label class="field-label" for="tanggal">Tanggal</label>
               <input class="field-input" type="date" id="tanggal" name="tanggal"
-                     value="2023-11-20">
+                     value="<?= date('Y-m-d'); ?>" min="<?= date('Y-m-d'); ?>">
             </div>
 
             <!-- Waktu Mulai & Selesai -->
@@ -120,15 +146,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
               <div class="col-6">
                 <div class="form-field-group mb-0">
                   <label class="field-label" for="mulai">Mulai</label>
-                  <input class="field-input" type="time" id="mulai" name="mulai"
-                         value="09:00">
+                  <input class="field-input" type="time" id="mulai" name="mulai" min="08:00" max="18:00" required>
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-field-group mb-0">
                   <label class="field-label" for="selesai">Selesai</label>
-                  <input class="field-input" type="time" id="selesai" name="selesai"
-                         value="10:30">
+                  <input class="field-input" type="time" id="selesai" name="selesai" min="08:00" max="18:00" required>
                 </div>
               </div>
             </div>
@@ -181,7 +205,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
           <div class="schedule-header">
             <div class="schedule-header-info">
               <h3 class="schedule-title">Jadwal Ruangan</h3>
-              <p class="schedule-date">Senin, 20 November 2023</p>
+              <p class="schedule-date" id="schedule-date-display"></p>
             </div>
             <div class="schedule-nav-buttons">
               <button class="schedule-nav-btn" aria-label="Hari sebelumnya">
@@ -234,8 +258,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </div>
 
                 <!-- Current Time Indicator: 11:00 = 3 hours after 08:00 → top: 3 × 64px = 192px -->
-                <div class="current-time-indicator" style="top: 192px;">
-                  <span class="current-time-badge">11:00 SEKARANG</span>
+                <div class="current-time-indicator" id="live-time-indicator">
+                  <span class="current-time-badge" id="live-time-badge">00:00 SEKARANG</span>
                 </div>
 
                 <!-- Booked: Weekly Sync - Marketing 09:00–10:30
@@ -259,7 +283,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <div class="timeline-event selected-event"
                      style="top: 448px; height: 96px;">
                   <span class="selected-badge">PILIHAN ANDA</span>
-                  <p class="selected-time">15:00 – 16:30</p>
+                  <span class="selected-time">00:00 – 00:00</span>
                 </div>
 
               </div><!-- /.timeline-events-area -->
@@ -297,13 +321,47 @@ $current_page = basename($_SERVER['PHP_SELF']);
   (function () {
     const mulaiInput = document.getElementById('mulai');
     const selesaiInput = document.getElementById('selesai');
+    const tanggalInput = document.getElementById('tanggal');
+    const dateDisplay = document.getElementById('schedule-date-display');
     const selectedEvent = document.querySelector('.selected-event');
+    const timeIndicator = document.getElementById('live-time-indicator');
+    const timeBadge = document.getElementById('live-time-badge');
     const HOUR_PX = 64;
     const GRID_START = 8; // 08:00
 
+    if (!mulaiInput || !selesaiInput) return;
+
+    function updateDateDisplay() {
+      if (!tanggalInput || !dateDisplay || !tanggalInput.value) return;
+
+      const dateObj = new Date(tanggalInput.value);
+      
+      const opsiFormat = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      const tanggalFormatIndo = dateObj.toLocaleDateString('id-ID', opsiFormat);
+
+      dateDisplay.textContent = tanggalFormatIndo;
+    }
+    
     function timeToMinutes(t) {
       const [h, m] = t.split(':').map(Number);
       return h * 60 + m;
+    }
+
+    function validasiBatasanWaktu(input) {
+      if (!input.value) return;
+      
+      const [jam, menit] = input.value.split(':').map(Number);
+      
+      if (jam >= 19 || jam < 8) {
+        if (jam >= 19) {
+          input.value = "18:00";
+        } else {
+          input.value = "08:00";
+        }
+      }
+      else if (jam === 18 && menit > 0) {
+        input.value = "18:00";
+      }
     }
 
     function updateSelectedBlock() {
@@ -315,19 +373,96 @@ $current_page = basename($_SERVER['PHP_SELF']);
       const topPx    = ((startMin / 60) - GRID_START) * HOUR_PX;
       const heightPx = ((endMin - startMin) / 60) * HOUR_PX;
 
-      selectedEvent.style.top    = topPx + 'px';
-      selectedEvent.style.height = heightPx + 'px';
+      if (selectedEvent) {
+        selectedEvent.style.top    = topPx + 'px';
+        selectedEvent.style.height = heightPx + 'px';
 
-      const fmt = (t) => {
-        const [h, m] = t.split(':');
-        return h + ':' + m;
-      };
-      selectedEvent.querySelector('.selected-time').textContent =
-        fmt(mulaiInput.value) + ' – ' + fmt(selesaiInput.value);
+        const fmt = (t) => {
+            const [h, m] = t.split(':');
+            return h + ':' + m;
+        };
+        const timeBadge = selectedEvent.querySelector('.selected-time');
+        if (timeBadge) {
+          timeBadge.textContent = fmt(mulaiInput.value) + ' – ' + fmt(selesaiInput.value);
+        }
+      }
+      if (heightPx < 70) {
+        selectedEvent.classList.add('is-row');
+      } else {
+        selectedEvent.classList.remove('is-row');
+      }
     }
+
+    function updateLiveIndicator() {
+      if (!timeIndicator || !timeBadge) return;
+
+      const sekarangLive = new Date();
+      const jamLive = sekarangLive.getHours();
+      const menitLive = sekarangLive.getMinutes();
+
+      const jamFmt = String(jamLive).padStart(2, '0');
+      const menitFmt = String(menitLive).padStart(2, '0');
+      timeBadge.textContent = `${jamFmt}:${menitFmt} SEKARANG`;
+
+      const totalMenitSekarang = (jamLive * 60) + menitLive;
+      const totalMenitMulaiGrid = GRID_START * 60; // 08:00 = 480 menit
+
+      if (jamLive >= GRID_START && jamLive < 19) {
+        timeIndicator.style.display = 'flex';
+
+        const selisihMenit = totalMenitSekarang - totalMenitMulaiGrid;
+        
+        const posisiTopPx = (selisihMenit / 60) * HOUR_PX;
+        timeIndicator.style.top = posisiTopPx + 'px';
+      } else {
+        timeIndicator.style.display = 'none';
+      }
+    }
+    updateLiveIndicator();
+    setInterval(updateLiveIndicator, 60000);
+    const sekarang = new Date();
+    let jam = sekarang.getHours();
+    let menit = sekarang.getMinutes();
+
+    if (jam < 8 || jam >= 18) {
+      jam = 8;
+      menit = 0;
+    } else {
+      if (menit < 30) {
+        menit = 30;
+      } else {
+        menit = 0;
+        jam = (jam + 1) % 24;
+      }
+    }
+
+    const formatWaktu = (h, m) => String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+
+    const waktuMulaiString = formatWaktu(jam, menit);
+    mulaiInput.value = waktuMulaiString;
+
+    let totalMenitSelesai = (jam * 60) + menit + 90;
+    let jamSelesai = Math.floor(totalMenitSelesai / 60) % 24;
+    let menitSelesai = totalMenitSelesai % 60;
+
+    selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);
+
+    updateSelectedBlock();
+    updateDateDisplay();
 
     mulaiInput.addEventListener('change', updateSelectedBlock);
     selesaiInput.addEventListener('change', updateSelectedBlock);
+
+    if (tanggalInput) {
+      tanggalInput.addEventListener('change', updateDateDisplay);
+    }
+
+    document.querySelectorAll('.booking-form [required]').forEach(function (field) {
+        field.addEventListener('invalid', function (event) {
+        event.preventDefault();
+        this.closest('.booking-form').classList.add('was-validated');
+        });
+    });
   })();
 </script>
 </body>
