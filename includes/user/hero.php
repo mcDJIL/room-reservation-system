@@ -3,7 +3,7 @@
     <div class="row align-items-center g-0">
 
       <!-- Left: Text Content -->
-      <div class="col-lg-5 col-md-12 py-5 py-lg-0 ps-lg-5">
+      <div class="col-lg-7 col-md-12 py-5 py-lg-0 ps-lg-5">
         <p class="hero-badge">Cari Ruang Produktif Tanpa Ribet</p>
         <h1 class="hero-title">Pinjam Ruangan Jadi Lebih Mudah &amp; Praktis</h1>
         <p class="hero-desc">
@@ -18,7 +18,7 @@
       </div>
 
       <!-- Right: Image -->
-      <div class="col-lg-7 col-md-12">
+      <div class="col-lg-5 col-md-12">
         <div class="hero-image-wrap">
           <div class="hero-image-bg">
             <img

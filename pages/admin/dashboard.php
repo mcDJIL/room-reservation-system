@@ -13,7 +13,7 @@ $crumbs = 'Workspace | Dashboard';
     <div class="shell">
         <?php include __DIR__ . '/../../includes/sidebar.php'; ?>
         <div class="main">
-            <?php include __DIR__ . '/../../includes/header.php'; ?>
+            <?php include __DIR__ . '/../../includes/navbar.php'; ?>
             <main class="content">
                 <?php include __DIR__ . '/../../includes/admin/metrics.php'; ?>
 
