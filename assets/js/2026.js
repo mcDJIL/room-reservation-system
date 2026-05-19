@@ -5150,9 +5150,6 @@ body.has-drawer-open .drawer-backdrop {
 .kpi-card::before {
   content: "";
   position: absolute;
-  inset: 0 0 auto auto;
-  width: 180px;
-  height: 180px;
   background: radial-gradient(circle at top right, currentColor, transparent 65%);
   opacity: 0.08;
   pointer-events: none;
