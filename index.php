@@ -20,8 +20,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <nav class="landing-navbar navbar navbar-expand-lg">
   <div class="container-fluid px-0">
-    <a class="navbar-brand" href="./index.php">
-      <img src="./assets/images/logo.png" alt="SatSet" height="64" style="margin-right:6px;" onerror="this.style.display='none'">
+    <a class="navbar-brand" href="./index.php" style="color: #164d6d;">
+      <img src="./assets/images/logo.png" alt="SatSet" height="40" style="margin-right:6px;" onerror="this.style.display='none'">
       SatSet
     </a>
 
