@@ -94,7 +94,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="booking-form-card">
           <h3 class="form-section-title">Detail Pemesanan</h3>
 
-          <form class="booking-form" action="../../actions/booking_action.php" method="POST">
+          <form class="booking-form" action="../../actions/booking/booking_action.php" method="POST">
 
             <!-- Pilih Gedung -->
             <div class="form-field-group">
