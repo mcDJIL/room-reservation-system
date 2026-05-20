@@ -22,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $query = "INSERT INTO users (name, email, password, role) VALUES ('$nama', '$email', '$password', '$role')";
         
         if (mysqli_query($conn, $query)) {
-            header("Location: ../../pages/auth/login.php");
+            header("Location: ../../pages/auth/login.php?status=success");
+         exit();
         } else {
             echo "Error Register: " . mysqli_error($conn);
         }
@@ -46,12 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Arahkan kembali ke home setelah login sukses
             header("Location: ../../index.php");
             exit(); 
-        } else {
-            echo "Password salah!";
+       } else {
+            header("Location: ../../pages/auth/login.php?error=wrong_password");
+            exit();
         }
     } else {
-        echo "Email tidak ditemukan!";
+        header("Location: ../../pages/auth/login.php?error=email_not_found");
+        exit();
     }
 }
-}
+    }
+
 ?>
