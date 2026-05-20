@@ -172,14 +172,15 @@
         const row = document.querySelector('tr[data-id="' + id + '"]');
         if (!row || !modalDelete) return;
         document.getElementById('del-name').textContent = isApprovalsPage ? (row.dataset.userName || row.dataset.name || '') : (row.dataset.name || '');
-        const delConfirm = document.getElementById('del-confirm');
-        if (delConfirm) delConfirm.dataset.id = id;
+        const delId = document.getElementById('del-id');
+        if (delId) delId.value = id;
         modalDelete.show();
     }));
 
-    const delConfirmBtn = document.getElementById('del-confirm');
-    if (delConfirmBtn) delConfirmBtn.addEventListener('click', function(){
-        const id = this.dataset.id;
+    const formDelete = document.getElementById('form-delete');
+    if (formDelete) formDelete.addEventListener('submit', function(e){
+        e.preventDefault();
+        const id = document.getElementById('del-id').value;
         if (!id) return;
         if (isApprovalsPage) {
             alert('Penghapusan peminjaman belum diimplementasikan');

@@ -278,19 +278,22 @@ $crumbs = 'Manajemen | Ruangan';
         <div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalDeleteLabel">Konfirmasi Hapus</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Apakah Anda yakin ingin menghapus <strong id="del-name"></strong>? Aksi ini
-                            tidak dapat dikembalikan.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-danger" id="del-confirm">Hapus
-                            Permanen</button>
-                    </div>
+                    <form action="../../actions/room/delete.php" method="post" id="form-delete">
+                        <input type="hidden" id="del-id" name="id" value="">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalDeleteLabel">Konfirmasi Hapus</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menghapus <strong id="del-name"></strong>? Aksi ini
+                                tidak dapat dikembalikan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-danger" id="del-confirm">Hapus
+                                Permanen</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

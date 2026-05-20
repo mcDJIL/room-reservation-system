@@ -14,40 +14,32 @@ if ($id <= 0) {
     exit;
 }
 
-// Soft delete: set is_active = 0
-$stmt = $conn->prepare('UPDATE rooms SET is_active = 0 WHERE id = ?');
-$stmt->bind_param('i', $id);
-$ok = $stmt->execute();
-$stmt->close();
+$conn->begin_transaction();
 
-if (!$ok) {
+$deletePhotos = $conn->prepare('DELETE FROM room_photos WHERE room_id = ?');
+$deletePhotos->bind_param('i', $id);
+$okPhotos = $deletePhotos->execute();
+$deletePhotos->close();
+
+$deleteReservations = $conn->prepare('DELETE FROM reservations WHERE room_id = ?');
+$deleteReservations->bind_param('i', $id);
+$okReservations = $deleteReservations->execute();
+$deleteReservations->close();
+
+$deleteRoom = $conn->prepare('DELETE FROM rooms WHERE id = ?');
+$deleteRoom->bind_param('i', $id);
+$okRoom = $deleteRoom->execute();
+$deleteRoom->close();
+
+if (!$okPhotos || !$okReservations || !$okRoom) {
+    $conn->rollback();
     echo json_encode(['success' => false, 'message' => $conn->error]);
     exit;
 }
 
+$conn->commit();
+
 echo json_encode(['success' => true]);
 exit;
 
-?>
-<?php
-
-$id = $_POST["id"];
-
-$sql = "DELETE FROM rooms WHERE id = ?";
-
-if ($stmt = mysqli_prepare($conn, $sql)) {
-    mysqli_stmt_bind_param($stmt, "i", $id);
-
-    if (mysqli_stmt_execute($stmt)) {
-        echo "Data berhasil dihapus";
-    } else {
-        echo "Gagal menghapus data: " . mysqli_stmt_error($stmt);
-    }
-    
-    mysqli_stmt_close($stmt);
-} else {
-    echo "Gagal menyiapkan query: " . mysqli_error($conn);
-}
-
-mysqli_close($conn);
 ?>
