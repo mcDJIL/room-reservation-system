@@ -22,12 +22,14 @@
   }
 
   $tanggal_hari_ini=date('Y-m-d');
-  $list_agenda="SELECT keperluan, mulai, selesai FROM reservations WHERE tanggal='$tanggal_hari_ini' ORDER BY mulai ASC";
+  $list_agenda="SELECT room_id, reason, start_hour, end_hour FROM reservations WHERE reservation_date='$tanggal_hari_ini' AND status='approved' ORDER BY start_hour ASC";
   $result_agenda=mysqli_query($conn, $list_agenda);
 
   $agenda=[];
   if ($result_agenda) {
     while ($row=mysqli_fetch_assoc($result_agenda)) {
+      $row['start_hour']=substr($row['start_hour'], 0, 5);
+      $row['end_hour']=substr($row['end_hour'], 0, 5);
       $agenda[]=$row;
     }
   }
@@ -470,8 +472,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
     updateSelectedBlock();
     updateDateDisplay();
 
-    mulaiInput.addEventListener('change', updateSelectedBlock);
-    selesaiInput.addEventListener('change', updateSelectedBlock);
+    mulaiInput.addEventListener('change', function() {
+      validasiBatasanWaktu(this);
+      updateSelectedBlock();
+    });
+    selesaiInput.addEventListener('change', function() {
+      validasiBatasanWaktu(this);
+      updateSelectedBlock();
+    });
 
     if (tanggalInput) {
       tanggalInput.addEventListener('change', updateDateDisplay);
@@ -492,7 +500,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
         const idGedungSelected = this.value;
         const wrapperRuangan = ruanganSelected.closest('.select-wrapper');
         
-        // MATIKAN dulu kelas error form saat ganti gedung agar ruangan tidak ikutan merah
         this.closest('.booking-form').classList.remove('was-validated');
         
         ruanganSelected.disabled = false;
