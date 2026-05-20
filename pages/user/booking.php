@@ -1,33 +1,36 @@
 <?php
-session_start();
+  session_start();
 
-if(!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
-  header("Location: ../../pages/auth/login.php");
-  exit();
-}
-// date_default_timezone_set('Asia/Jakarta');
-$page_title = 'Reservasi Ruangan – SatSet';
+  if(!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
+    header("Location: ../../pages/auth/login.php");
+    exit();
+  }
+  $page_title = 'Reservasi Ruangan – SatSet';
 
-// $conn = mysqli_connect("localhost", "root", "", "db_satset");
+  require_once '../../config/connection.php';
+  $list_gedung="SELECT id, name FROM buildings ORDER BY name ASC";
+  $result_gedung=mysqli_query($conn, $list_gedung);
 
-// if (!$conn) {
-//     die("Koneksi ke database gagal: " . mysqli_connect_error());
-// }
+  $list_ruangan="SELECT id, building_id, room_name, capacity FROM rooms WHERE is_active=1 ORDER BY room_name ASC";
+  $result_ruangan=mysqli_query($conn, $list_ruangan);
 
-// // Ambil tanggal hari ini untuk filter data
-// $tanggal_hari_ini = date('Y-m-d');
+  $gedung_ruangan=[];
+  if ($result_ruangan) {
+    while ($row=mysqli_fetch_assoc($result_ruangan)) {
+      $gedung_ruangan[]=$row;
+    }
+  }
 
-// // Query untuk mengambil reservasi yang aktif hari ini
-// $query = "SELECT keperluan, mulai, selesai FROM reservasi 
-//           WHERE tanggal = '$tanggal_hari_ini' 
-//           ORDER BY mulai ASC";
-// $result = mysqli_query($conn, $query);
+  $tanggal_hari_ini=date('Y-m-d');
+  $list_agenda="SELECT keperluan, mulai, selesai FROM reservations WHERE tanggal='$tanggal_hari_ini' ORDER BY mulai ASC";
+  $result_agenda=mysqli_query($conn, $list_agenda);
 
-// // Simpan data dari database ke dalam array PHP
-// $list_agenda = [];
-// while ($row = mysqli_fetch_assoc($result)) {
-//     $list_agenda[] = $row;
-// }
+  $agenda=[];
+  if ($result_agenda) {
+    while ($row=mysqli_fetch_assoc($result_agenda)) {
+      $agenda[]=$row;
+    }
+  }
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -103,7 +106,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="booking-form-card">
           <h3 class="form-section-title">Detail Pemesanan</h3>
 
-          <form class="booking-form" action="../../actions/booking/booking_action.php" method="POST">
+          <form class="booking-form" id="bookingForm" action="../../actions/booking/booking_action.php" method="POST">
 
             <!-- Pilih Gedung -->
             <div class="form-field-group">
@@ -111,9 +114,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
               <div class="select-wrapper">
                 <select class="field-select" id="gedung" name="gedung" required>
                   <option value="" disabled selected hidden>Pilih gedung</option>
-                  <option value="hq">Gedung Pusat (HQ)</option>
-                  <option value="branch1">Gedung Cabang 1</option>
-                  <option value="branch2">Gedung Cabang 2</option>
+                  <?php
+                    if ($result_gedung && mysqli_num_rows($result_gedung) > 0) {
+                      while ($gedung = mysqli_fetch_assoc($result_gedung)) {
+                        echo "<option value='" . $gedung['id'] . "'>" . $gedung['name'] . "</option>";
+                      }
+                    }
+                  ?>
                 </select>
                 <span class="error-message">Harap isi bidang ini</span>
                 <span class="select-chevron">
@@ -127,12 +134,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
             <!-- Pilih Ruangan -->
             <div class="form-field-group">
               <label class="field-label" for="ruangan">Pilih Ruangan</label>
-              <div class="select-wrapper">
-                <select class="field-select" id="ruangan" name="ruangan" required>
-                  <option value="" disabled selected hidden>Pilih ruangan</option>
-                  <option value="borobudur">Ruang Meeting Borobudur (8 Org)</option>
-                  <option value="prambanan">Ruang Meeting Prambanan (12 Org)</option>
-                  <option value="dieng">Ruang Meeting Dieng (6 Org)</option>
+              <div class="select-wrapper hide-arrow">
+                <select class="field-select" id="ruangan" name="ruangan" required disabled>
+                  <option value="" disabled selected hidden>Pilih gedung terlebih dahulu</option>
                 </select>
                 <span class="error-message">Harap isi bidang ini</span>
                 <span class="select-chevron">
@@ -163,6 +167,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                   <label class="field-label" for="selesai">Selesai</label>
                   <input class="field-input" type="time" id="selesai" name="selesai" min="08:00" max="18:00" required>
                 </div>
+              </div>
+            </div>
+            <div class="form-field-group">
+              <label class="field-label" for="keperluan">Keperluan</label>
+              <div class="select-wrapper">
+                <input class="field-input" type="text" id="keperluan" name="keperluan" placeholder="Contoh: Workshop, Rapat, dll." required>
+                <span class="error-message">Harap isi bidang ini</span>
               </div>
             </div>
 
@@ -472,6 +483,47 @@ $current_page = basename($_SERVER['PHP_SELF']);
         this.closest('.booking-form').classList.add('was-validated');
         });
     });
+
+    const listRuangan = <?= json_encode($gedung_ruangan); ?>;
+    const gedungSelected = document.getElementById('gedung');
+    const ruanganSelected = document.getElementById('ruangan');
+    if (gedungSelected && ruanganSelected) {
+      gedungSelected.addEventListener('change', function() {
+        const idGedungSelected = this.value;
+        const wrapperRuangan = ruanganSelected.closest('.select-wrapper');
+        
+        // MATIKAN dulu kelas error form saat ganti gedung agar ruangan tidak ikutan merah
+        this.closest('.booking-form').classList.remove('was-validated');
+        
+        ruanganSelected.disabled = false;
+        if (wrapperRuangan) { wrapperRuangan.classList.remove('hide-arrow'); }
+        
+        ruanganSelected.innerHTML = '<option value="" disabled selected hidden>Pilih ruangan</option>';
+        
+        const ruanganCocok = listRuangan.filter(room => room.building_id == idGedungSelected);
+        if (ruanganCocok.length == 0) {
+          ruanganSelected.innerHTML = '<option value="" disabled selected hidden>Tidak ada ruangan tersedia</option>';
+          return;
+        }
+        
+        ruanganCocok.forEach(room => {
+          const option = document.createElement('option');
+          option.value = room.id;
+          option.textContent = `${room.room_name} (${room.capacity} org)`;
+          ruanganSelected.appendChild(option);
+        });
+      });
+    }
+
+    const bookingForm = document.querySelector('.booking-form');
+    if (bookingForm) {
+      bookingForm.addEventListener('submit', function(event) {
+        if (!this.checkValidity()) {
+          event.preventDefault();
+          this.classList.add('was-validated');
+        }
+      });
+    }
   })();
 </script>
 </body>
