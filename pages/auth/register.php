@@ -1,3 +1,13 @@
+<?php
+
+session_start();
+
+if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
+  header("Location: ../../index.php");
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="id">
   <head>
@@ -25,7 +35,8 @@
         </div>
 
         <!-- Registration Form -->
-        <form class="register-form" method="POST" action="../../actions/auth_action.php">
+        <form class="register-form" method="POST" action="../../actions/auth/auth_action.php">
+          <input type="hidden" name="action" value="register">
 
           <!-- Nama Lengkap -->
           <div class="form-field">
