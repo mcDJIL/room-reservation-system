@@ -10,9 +10,9 @@ services:
     environment:
       APP_ENV: ${APP_ENV:-production}
       DB_HOST: mysql
-      DB_NAME: ${MYSQL_DATABASE:-room_reservation_system_db}
+      DB_NAME: ${MYSQL_DATABASE:-satset_db}
       DB_USER: ${MYSQL_USER:-satset}
-      DB_PASS: ${MYSQL_PASSWORD:-change_this_user_password}
+      DB_PASS: ${MYSQL_PASSWORD:-password}
     volumes:
       - ./:/var/www/html
     depends_on:
@@ -26,16 +26,17 @@ services:
     ports:
       - "${MYSQL_PORT:-3307}:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change_this_root_password}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-room_reservation_system_db}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-}
+      MYSQL_ALLOW_EMPTY_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-satset_db}
       MYSQL_USER: ${MYSQL_USER:-satset}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change_this_user_password}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
     command: --default-authentication-plugin=mysql_native_password
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD:-change_this_root_password}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -51,7 +52,8 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
       PMA_USER: root
-      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change_this_root_password}
+      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD:-}
+      PMA_AUTH_TYPE: config
       UPLOAD_LIMIT: 128M
     depends_on:
       mysql:
