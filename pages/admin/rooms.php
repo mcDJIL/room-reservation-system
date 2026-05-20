@@ -3,7 +3,7 @@
 
 <head>
     <?php include __DIR__ . '/../../includes/header.php'; ?>
-    <?php include '/actions/room/read.php'; ?>
+    <?php require_once dirname(__DIR__, 2) . '/actions/room/read.php'; ?>
 </head>
 <?php
 $active = 'ruangan';
