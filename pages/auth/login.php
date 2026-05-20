@@ -14,7 +14,7 @@
 
         <!-- Brand Logo -->
         <div class="brand-logo">
-          <img src="../../assets/static/images/logo-gradient.svg" alt="SatSet" class="brand-icon">
+          <img src="../../assets/images/logo.png" alt="SatSet" class="brand-icon">
           <span class="brand-name">SatSet</span>
         </div>
 
