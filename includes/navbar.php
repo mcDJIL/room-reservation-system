@@ -76,6 +76,10 @@ echo <<<HTML
           <div class="dd-profile-name">John Doe</div>
           <div class="dd-profile-email">john@adminator.app</div>
         </div>
+        <a class="dd-menu-item" href="../../index.php">
+          <i class="fa-regular fa-home"></i>
+          Beranda
+        </a>
         <a class="dd-menu-item danger" href="#">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
           Logout

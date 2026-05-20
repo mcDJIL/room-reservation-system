@@ -138,7 +138,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <h5 class="modal-title" id="modalAddLabel">Tambah Ruangan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form id="form-add">
+                    <form method="create.php" id="form-add">
                         <div class="modal-body">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -228,7 +228,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <h5 class="modal-title" id="modalEditLabel">Edit Ruangan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form id="form-edit">
+                    <form method=update.php id="form-edit">
                         <div class="modal-body">
                             <input type="hidden" id="e-id" name="id">
                             <div class="mb-3">

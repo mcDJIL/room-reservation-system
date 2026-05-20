@@ -1,3 +1,6 @@
+<?php 
+  include __DIR__ . '/dashboard_query.php';  
+?>
 <div class="kpi-grid" aria-label="Top metrics">
   <article class="kpi-card c-warning">
     <div class="kpi-top">
@@ -9,7 +12,7 @@
       </div>
       <span class="kpi-pill urgent">URGENT</span>
     </div>
-    <div class="kpi-value">5</div>
+    <div class="kpi-value"><?= $pending ?></div>
     <div class="kpi-compare">Butuh tindakan admin</div>
   </article>
 
@@ -23,7 +26,7 @@
       </div>
       <span class="kpi-pill info">Bulan ini</span>
     </div>
-    <div class="kpi-value">42</div>
+    <div class="kpi-value"><?= $reservasi ?></div>
     <div class="kpi-compare">Total pengajuan bulan berjalan</div>
   </article>
 
@@ -37,7 +40,7 @@
       </div>
       <span class="kpi-pill flat">Tersedia</span>
     </div>
-    <div class="kpi-value">12</div>
+    <div class="kpi-value"><?= $aktif ?></div>
     <div class="kpi-compare">Jumlah ruangan yang bisa dipakai</div>
   </article>
 
@@ -51,7 +54,7 @@
       </div>
       <span class="kpi-pill warn">Tidak Tersedia</span>
     </div>
-    <div class="kpi-value">5</div>
+    <div class="kpi-value"><?= $approved ?></div>
     <div class="kpi-compare">Jumlah ruangan yang sedang dipinjam</div>
   </article>
 </div>
