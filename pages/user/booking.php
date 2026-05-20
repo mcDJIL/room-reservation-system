@@ -1,5 +1,10 @@
 <?php
 session_start();
+
+if(!isset($_SESSION['is_login']) || $_SESSION['is_login'] !== true) {
+  header("Location: ../../pages/auth/login.php");
+  exit();
+}
 // date_default_timezone_set('Asia/Jakarta');
 $page_title = 'Reservasi Ruangan – SatSet';
 
