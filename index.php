@@ -54,7 +54,7 @@ session_start();
 
       <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
     <?php if (isset($_SESSION['user_id'])): ?>
-        <a href="actions/auth/logout.php" class="btn-logout">Logout</a>
+        <a href="actions/auth/logout.php" class="btn btn-danger">Logout</a>
     <?php else: ?>
         <a href="pages/auth/register.php" class="nav-register">Register</a>
         <div class="nav-divider d-none d-lg-block"></div>

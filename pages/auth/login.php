@@ -86,18 +86,70 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
       </div>
     </div>
 
-    <script>
-      const toggleBtn = document.getElementById('togglePasswordBtn');
-      const passwordInput = document.getElementById('password');
-      const eyeOff = toggleBtn.querySelector('.eye-off-icon');
-      const eyeOn = toggleBtn.querySelector('.eye-on-icon');
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-      toggleBtn.addEventListener('click', function () {
+<?php if (isset($_GET['status'])): ?>
+<script>
+    let successTitle = "Berhasil!";
+    let successText = "Proses berhasil dilakukan.";
+
+    // Cek statusnya dari URL, apakah sukses register atau sukses logout
+    if ("<?php echo $_GET['status']; ?>" === "success") {
+        successTitle = "Registrasi Berhasil!";
+        successText = "Akunmu sudah aktif, silakan login di sini.";
+    } else if ("<?php echo $_GET['status']; ?>" === "logout") {
+        successTitle = "Sampai Jumpa!";
+        successText = "Anda telah berhasil keluar dari akun.";
+    }
+
+    Swal.fire({
+        position: "top", 
+        icon: "success",
+        title: successTitle,
+        text: successText,
+        width: "360px", // Biar ukurannya kecil minimalis sama kayak eror merah kemarin
+        showConfirmButton: false,
+        timer: 2500 
+    });
+</script>
+<?php endif; ?>
+<?php if (isset($_GET['error'])): ?>
+<script>
+    let msgTitle = "Oops...";
+    let msgText = "Terjadi kesalahan.";
+
+    if ("<?php echo $_GET['error']; ?>" === "wrong_password") {
+        msgTitle = "Password Salah!";
+        msgText = "Kata sandi yang Anda masukkan tidak sesuai.";
+    } else if ("<?php echo $_GET['error']; ?>" === "email_not_found") {
+        msgTitle = "Email Tidak Terdaftar!";
+        msgText = "Email kerja yang Anda masukkan belum terdaftar.";
+    }
+
+    Swal.fire({
+        position: "top",
+        icon: "error",
+        title: msgTitle,
+        text: msgText,
+        width: "360px", // <-- Tambahkan baris ini untuk mengecilkan (bisa diganti misal 380px atau 400px sesuai selera)
+        showConfirmButton: true,
+        confirmButtonColor: "#d33"
+    
+    });
+</script>
+<?php endif; ?>
+<script>
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    const passwordInput = document.getElementById('password');
+    const eyeOff = toggleBtn.querySelector('.eye-off-icon');
+    const eyeOn = toggleBtn.querySelector('.eye-on-icon');
+
+    toggleBtn.addEventListener('click', function () {
         const isHidden = passwordInput.type === 'password';
         passwordInput.type = isHidden ? 'text' : 'password';
         eyeOff.style.display = isHidden ? 'none' : '';
         eyeOn.style.display = isHidden ? '' : 'none';
-      });
-    </script>
-  </body>
+    });
+</script>
+</body>
 </html>

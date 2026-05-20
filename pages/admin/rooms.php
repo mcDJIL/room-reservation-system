@@ -3,6 +3,7 @@
 
 <head>
     <?php include __DIR__ . '/../../includes/header.php'; ?>
+    <?php require_once dirname(__DIR__, 2) . '/actions/room/read.php'; ?>
 </head>
 <?php
 $active = 'ruangan';
@@ -55,42 +56,55 @@ $crumbs = 'Manajemen | Ruangan';
 
                         <div>
                             <table class="data-table" style="margin: 0 22px; min-width: 900px;">
-                                <thead>
-                                    <tr>
-                                        <th class="sorted-asc">Nama <span class="sort"><svg viewBox="0 0 24 24">
-                                                    <path d="m6 9 6 6 6-6" />
-                                                </svg></span></th>
-                                        <th>Gedung</th>
-                                        <th>Kapasitas</th>
-                                        <th>Aktif/Tidak Aktif</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="data-row is-selected" data-id="1" data-name="Auditorium Lt. 6"
-                                        data-building="Gedung Pascasarjana" data-capacity="100" data-status="Aktif">
-                                        <td>
-                                            <div class="fw-bold">Auditorium Lt. 6</div>
-                                        </td>
-                                        <td><span class="badge primary">Gedung Pascasarjana</span></td>
-                                        <td>100 Orang</td>
-                                        <td><span class="badge success dot">Aktif</span></td>
-                                        <td>
-                                            <div class="data-cell-actions">
-                                                <button class="btn--icon btn-view" aria-label="View" data-id="1">
-                                                    <i class="fa-regular fa-eye"></i>
-                                                </button>
-                                                <button class="btn--icon btn-edit" aria-label="Edit" data-id="1">
-                                                    <i class="fa-regular fa-pen-to-square"></i>
-                                                </button>
-                                                <button class="btn--icon btn-delete" aria-label="Delete" data-id="1">
-                                                    <i class="fa-regular fa-trash-can"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+    <thead>
+        <tr>
+            <th class="sorted-asc">Nama <span class="sort"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></svg></span></th>
+            <th>Gedung</th>
+            <th>Kapasitas</th>
+            <th>Aktif/Tidak Aktif</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if (!empty($rooms)): ?>
+            <?php foreach ($rooms as $room): ?>
+                <?php 
+                    $id = htmlspecialchars($room['id']);
+                    $name = htmlspecialchars($room['room_name']);
+                    $building = htmlspecialchars($room['building_name'] ?? 'Tanpa Gedung');
+                    $capacity = htmlspecialchars($room['capacity']);
+                    $status_text = $room['is_active'] == 1 ? 'Aktif' : 'Tidak Aktif';
+                    $status_class = $room['is_active'] == 1 ? 'success' : 'danger';
+                ?>
+                <tr class="data-row" data-id="<?= $id ?>" data-name="<?= $name ?>" data-building="<?= $building ?>" data-capacity="<?= $capacity ?>" data-status="<?= $status_text ?>">
+                    <td>
+                        <div class="fw-bold"><?= $name ?></div>
+                    </td>
+                    <td><span class="badge primary"><?= $building ?></span></td>
+                    <td><?= $capacity ?> Orang</td>
+                    <td><span class="badge <?= $status_class ?> dot"><?= $status_text ?></span></td>
+                    <td>
+                        <div class="data-cell-actions">
+                            <button class="btn--icon btn-view" aria-label="View" data-id="<?= $id ?>">
+                                <i class="fa-regular fa-eye"></i>
+                            </button>
+                            <button class="btn--icon btn-edit" aria-label="Edit" data-id="<?= $id ?>">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
+                            <button class="btn--icon btn-delete" aria-label="Delete" data-id="<?= $id ?>">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="5" style="text-align: center;">Tidak ada data ruangan.</td>
+            </tr>
+        <?php endif; ?>
+    </tbody>
+</table>
                         </div>
 
                         <div class="data-foot">
@@ -264,19 +278,22 @@ $crumbs = 'Manajemen | Ruangan';
         <div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modalDeleteLabel">Konfirmasi Hapus</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p>Apakah Anda yakin ingin menghapus <strong id="del-name"></strong>? Aksi ini
-                            tidak dapat dikembalikan.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" class="btn btn-danger" id="del-confirm">Hapus
-                            Permanen</button>
-                    </div>
+                    <form action="../../actions/room/delete.php" method="post" id="form-delete">
+                        <input type="hidden" id="del-id" name="id" value="">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalDeleteLabel">Konfirmasi Hapus</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Apakah Anda yakin ingin menghapus <strong id="del-name"></strong>? Aksi ini
+                                tidak dapat dikembalikan.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-danger" id="del-confirm">Hapus
+                                Permanen</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

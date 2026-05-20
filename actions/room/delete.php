@@ -1,22 +1,45 @@
 <?php
+header('Content-Type: application/json');
+require_once __DIR__ . '/../../config/connection.php';
 
-$id = $_POST["id"];
-
-$sql = "DELETE FROM rooms WHERE id = ?";
-
-if ($stmt = mysqli_prepare($conn, $sql)) {
-    mysqli_stmt_bind_param($stmt, "i", $id);
-
-    if (mysqli_stmt_execute($stmt)) {
-        echo "Data berhasil dihapus";
-    } else {
-        echo "Gagal menghapus data: " . mysqli_stmt_error($stmt);
-    }
-    
-    mysqli_stmt_close($stmt);
-} else {
-    echo "Gagal menyiapkan query: " . mysqli_error($conn);
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+    exit;
 }
 
-mysqli_close($conn);
+$id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+if ($id <= 0) {
+    echo json_encode(['success' => false, 'message' => 'Invalid id']);
+    exit;
+}
+
+$conn->begin_transaction();
+
+$deletePhotos = $conn->prepare('DELETE FROM room_photos WHERE room_id = ?');
+$deletePhotos->bind_param('i', $id);
+$okPhotos = $deletePhotos->execute();
+$deletePhotos->close();
+
+$deleteReservations = $conn->prepare('DELETE FROM reservations WHERE room_id = ?');
+$deleteReservations->bind_param('i', $id);
+$okReservations = $deleteReservations->execute();
+$deleteReservations->close();
+
+$deleteRoom = $conn->prepare('DELETE FROM rooms WHERE id = ?');
+$deleteRoom->bind_param('i', $id);
+$okRoom = $deleteRoom->execute();
+$deleteRoom->close();
+
+if (!$okPhotos || !$okReservations || !$okRoom) {
+    $conn->rollback();
+    echo json_encode(['success' => false, 'message' => $conn->error]);
+    exit;
+}
+
+$conn->commit();
+
+echo json_encode(['success' => true]);
+exit;
+
 ?>
