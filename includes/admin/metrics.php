@@ -40,7 +40,7 @@
       </div>
       <span class="kpi-pill flat">Tersedia</span>
     </div>
-    <div class="kpi-value"><?= $aktif ?></div>
+    <div class="kpi-value"><?= $tersedia ?></div>
     <div class="kpi-compare">Jumlah ruangan yang bisa dipakai</div>
   </article>
 
@@ -54,7 +54,7 @@
       </div>
       <span class="kpi-pill warn">Tidak Tersedia</span>
     </div>
-    <div class="kpi-value"><?= $approved ?></div>
+    <div class="kpi-value"><?= $dipinjam ?></div>
     <div class="kpi-compare">Jumlah ruangan yang sedang dipinjam</div>
   </article>
 </div>

@@ -24,7 +24,7 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
 
         <!-- Brand Logo -->
         <div class="brand-logo">
-          <img src="../../assets/static/images/logo-gradient.svg" alt="SatSet" class="brand-icon">
+          <img src="../../assets/images/logo.png" alt="SatSet" class="brand-icon">
           <span class="brand-name">SatSet</span>
         </div>
 
@@ -110,18 +110,33 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
       </div>
     </div>
 
-    <script>
-      const toggleBtn = document.getElementById('togglePasswordBtn');
-      const passwordInput = document.getElementById('password');
-      const eyeOff = toggleBtn.querySelector('.eye-off-icon');
-      const eyeOn = toggleBtn.querySelector('.eye-on-icon');
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-      toggleBtn.addEventListener('click', function () {
+<?php if (isset($_GET['status']) && $_GET['status'] == 'success'): ?>
+<script>
+    Swal.fire({
+        position: "top", // Muncul mengambang di tengah atas
+        icon: "success",
+        title: "Akun Berhasil Dibuat!",
+        text: "Silakan lanjut untuk melakukan login.",
+        showConfirmButton: false,
+        timer: 2500 // Notifikasi hilang sendiri dalam 2.5 detik
+    });
+</script>
+<?php endif; ?>
+
+<script>
+    const toggleBtn = document.getElementById('togglePasswordBtn');
+    const passwordInput = document.getElementById('password');
+    const eyeOff = toggleBtn.querySelector('.eye-off-icon');
+    const eyeOn = toggleBtn.querySelector('.eye-on-icon');
+
+    toggleBtn.addEventListener('click', function () {
         const isHidden = passwordInput.type === 'password';
         passwordInput.type = isHidden ? 'text' : 'password';
         eyeOff.style.display = isHidden ? 'none' : '';
         eyeOn.style.display = isHidden ? '' : 'none';
-      });
-    </script>
-  </body>
+    });
+</script>
+</body>
 </html>

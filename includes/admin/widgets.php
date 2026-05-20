@@ -1,3 +1,6 @@
+<?php
+include __DIR__ . '/../../includes/admin/mini_log_query.php';
+?>
 <section class="container-fluid px-0 mt-4">
   <div class="row g-3">
     <div class="col-lg-8">
@@ -37,21 +40,32 @@
           <h6 class="mb-0 mt-1">Mini Log Aktivitas</h6>
         </div>
         <div class="card-body">
-          <ul class="list-group list-group-flush small">
-            <li class="list-group-item px-0"><span class="text-secondary">10:04</span> · Dapa baru saja login</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:58</span> · Alpan menyetujui peminjaman Lab Komputer</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-            <li class="list-group-item px-0"><span class="text-secondary">10:04</span> · Dapa baru saja login</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:58</span> · Alpan menyetujui peminjaman Lab Komputer</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-            <li class="list-group-item px-0"><span class="text-secondary">10:04</span> · Dapa baru saja login</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:58</span> · Alpan menyetujui peminjaman Lab Komputer</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-            <li class="list-group-item px-0"><span class="text-secondary">10:04</span> · Dapa baru saja login</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:58</span> · Alpan menyetujui peminjaman Lab Komputer</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-          </ul>
+            <ul class="list-group list-group-flush small">
+
+            <?php while($row = mysqli_fetch_assoc($qLog)) : ?>
+
+            <?php
+
+            $statusText = match($row['status']) {
+                'waiting'  => 'mengajukan peminjaman',
+                'approved' => 'peminjaman disetujui',
+                'rejected' => 'peminjaman ditolak',
+                default    => 'melakukan aktivitas'
+            };
+
+            $time = date('H:i', strtotime($row['created_at']));
+            ?>
+
+            <li class="list-group-item px-0">
+                <span class="text-secondary"><?= $time ?></span>
+                · <?= htmlspecialchars($row['user_name']) ?>
+                <?= $statusText ?>
+                di <?= htmlspecialchars($row['room_name']) ?>
+            </li>
+ 
+            <?php endwhile; ?>
+
+            </ul>
         </div>
       </div>
     </div>
