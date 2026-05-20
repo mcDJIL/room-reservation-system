@@ -108,9 +108,13 @@ $end_item = min($current_page * $per_page, $total_rows);
       </ul>
 
       <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
-        <a href="../../pages/auth/register.php" class="nav-register">Register</a>
-        <div class="nav-divider d-none d-lg-block"></div>
-        <a href="../../pages/auth/login.php" class="btn-login">Login</a>
+        <?php if (isset($_SESSION['user_id'])): ?>
+          <a href="actions/auth/logout.php" class="btn btn-danger">Logout</a>
+        <?php else: ?>
+          <a href="../../pages/auth/register.php" class="nav-register">Register</a>
+          <div class="nav-divider d-none d-lg-block"></div>
+          <a href="../../pages/auth/login.php" class="btn-login">Login</a>
+        <?php endif;?>
       </div>
     </div>
   </div>
