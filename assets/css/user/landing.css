@@ -24,13 +24,13 @@ body {
 
 /* ========== NAVBAR ========== */
 .landing-navbar {
-  background: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-  padding: 0 4rem;
-  height: 80px;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  background: #fff !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25) !important;
+  padding: 0 4rem !important;
+  height: 80px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
 }
 
 .landing-navbar .navbar-brand {
@@ -568,7 +568,7 @@ body {
   .section-title { font-size: 2rem; }
   .rooms-tabs .nav-link { font-size: 1rem; padding: 0.4rem 0.75rem 0.75rem; }
   .keunggulan-img { min-height: 300px; }
-  .landing-navbar { padding: 0 1.25rem; }
+  .landing-navbar { padding: 0 1.25rem !important; }
 }
 
 @media (max-width: 767.98px) {
