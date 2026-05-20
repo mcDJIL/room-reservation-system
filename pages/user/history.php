@@ -1,21 +1,92 @@
 <?php
-$page_title = 'Riwayat Reservasiku – SatSet';
+session_start();
+include '../../actions/history/read.php';
+
+$page_title = 'Riwayat Reservasiku - SatSet';
+$is_logged_in = isset($_SESSION['is_login']) && $_SESSION['is_login'] === true;
+
+function esc($value)
+{
+  return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+function format_date_id($value)
+{
+  if (empty($value)) {
+    return '-';
+  }
+
+  $timestamp = strtotime($value);
+  if ($timestamp === false) {
+    return esc($value);
+  }
+
+  return date('d M Y', $timestamp);
+}
+
+function status_label($status)
+{
+  if ($status === 'approved') {
+    return 'Disetujui';
+  }
+
+  if ($status === 'rejected') {
+    return 'Ditolak';
+  }
+
+  return 'Menunggu';
+}
+
+function status_class($status)
+{
+  if ($status === 'approved') {
+    return 'status-approved';
+  }
+
+  if ($status === 'rejected') {
+    return 'status-rejected';
+  }
+
+  return 'status-pending';
+}
+
+function build_history_query($page, $search_term, $filter_date, $filter_status)
+{
+  $params = [];
+
+  if ($search_term !== '') {
+    $params['q'] = $search_term;
+  }
+
+  if ($filter_date !== '') {
+    $params['date'] = $filter_date;
+  }
+
+  if ($filter_status !== '') {
+    $params['status'] = $filter_status;
+  }
+
+  $params['page'] = $page;
+
+  return '?' . http_build_query($params);
+}
+
+$start_item = $total_rows > 0 ? (($current_page - 1) * $per_page) + 1 : 0;
+$end_item = min($current_page * $per_page, $total_rows);
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $page_title ?></title>
+  <title><?= esc($page_title) ?></title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../../assets/css/user/landing.css">
   <link rel="stylesheet" href="../../assets/css/user/history.css">
 </head>
 <body>
 
-<?php
-$current_page = basename($_SERVER['PHP_SELF']);
-?>
+<?php $current_page_file = basename($_SERVER['PHP_SELF']); ?>
 <nav class="landing-navbar navbar navbar-expand-lg">
   <div class="container-fluid px-0">
     <a class="navbar-brand" href="../../index.php" style="color: #164d6d;">
@@ -23,29 +94,17 @@ $current_page = basename($_SERVER['PHP_SELF']);
       SatSet
     </a>
 
-    <button class="navbar-toggler border-0 shadow-none" type="button"
-            data-bs-toggle="collapse" data-bs-target="#landingNav"
-            aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#landingNav" aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="landingNav">
       <ul class="navbar-nav mx-auto gap-lg-3">
-        <li class="nav-item">
-          <a class="nav-link" href="../../index.php">Beranda</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../../index.php#alur-peminjaman">Alur Peminjaman</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../../index.php#daftar-ruangan">Ruangan</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="../../pages/user/booking.php">Reservasi</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="../../pages/user/history.php">Riwayat</a>
-        </li>
+        <li class="nav-item"><a class="nav-link" href="../../index.php">Beranda</a></li>
+        <li class="nav-item"><a class="nav-link" href="../../index.php#alur-peminjaman">Alur Peminjaman</a></li>
+        <li class="nav-item"><a class="nav-link" href="../../index.php#daftar-ruangan">Ruangan</a></li>
+        <li class="nav-item"><a class="nav-link" href="../../pages/user/booking.php">Reservasi</a></li>
+        <li class="nav-item"><a class="nav-link active" href="../../pages/user/history.php">Riwayat</a></li>
       </ul>
 
       <div class="d-flex align-items-center gap-2 mt-3 mt-lg-0">
@@ -59,22 +118,19 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
 <main class="history-page">
   <div class="history-container">
-
-    <!-- Page Header -->
     <div class="history-header">
       <h1 class="history-title">Riwayat Reservasiku</h1>
       <p class="history-subtitle">Kelola dan pantau status pemesanan ruangan Anda.</p>
     </div>
 
-    <!-- Filter Bar -->
-    <div class="filter-bar">
+    <form class="filter-bar" method="get" action="">
       <div class="filter-field">
-        <label class="filter-label" for="cariRuangan">Cari Ruangan</label>
+        <label class="filter-label" for="cariRuangan">Cari Ruangan / ID</label>
         <div class="filter-input-wrapper">
           <svg class="filter-input-icon" width="18" height="18" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M16.6 18L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13C4.68333 13 3.14583 12.3708 1.8875 11.1125C0.629167 9.85417 0 8.31667 0 6.5C0 4.68333 0.629167 3.14583 1.8875 1.8875C3.14583 0.629167 4.68333 0 6.5 0C8.31667 0 9.85417 0.629167 11.1125 1.8875C12.3708 3.14583 13 4.68333 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L18 16.6L16.6 18ZM6.5 11C7.75 11 8.8125 10.5625 9.6875 9.6875C10.5625 8.8125 11 7.75 11 6.5C11 5.25 10.5625 4.1875 9.6875 3.3125C8.8125 2.4375 7.75 2 6.5 2C5.25 2 4.1875 2.4375 3.3125 3.3125C2.4375 4.1875 2 5.25 2 6.5C2 7.75 2.4375 8.8125 3.3125 9.6875C4.1875 10.5625 5.25 11 6.5 11Z" fill="#757684"/>
           </svg>
-          <input class="filter-input" type="text" id="cariRuangan" placeholder="Nama ruangan atau ID...">
+          <input class="filter-input" type="text" id="cariRuangan" name="q" value="<?= esc($search_term) ?>" placeholder="Nama ruangan atau ID reservasi...">
         </div>
       </div>
 
@@ -84,18 +140,18 @@ $current_page = basename($_SERVER['PHP_SELF']);
           <svg class="filter-input-icon" width="18" height="18" viewBox="0 0 18 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M2 20C1.45 20 0.979167 19.8042 0.5875 19.4125C0.195833 19.0208 0 18.55 0 18V4C0 3.45 0.195833 2.97917 0.5875 2.5875C0.979167 2.19583 1.45 2 2 2H3V0H5V2H13V0H15V2H16C16.55 2 17.0208 2.19583 17.4125 2.5875C17.8042 2.97917 18 3.45 18 4V18C18 18.55 17.8042 19.0208 17.4125 19.4125C17.0208 19.8042 16.55 20 16 20H2ZM2 18H16V8H2V18ZM2 6H16V4H2V6Z" fill="#757684"/>
           </svg>
-          <input class="filter-input" type="date" id="filterTanggal">
+          <input class="filter-input" type="date" id="filterTanggal" name="date" value="<?= esc($filter_date) ?>">
         </div>
       </div>
 
       <div class="filter-field">
         <label class="filter-label" for="filterStatus">Status</label>
         <div class="filter-select-wrapper">
-          <select class="filter-select" id="filterStatus">
+          <select class="filter-select" id="filterStatus" name="status">
             <option value="">Semua Status</option>
-            <option value="disetujui">Disetujui</option>
-            <option value="menunggu">Menunggu</option>
-            <option value="ditolak">Ditolak</option>
+            <option value="approved" <?= $filter_status === 'approved' ? 'selected' : '' ?>>Disetujui</option>
+            <option value="waiting" <?= $filter_status === 'waiting' ? 'selected' : '' ?>>Menunggu</option>
+            <option value="rejected" <?= $filter_status === 'rejected' ? 'selected' : '' ?>>Ditolak</option>
           </select>
           <svg class="select-chevron-icon" width="21" height="21" viewBox="0 0 21 21" fill="none">
             <path d="M6.3 8.4L10.5 12.6L14.7 8.4" stroke="#6B7280" stroke-width="1.575" stroke-linecap="round" stroke-linejoin="round"/>
@@ -103,17 +159,12 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </div>
       </div>
 
-      <div class="filter-action">
-        <button class="btn-filter">
-          <svg width="14" height="9" viewBox="0 0 14 9" fill="none">
-            <path d="M5.25 9V7.5H8.25V9H5.25ZM2.25 5.25V3.75H11.25V5.25H2.25ZM0 1.5V0H13.5V1.5H0Z" fill="white"/>
-          </svg>
-          Filter
-        </button>
+      <div class="filter-action d-flex gap-2">
+        <button class="btn-filter" type="submit">Filter</button>
+        <a class="btn-filter btn-reset-filter" href="history.php">Reset</a>
       </div>
-    </div>
+    </form>
 
-    <!-- Reservation Table -->
     <div class="reservation-table-card">
       <div class="table-responsive">
         <table class="reservation-table">
@@ -128,196 +179,110 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </tr>
           </thead>
           <tbody>
-
-            <!-- Row 1: Disetujui -->
-            <tr>
-              <td>
-                <span class="room-name-text">Ruang Borobudur</span>
-                <span class="room-capacity-text">Kapasitas: 12 Orang</span>
-              </td>
-              <td>12 Okt 2023</td>
-              <td>09:00 – 11:00</td>
-              <td>
-                <span class="location-cell">
-                  <svg width="11" height="14" viewBox="0 0 11 14" fill="none">
-                    <path d="M5.33333 6.66667C5.7 6.66667 6.01389 6.53611 6.275 6.275C6.53611 6.01389 6.66667 5.7 6.66667 5.33333C6.66667 4.96667 6.53611 4.65278 6.275 4.39167C6.01389 4.13056 5.7 4 5.33333 4C4.96667 4 4.65278 4.13056 4.39167 4.39167C4.13056 4.65278 4 4.96667 4 5.33333C4 5.7 4.13056 6.01389 4.39167 6.275C4.65278 6.53611 4.96667 6.66667 5.33333 6.66667ZM5.33333 11.5667C6.68889 10.3222 7.69444 9.19167 8.35 8.175C9.00556 7.15833 9.33333 6.25556 9.33333 5.46667C9.33333 4.25556 8.94722 3.26389 8.175 2.49167C7.40278 1.71944 6.45556 1.33333 5.33333 1.33333C4.21111 1.33333 3.26389 1.71944 2.49167 2.49167C1.71944 3.26389 1.33333 4.25556 1.33333 5.46667C1.33333 6.25556 1.66111 7.15833 2.31667 8.175C2.97222 9.19167 3.97778 10.3222 5.33333 11.5667ZM5.33333 13.3333C3.54444 11.8111 2.20833 10.3972 1.325 9.09167C0.441667 7.78611 0 6.57778 0 5.46667C0 3.8 0.536111 2.47222 1.60833 1.48333C2.68056 0.494444 3.92222 0 5.33333 0C6.74444 0 7.98611 0.494444 9.05833 1.48333C10.1306 2.47222 10.6667 3.8 10.6667 5.46667C10.6667 6.57778 10.225 7.78611 9.34167 9.09167C8.45833 10.3972 7.12222 11.8111 5.33333 13.3333Z" fill="#444653"/>
-                  </svg>
-                  Tower A, Lt. 5
-                </span>
-              </td>
-              <td>
-                <span class="status-badge status-approved">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M5.01667 8.51667L9.12917 4.40417L8.3125 3.5875L5.01667 6.88333L3.35417 5.22083L2.5375 6.0375L5.01667 8.51667ZM5.83333 11.6667C5.02639 11.6667 4.26806 11.5135 3.55833 11.2073C2.84861 10.901 2.23125 10.4854 1.70625 9.96042C1.18125 9.43542 0.765625 8.81806 0.459375 8.10833C0.153125 7.39861 0 6.64028 0 5.83333C0 5.02639 0.153125 4.26806 0.459375 3.55833C0.765625 2.84861 1.18125 2.23125 1.70625 1.70625C2.23125 1.18125 2.84861 0.765625 3.55833 0.459375C4.26806 0.153125 5.02639 0 5.83333 0C6.64028 0 7.39861 0.153125 8.10833 0.459375C8.81806 0.765625 9.43542 1.18125 9.96042 1.70625C10.4854 2.23125 10.901 2.84861 11.2073 3.55833C11.5135 4.26806 11.6667 5.02639 11.6667 5.83333C11.6667 6.64028 11.5135 7.39861 11.2073 8.10833C10.901 8.81806 10.4854 9.43542 9.96042 9.96042C9.43542 10.4854 8.81806 10.901 8.10833 11.2073C7.39861 11.5135 6.64028 11.6667 5.83333 11.6667ZM5.83333 10.5C7.13611 10.5 8.23958 10.0479 9.14375 9.14375C10.0479 8.23958 10.5 7.13611 10.5 5.83333C10.5 4.53056 10.0479 3.42708 9.14375 2.52292C8.23958 1.61875 7.13611 1.16667 5.83333 1.16667C4.53056 1.16667 3.42708 1.61875 2.52292 2.52292C1.61875 3.42708 1.16667 4.53056 1.16667 5.83333C1.16667 7.13611 1.61875 8.23958 2.52292 9.14375C3.42708 10.0479 4.53056 10.5 5.83333 10.5Z" fill="#137333"/>
-                  </svg>
-                  Disetujui
-                </span>
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <a href="#" class="btn-cetak-bukti">
-                    <svg width="15" height="14" viewBox="0 0 15 14" fill="none">
-                      <path d="M10.5 3.75V1.5H4.5V3.75H3V0H12V3.75H10.5ZM12 7.125C12.2125 7.125 12.3906 7.05313 12.5344 6.90938C12.6781 6.76562 12.75 6.5875 12.75 6.375C12.75 6.1625 12.6781 5.98438 12.5344 5.84062C12.3906 5.69687 12.2125 5.625 12 5.625C11.7875 5.625 11.6094 5.69687 11.4656 5.84062C11.3219 5.98438 11.25 6.1625 11.25 6.375C11.25 6.5875 11.3219 6.76562 11.4656 6.90938C11.6094 7.05313 11.7875 7.125 12 7.125ZM10.5 12V9H4.5V12H10.5ZM12 13.5H3V10.5H0V6C0 5.3625 0.21875 4.82812 0.65625 4.39687C1.09375 3.96562 1.625 3.75 2.25 3.75H12.75C13.3875 3.75 13.9219 3.96562 14.3531 4.39687C14.7844 4.82812 15 5.3625 15 6V10.5H12V13.5ZM13.5 9V6C13.5 5.7875 13.4281 5.60938 13.2844 5.46562C13.1406 5.32187 12.9625 5.25 12.75 5.25H2.25C2.0375 5.25 1.85938 5.32187 1.71563 5.46562C1.57188 5.60938 1.5 5.7875 1.5 6V9H3V7.5H12V9H13.5Z" fill="white"/>
-                    </svg>
-                    Cetak Bukti
-                  </a>
-                  <a href="#" class="btn-detail">
-                    <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
-                      <path d="M8.25 9C9.1875 9 9.98438 8.67188 10.6406 8.01562C11.2969 7.35938 11.625 6.5625 11.625 5.625C11.625 4.6875 11.2969 3.89062 10.6406 3.23438C9.98438 2.57812 9.1875 2.25 8.25 2.25C7.3125 2.25 6.51562 2.57812 5.85938 3.23438C5.20312 3.89062 4.875 4.6875 4.875 5.625C4.875 6.5625 5.20312 7.35938 5.85938 8.01562C6.51562 8.67188 7.3125 9 8.25 9ZM8.25 7.65C7.6875 7.65 7.20938 7.45312 6.81563 7.05937C6.42188 6.66562 6.225 6.1875 6.225 5.625C6.225 5.0625 6.42188 4.58438 6.81563 4.19063C7.20938 3.79688 7.6875 3.6 8.25 3.6C8.8125 3.6 9.29062 3.79688 9.68437 4.19063C10.0781 4.58438 10.275 5.0625 10.275 5.625C10.275 6.1875 10.0781 6.66562 9.68437 7.05937C9.29062 7.45312 8.8125 7.65 8.25 7.65ZM8.25 11.25C6.425 11.25 4.7625 10.7406 3.2625 9.72188C1.7625 8.70312 0.675 7.3375 0 5.625C0.675 3.9125 1.7625 2.54688 3.2625 1.52813C4.7625 0.509375 6.425 0 8.25 0C10.075 0 11.7375 0.509375 13.2375 1.52813C14.7375 2.54688 15.825 3.9125 16.5 5.625C15.825 7.3375 14.7375 8.70312 13.2375 9.72188C11.7375 10.7406 10.075 11.25 8.25 11.25ZM8.25 9.75C9.6625 9.75 10.9594 9.37812 12.1406 8.63437C13.3219 7.89062 14.225 6.8875 14.85 5.625C14.225 4.3625 13.3219 3.35938 12.1406 2.61562C10.9594 1.87187 9.6625 1.5 8.25 1.5C6.8375 1.5 5.54063 1.87187 4.35938 2.61562C3.17812 3.35938 2.275 4.3625 1.65 5.625C2.275 6.8875 3.17812 7.89062 4.35938 8.63437C5.54063 9.37812 6.8375 9.75 8.25 9.75Z" fill="#00288E"/>
-                    </svg>
-                    Detail
-                  </a>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Row 2: Menunggu -->
-            <tr>
-              <td>
-                <span class="room-name-text">Ruang Eksekutif Alpha</span>
-                <span class="room-capacity-text">Kapasitas: 8 Orang</span>
-              </td>
-              <td>15 Okt 2023</td>
-              <td>13:00 – 15:00</td>
-              <td>
-                <span class="location-cell">
-                  <svg width="11" height="14" viewBox="0 0 11 14" fill="none">
-                    <path d="M5.33333 6.66667C5.7 6.66667 6.01389 6.53611 6.275 6.275C6.53611 6.01389 6.66667 5.7 6.66667 5.33333C6.66667 4.96667 6.53611 4.65278 6.275 4.39167C6.01389 4.13056 5.7 4 5.33333 4C4.96667 4 4.65278 4.13056 4.39167 4.39167C4.13056 4.65278 4 4.96667 4 5.33333C4 5.7 4.13056 6.01389 4.39167 6.275C4.65278 6.53611 4.96667 6.66667 5.33333 6.66667ZM5.33333 11.5667C6.68889 10.3222 7.69444 9.19167 8.35 8.175C9.00556 7.15833 9.33333 6.25556 9.33333 5.46667C9.33333 4.25556 8.94722 3.26389 8.175 2.49167C7.40278 1.71944 6.45556 1.33333 5.33333 1.33333C4.21111 1.33333 3.26389 1.71944 2.49167 2.49167C1.71944 3.26389 1.33333 4.25556 1.33333 5.46667C1.33333 6.25556 1.66111 7.15833 2.31667 8.175C2.97222 9.19167 3.97778 10.3222 5.33333 11.5667ZM5.33333 13.3333C3.54444 11.8111 2.20833 10.3972 1.325 9.09167C0.441667 7.78611 0 6.57778 0 5.46667C0 3.8 0.536111 2.47222 1.60833 1.48333C2.68056 0.494444 3.92222 0 5.33333 0C6.74444 0 7.98611 0.494444 9.05833 1.48333C10.1306 2.47222 10.6667 3.8 10.6667 5.46667C10.6667 6.57778 10.225 7.78611 9.34167 9.09167C8.45833 10.3972 7.12222 11.8111 5.33333 13.3333Z" fill="#444653"/>
-                  </svg>
-                  Tower B, Lt. 12
-                </span>
-              </td>
-              <td>
-                <span class="status-badge status-pending">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M7.75833 8.575L8.575 7.75833L6.41667 5.6V2.91667H5.25V6.06667L7.75833 8.575ZM5.83333 11.6667C5.02639 11.6667 4.26806 11.5135 3.55833 11.2073C2.84861 10.901 2.23125 10.4854 1.70625 9.96042C1.18125 9.43542 0.765625 8.81806 0.459375 8.10833C0.153125 7.39861 0 6.64028 0 5.83333C0 5.02639 0.153125 4.26806 0.459375 3.55833C0.765625 2.84861 1.18125 2.23125 1.70625 1.70625C2.23125 1.18125 2.84861 0.765625 3.55833 0.459375C4.26806 0.153125 5.02639 0 5.83333 0C6.64028 0 7.39861 0.153125 8.10833 0.459375C8.81806 0.765625 9.43542 1.18125 9.96042 1.70625C10.4854 2.23125 10.901 2.84861 11.2073 3.55833C11.5135 4.26806 11.6667 5.02639 11.6667 5.83333C11.6667 6.64028 11.5135 7.39861 11.2073 8.10833C10.901 8.81806 10.4854 9.43542 9.96042 9.96042C9.43542 10.4854 8.81806 10.901 8.10833 11.2073C7.39861 11.5135 6.64028 11.6667 5.83333 11.6667ZM5.83333 10.5C7.12639 10.5 8.22743 10.0455 9.13646 9.13646C10.0455 8.22743 10.5 7.12639 10.5 5.83333C10.5 4.54028 10.0455 3.43924 9.13646 2.53021C8.22743 1.62118 7.12639 1.16667 5.83333 1.16667C4.54028 1.16667 3.43924 1.62118 2.53021 2.53021C1.62118 3.43924 1.16667 4.54028 1.16667 5.83333C1.16667 7.12639 1.62118 8.22743 2.53021 9.13646C3.43924 10.0455 4.54028 10.5 5.83333 10.5Z" fill="#B06000"/>
-                  </svg>
-                  Menunggu
-                </span>
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <a href="#" class="btn-detail">
-                    <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
-                      <path d="M8.25 9C9.1875 9 9.98438 8.67188 10.6406 8.01562C11.2969 7.35938 11.625 6.5625 11.625 5.625C11.625 4.6875 11.2969 3.89062 10.6406 3.23438C9.98438 2.57812 9.1875 2.25 8.25 2.25C7.3125 2.25 6.51562 2.57812 5.85938 3.23438C5.20312 3.89062 4.875 4.6875 4.875 5.625C4.875 6.5625 5.20312 7.35938 5.85938 8.01562C6.51562 8.67188 7.3125 9 8.25 9ZM8.25 7.65C7.6875 7.65 7.20938 7.45312 6.81563 7.05937C6.42188 6.66562 6.225 6.1875 6.225 5.625C6.225 5.0625 6.42188 4.58438 6.81563 4.19063C7.20938 3.79688 7.6875 3.6 8.25 3.6C8.8125 3.6 9.29062 3.79688 9.68437 4.19063C10.0781 4.58438 10.275 5.0625 10.275 5.625C10.275 6.1875 10.0781 6.66562 9.68437 7.05937C9.29062 7.45312 8.8125 7.65 8.25 7.65ZM8.25 11.25C6.425 11.25 4.7625 10.7406 3.2625 9.72188C1.7625 8.70312 0.675 7.3375 0 5.625C0.675 3.9125 1.7625 2.54688 3.2625 1.52813C4.7625 0.509375 6.425 0 8.25 0C10.075 0 11.7375 0.509375 13.2375 1.52813C14.7375 2.54688 15.825 3.9125 16.5 5.625C15.825 7.3375 14.7375 8.70312 13.2375 9.72188C11.7375 10.7406 10.075 11.25 8.25 11.25ZM8.25 9.75C9.6625 9.75 10.9594 9.37812 12.1406 8.63437C13.3219 7.89062 14.225 6.8875 14.85 5.625C14.225 4.3625 13.3219 3.35938 12.1406 2.61562C10.9594 1.87187 9.6625 1.5 8.25 1.5C6.8375 1.5 5.54063 1.87187 4.35938 2.61562C3.17812 3.35938 2.275 4.3625 1.65 5.625C2.275 6.8875 3.17812 7.89062 4.35938 8.63437C5.54063 9.37812 6.8375 9.75 8.25 9.75Z" fill="#00288E"/>
-                    </svg>
-                    Detail
-                  </a>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Row 3: Ditolak -->
-            <tr>
-              <td>
-                <span class="room-name-text">Ruang Rapat Cendrawasih</span>
-                <span class="room-capacity-text">Kapasitas: 20 Orang</span>
-              </td>
-              <td>10 Okt 2023</td>
-              <td>10:00 – 12:00</td>
-              <td>
-                <span class="location-cell">
-                  <svg width="11" height="14" viewBox="0 0 11 14" fill="none">
-                    <path d="M5.33333 6.66667C5.7 6.66667 6.01389 6.53611 6.275 6.275C6.53611 6.01389 6.66667 5.7 6.66667 5.33333C6.66667 4.96667 6.53611 4.65278 6.275 4.39167C6.01389 4.13056 5.7 4 5.33333 4C4.96667 4 4.65278 4.13056 4.39167 4.39167C4.13056 4.65278 4 4.96667 4 5.33333C4 5.7 4.13056 6.01389 4.39167 6.275C4.65278 6.53611 4.96667 6.66667 5.33333 6.66667ZM5.33333 11.5667C6.68889 10.3222 7.69444 9.19167 8.35 8.175C9.00556 7.15833 9.33333 6.25556 9.33333 5.46667C9.33333 4.25556 8.94722 3.26389 8.175 2.49167C7.40278 1.71944 6.45556 1.33333 5.33333 1.33333C4.21111 1.33333 3.26389 1.71944 2.49167 2.49167C1.71944 3.26389 1.33333 4.25556 1.33333 5.46667C1.33333 6.25556 1.66111 7.15833 2.31667 8.175C2.97222 9.19167 3.97778 10.3222 5.33333 11.5667ZM5.33333 13.3333C3.54444 11.8111 2.20833 10.3972 1.325 9.09167C0.441667 7.78611 0 6.57778 0 5.46667C0 3.8 0.536111 2.47222 1.60833 1.48333C2.68056 0.494444 3.92222 0 5.33333 0C6.74444 0 7.98611 0.494444 9.05833 1.48333C10.1306 2.47222 10.6667 3.8 10.6667 5.46667C10.6667 6.57778 10.225 7.78611 9.34167 9.09167C8.45833 10.3972 7.12222 11.8111 5.33333 13.3333Z" fill="#444653"/>
-                  </svg>
-                  Tower A, Lt. 2
-                </span>
-              </td>
-              <td>
-                <span class="status-badge status-rejected">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M3.73333 8.75L5.83333 6.65L7.93333 8.75L8.75 7.93333L6.65 5.83333L8.75 3.73333L7.93333 2.91667L5.83333 5.01667L3.73333 2.91667L2.91667 3.73333L5.01667 5.83333L2.91667 7.93333L3.73333 8.75ZM5.83333 11.6667C5.02639 11.6667 4.26806 11.5135 3.55833 11.2073C2.84861 10.901 2.23125 10.4854 1.70625 9.96042C1.18125 9.43542 0.765625 8.81806 0.459375 8.10833C0.153125 7.39861 0 6.64028 0 5.83333C0 5.02639 0.153125 4.26806 0.459375 3.55833C0.765625 2.84861 1.18125 2.23125 1.70625 1.70625C2.23125 1.18125 2.84861 0.765625 3.55833 0.459375C4.26806 0.153125 5.02639 0 5.83333 0C6.64028 0 7.39861 0.153125 8.10833 0.459375C8.81806 0.765625 9.43542 1.18125 9.96042 1.70625C10.4854 2.23125 10.901 2.84861 11.2073 3.55833C11.5135 4.26806 11.6667 5.02639 11.6667 5.83333C11.6667 6.64028 11.5135 7.39861 11.2073 8.10833C10.901 8.81806 10.4854 9.43542 9.96042 9.96042C9.43542 10.4854 8.81806 10.901 8.10833 11.2073C7.39861 11.5135 6.64028 11.6667 5.83333 11.6667ZM5.83333 10.5C7.13611 10.5 8.23958 10.0479 9.14375 9.14375C10.0479 8.23958 10.5 7.13611 10.5 5.83333C10.5 4.53056 10.0479 3.42708 9.14375 2.52292C8.23958 1.61875 7.13611 1.16667 5.83333 1.16667C4.53056 1.16667 3.42708 1.61875 2.52292 2.52292C1.61875 3.42708 1.16667 4.53056 1.16667 5.83333C1.16667 7.13611 1.61875 8.23958 2.52292 9.14375C3.42708 10.0479 4.53056 10.5 5.83333 10.5Z" fill="#C5221F"/>
-                  </svg>
-                  Ditolak
-                </span>
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <a href="#" class="btn-detail">
-                    <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
-                      <path d="M8.25 9C9.1875 9 9.98438 8.67188 10.6406 8.01562C11.2969 7.35938 11.625 6.5625 11.625 5.625C11.625 4.6875 11.2969 3.89062 10.6406 3.23438C9.98438 2.57812 9.1875 2.25 8.25 2.25C7.3125 2.25 6.51562 2.57812 5.85938 3.23438C5.20312 3.89062 4.875 4.6875 4.875 5.625C4.875 6.5625 5.20312 7.35938 5.85938 8.01562C6.51562 8.67188 7.3125 9 8.25 9ZM8.25 7.65C7.6875 7.65 7.20938 7.45312 6.81563 7.05937C6.42188 6.66562 6.225 6.1875 6.225 5.625C6.225 5.0625 6.42188 4.58438 6.81563 4.19063C7.20938 3.79688 7.6875 3.6 8.25 3.6C8.8125 3.6 9.29062 3.79688 9.68437 4.19063C10.0781 4.58438 10.275 5.0625 10.275 5.625C10.275 6.1875 10.0781 6.66562 9.68437 7.05937C9.29062 7.45312 8.8125 7.65 8.25 7.65ZM8.25 11.25C6.425 11.25 4.7625 10.7406 3.2625 9.72188C1.7625 8.70312 0.675 7.3375 0 5.625C0.675 3.9125 1.7625 2.54688 3.2625 1.52813C4.7625 0.509375 6.425 0 8.25 0C10.075 0 11.7375 0.509375 13.2375 1.52813C14.7375 2.54688 15.825 3.9125 16.5 5.625C15.825 7.3375 14.7375 8.70312 13.2375 9.72188C11.7375 10.7406 10.075 11.25 8.25 11.25ZM8.25 9.75C9.6625 9.75 10.9594 9.37812 12.1406 8.63437C13.3219 7.89062 14.225 6.8875 14.85 5.625C14.225 4.3625 13.3219 3.35938 12.1406 2.61562C10.9594 1.87187 9.6625 1.5 8.25 1.5C6.8375 1.5 5.54063 1.87187 4.35938 2.61562C3.17812 3.35938 2.275 4.3625 1.65 5.625C2.275 6.8875 3.17812 7.89062 4.35938 8.63437C5.54063 9.37812 6.8375 9.75 8.25 9.75Z" fill="#00288E"/>
-                    </svg>
-                    Detail
-                  </a>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Row 4: Disetujui -->
-            <tr>
-              <td>
-                <span class="room-name-text">Studio Kreatif</span>
-                <span class="room-capacity-text">Kapasitas: 6 Orang</span>
-              </td>
-              <td>05 Okt 2023</td>
-              <td>14:00 – 17:00</td>
-              <td>
-                <span class="location-cell">
-                  <svg width="11" height="14" viewBox="0 0 11 14" fill="none">
-                    <path d="M5.33333 6.66667C5.7 6.66667 6.01389 6.53611 6.275 6.275C6.53611 6.01389 6.66667 5.7 6.66667 5.33333C6.66667 4.96667 6.53611 4.65278 6.275 4.39167C6.01389 4.13056 5.7 4 5.33333 4C4.96667 4 4.65278 4.13056 4.39167 4.39167C4.13056 4.65278 4 4.96667 4 5.33333C4 5.7 4.13056 6.01389 4.39167 6.275C4.65278 6.53611 4.96667 6.66667 5.33333 6.66667ZM5.33333 11.5667C6.68889 10.3222 7.69444 9.19167 8.35 8.175C9.00556 7.15833 9.33333 6.25556 9.33333 5.46667C9.33333 4.25556 8.94722 3.26389 8.175 2.49167C7.40278 1.71944 6.45556 1.33333 5.33333 1.33333C4.21111 1.33333 3.26389 1.71944 2.49167 2.49167C1.71944 3.26389 1.33333 4.25556 1.33333 5.46667C1.33333 6.25556 1.66111 7.15833 2.31667 8.175C2.97222 9.19167 3.97778 10.3222 5.33333 11.5667ZM5.33333 13.3333C3.54444 11.8111 2.20833 10.3972 1.325 9.09167C0.441667 7.78611 0 6.57778 0 5.46667C0 3.8 0.536111 2.47222 1.60833 1.48333C2.68056 0.494444 3.92222 0 5.33333 0C6.74444 0 7.98611 0.494444 9.05833 1.48333C10.1306 2.47222 10.6667 3.8 10.6667 5.46667C10.6667 6.57778 10.225 7.78611 9.34167 9.09167C8.45833 10.3972 7.12222 11.8111 5.33333 13.3333Z" fill="#444653"/>
-                  </svg>
-                  Tower C, Lt. 1
-                </span>
-              </td>
-              <td>
-                <span class="status-badge status-approved">
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M5.01667 8.51667L9.12917 4.40417L8.3125 3.5875L5.01667 6.88333L3.35417 5.22083L2.5375 6.0375L5.01667 8.51667ZM5.83333 11.6667C5.02639 11.6667 4.26806 11.5135 3.55833 11.2073C2.84861 10.901 2.23125 10.4854 1.70625 9.96042C1.18125 9.43542 0.765625 8.81806 0.459375 8.10833C0.153125 7.39861 0 6.64028 0 5.83333C0 5.02639 0.153125 4.26806 0.459375 3.55833C0.765625 2.84861 1.18125 2.23125 1.70625 1.70625C2.23125 1.18125 2.84861 0.765625 3.55833 0.459375C4.26806 0.153125 5.02639 0 5.83333 0C6.64028 0 7.39861 0.153125 8.10833 0.459375C8.81806 0.765625 9.43542 1.18125 9.96042 1.70625C10.4854 2.23125 10.901 2.84861 11.2073 3.55833C11.5135 4.26806 11.6667 5.02639 11.6667 5.83333C11.6667 6.64028 11.5135 7.39861 11.2073 8.10833C10.901 8.81806 10.4854 9.43542 9.96042 9.96042C9.43542 10.4854 8.81806 10.901 8.10833 11.2073C7.39861 11.5135 6.64028 11.6667 5.83333 11.6667ZM5.83333 10.5C7.13611 10.5 8.23958 10.0479 9.14375 9.14375C10.0479 8.23958 10.5 7.13611 10.5 5.83333C10.5 4.53056 10.0479 3.42708 9.14375 2.52292C8.23958 1.61875 7.13611 1.16667 5.83333 1.16667C4.53056 1.16667 3.42708 1.61875 2.52292 2.52292C1.61875 3.42708 1.16667 4.53056 1.16667 5.83333C1.16667 7.13611 1.61875 8.23958 2.52292 9.14375C3.42708 10.0479 4.53056 10.5 5.83333 10.5Z" fill="#137333"/>
-                  </svg>
-                  Disetujui
-                </span>
-              </td>
-              <td>
-                <div class="action-buttons">
-                  <a href="#" class="btn-cetak-bukti">
-                    <svg width="15" height="14" viewBox="0 0 15 14" fill="none">
-                      <path d="M10.5 3.75V1.5H4.5V3.75H3V0H12V3.75H10.5ZM12 7.125C12.2125 7.125 12.3906 7.05313 12.5344 6.90938C12.6781 6.76562 12.75 6.5875 12.75 6.375C12.75 6.1625 12.6781 5.98438 12.5344 5.84062C12.3906 5.69687 12.2125 5.625 12 5.625C11.7875 5.625 11.6094 5.69687 11.4656 5.84062C11.3219 5.98438 11.25 6.1625 11.25 6.375C11.25 6.5875 11.3219 6.76562 11.4656 6.90938C11.6094 7.05313 11.7875 7.125 12 7.125ZM10.5 12V9H4.5V12H10.5ZM12 13.5H3V10.5H0V6C0 5.3625 0.21875 4.82812 0.65625 4.39687C1.09375 3.96562 1.625 3.75 2.25 3.75H12.75C13.3875 3.75 13.9219 3.96562 14.3531 4.39687C14.7844 4.82812 15 5.3625 15 6V10.5H12V13.5ZM13.5 9V6C13.5 5.7875 13.4281 5.60938 13.2844 5.46562C13.1406 5.32187 12.9625 5.25 12.75 5.25H2.25C2.0375 5.25 1.85938 5.32187 1.71563 5.46562C1.57188 5.60938 1.5 5.7875 1.5 6V9H3V7.5H12V9H13.5Z" fill="white"/>
-                    </svg>
-                    Cetak Bukti
-                  </a>
-                  <a href="#" class="btn-detail">
-                    <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
-                      <path d="M8.25 9C9.1875 9 9.98438 8.67188 10.6406 8.01562C11.2969 7.35938 11.625 6.5625 11.625 5.625C11.625 4.6875 11.2969 3.89062 10.6406 3.23438C9.98438 2.57812 9.1875 2.25 8.25 2.25C7.3125 2.25 6.51562 2.57812 5.85938 3.23438C5.20312 3.89062 4.875 4.6875 4.875 5.625C4.875 6.5625 5.20312 7.35938 5.85938 8.01562C6.51562 8.67188 7.3125 9 8.25 9ZM8.25 7.65C7.6875 7.65 7.20938 7.45312 6.81563 7.05937C6.42188 6.66562 6.225 6.1875 6.225 5.625C6.225 5.0625 6.42188 4.58438 6.81563 4.19063C7.20938 3.79688 7.6875 3.6 8.25 3.6C8.8125 3.6 9.29062 3.79688 9.68437 4.19063C10.0781 4.58438 10.275 5.0625 10.275 5.625C10.275 6.1875 10.0781 6.66562 9.68437 7.05937C9.29062 7.45312 8.8125 7.65 8.25 7.65ZM8.25 11.25C6.425 11.25 4.7625 10.7406 3.2625 9.72188C1.7625 8.70312 0.675 7.3375 0 5.625C0.675 3.9125 1.7625 2.54688 3.2625 1.52813C4.7625 0.509375 6.425 0 8.25 0C10.075 0 11.7375 0.509375 13.2375 1.52813C14.7375 2.54688 15.825 3.9125 16.5 5.625C15.825 7.3375 14.7375 8.70312 13.2375 9.72188C11.7375 10.7406 10.075 11.25 8.25 11.25ZM8.25 9.75C9.6625 9.75 10.9594 9.37812 12.1406 8.63437C13.3219 7.89062 14.225 6.8875 14.85 5.625C14.225 4.3625 13.3219 3.35938 12.1406 2.61562C10.9594 1.87187 9.6625 1.5 8.25 1.5C6.8375 1.5 5.54063 1.87187 4.35938 2.61562C3.17812 3.35938 2.275 4.3625 1.65 5.625C2.275 6.8875 3.17812 7.89062 4.35938 8.63437C5.54063 9.37812 6.8375 9.75 8.25 9.75Z" fill="#00288E"/>
-                    </svg>
-                    Detail
-                  </a>
-                </div>
-              </td>
-            </tr>
-
+            <?php if ($is_logged_in && $total_rows > 0): ?>
+              <?php foreach ($history_rows as $row): ?>
+                <tr>
+                  <td>
+                    <span class="room-name-text"><?= esc($row['room_name']) ?></span>
+                    <span class="room-capacity-text">Kapasitas: <?= esc($row['capacity']) ?> Orang</span>
+                  </td>
+                  <td><?= esc(format_date_id($row['reservation_date'])) ?></td>
+                  <td><?= esc(substr($row['start_hour'], 0, 5)) ?> - <?= esc(substr($row['end_hour'], 0, 5)) ?></td>
+                  <td>
+                    <span class="location-cell"><?= esc($row['building_name']) ?></span>
+                  </td>
+                  <td>
+                    <span class="status-badge <?= esc(status_class($row['status'])) ?>">
+                      <?= esc(status_label($row['status'])) ?>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <?php if ($row['status'] === 'approved'): ?>
+                        <a href="../../pages/user/proof.php?id=<?= esc($row['reservation_id']) ?>" class="btn-cetak-bukti" target="_blank" rel="noopener noreferrer">Cetak Bukti</a>
+                      <?php else: ?>
+                        <span class="btn-cetak-bukti btn-cetak-bukti-disabled">Menunggu Approval</span>
+                      <?php endif; ?>
+                      <button type="button" class="btn-detail" data-bs-toggle="modal" data-bs-target="#detailModal<?= esc($row['reservation_id']) ?>">Detail</button>
+                    </div>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php elseif (!$is_logged_in): ?>
+              <tr class="empty-state-row">
+                <td class="empty-state-cell" colspan="6">
+                  <div class="empty-state-card">
+                    <h3 class="empty-state-title">Belum ada riwayat reservasi</h3>
+                    <p class="empty-state-text">Silakan login untuk melihat riwayat pemesanan ruangan Anda.</p>
+                    <a href="../../pages/auth/login.php" class="empty-state-action">Login sekarang</a>
+                  </div>
+                </td>
+              </tr>
+            <?php else: ?>
+              <tr class="empty-state-row">
+                <td class="empty-state-cell" colspan="6">
+                  <div class="empty-state-card">
+                    <h3 class="empty-state-title">Data tidak ditemukan</h3>
+                    <p class="empty-state-text">Tidak ada riwayat yang sesuai filter.</p>
+                  </div>
+                </td>
+              </tr>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>
 
-      <!-- Pagination -->
+      <?php if ($is_logged_in): ?>
       <div class="table-pagination">
         <span class="pagination-info">
-          Menampilkan <strong>1</strong> hingga <strong>4</strong> dari <strong>12</strong> data
+          Menampilkan <strong><?= esc($start_item) ?></strong> hingga <strong><?= esc($end_item) ?></strong> dari <strong><?= esc($total_rows) ?></strong> data
         </span>
+
+        <?php if ($total_pages > 1): ?>
         <div class="pagination-controls">
-          <button class="page-btn page-btn-nav" disabled aria-label="Halaman sebelumnya">
-            <svg width="7" height="10" viewBox="0 0 7 10" fill="none">
-              <path d="M5 10L0 5L5 0L6.16667 1.16667L2.33333 5L6.16667 8.83333L5 10Z" fill="#444653"/>
-            </svg>
-          </button>
-          <button class="page-btn page-btn-active">1</button>
-          <button class="page-btn">2</button>
-          <button class="page-btn">3</button>
-          <button class="page-btn page-btn-nav" aria-label="Halaman berikutnya">
-            <svg width="7" height="10" viewBox="0 0 7 10" fill="none">
-              <path d="M3.83333 5L0 1.16667L1.16667 0L6.16667 5L1.16667 10L0 8.83333L3.83333 5Z" fill="#444653"/>
-            </svg>
-          </button>
+          <?php $prev_page = max(1, $current_page - 1); ?>
+          <a class="page-btn page-btn-nav <?= $current_page <= 1 ? 'disabled' : '' ?>" <?= $current_page <= 1 ? '' : 'href="' . esc(build_history_query($prev_page, $search_term, $filter_date, $filter_status)) . '"' ?> aria-label="Halaman sebelumnya">&lt;</a>
+
+          <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+            <a class="page-btn <?= $p === $current_page ? 'page-btn-active' : '' ?>" href="<?= esc(build_history_query($p, $search_term, $filter_date, $filter_status)) ?>"><?= esc($p) ?></a>
+          <?php endfor; ?>
+
+          <?php $next_page = min($total_pages, $current_page + 1); ?>
+          <a class="page-btn page-btn-nav <?= $current_page >= $total_pages ? 'disabled' : '' ?>" <?= $current_page >= $total_pages ? '' : 'href="' . esc(build_history_query($next_page, $search_term, $filter_date, $filter_status)) . '"' ?> aria-label="Halaman berikutnya">&gt;</a>
         </div>
+        <?php endif; ?>
       </div>
-
-    </div><!-- /.reservation-table-card -->
-
-  </div><!-- /.history-container -->
+      <?php endif; ?>
+    </div>
+  </div>
 </main>
 
-<?php include '../../includes/user/footer_landing.php'; ?>
+<?php if ($is_logged_in && $total_rows > 0): ?>
+  <?php foreach ($history_rows as $row): ?>
+    <div class="modal fade" id="detailModal<?= esc($row['reservation_id']) ?>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Detail Reservasi #<?= esc($row['reservation_id']) ?></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="detail-row"><strong>Ruangan:</strong> <?= esc($row['room_name']) ?></div>
+            <div class="detail-row"><strong>Lokasi:</strong> <?= esc($row['building_name']) ?></div>
+            <div class="detail-row"><strong>Tanggal:</strong> <?= esc(format_date_id($row['reservation_date'])) ?></div>
+            <div class="detail-row"><strong>Waktu:</strong> <?= esc(substr($row['start_hour'], 0, 5)) ?> - <?= esc(substr($row['end_hour'], 0, 5)) ?></div>
+            <div class="detail-row"><strong>Status:</strong> <?= esc(status_label($row['status'])) ?></div>
+            <div class="detail-row"><strong>Keperluan:</strong> <?= esc($row['reason']) ?></div>
+            <div class="detail-row"><strong>Dibuat:</strong> <?= esc(format_date_id($row['created_at'])) ?></div>
+            <div class="detail-row"><strong>Disetujui oleh:</strong> <?= esc($row['approved_by_name'] ?: '-') ?></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <?php endforeach; ?>
+<?php endif; ?>
 
+<?php include '../../includes/user/footer_landing.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
