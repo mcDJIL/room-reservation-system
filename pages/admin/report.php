@@ -1,474 +1,166 @@
+<?php
+$active = 'laporan';
+$crumbs = 'Laporan | Cetak Laporan';
+
+require_once __DIR__ . '/../../actions/report/report_action.php';
+
+$printQuery = $_SERVER['QUERY_STRING'] ?? '';
+$printUrl = 'report-print.php' . ($printQuery !== '' ? '?' . $printQuery : '');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <?php include __DIR__ . '/../../includes/header.php'; ?>
 </head>
-<?php
-$active = 'laporan';
-$crumbs = 'Laporan | Cetak Laporan';
-?>
 
-<body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">
+<body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>" class="report-page">
     <div class="shell">
         <?php include __DIR__ . '/../../includes/sidebar.php'; ?>
         <div class="main">
-            <?php include __DIR__ . '/../../includes/header.php'; ?>
+            <?php include __DIR__ . '/../../includes/navbar.php'; ?>
             <main class="content">
-                <section class="hero">
-          <div class="hero-text">
-            <h1 class="hero-title">Cetak Laporan</h1>
-          </div>
-          <div class="hero-actions">
-            <button class="btn btn--ghost">
-              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-              Cetak
-            </button>
-          </div>
-        </section>
+                <section class="hero no-print">
+                    <div class="hero-text">
+                        <h1 class="hero-title">Cetak Laporan Reservasi</h1>
+                        <p class="hero-subtitle">Laporan detail peminjaman ruangan berdasarkan filter tanggal, bulan, atau tahun.</p>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="<?php echo htmlspecialchars($printUrl); ?>" target="_blank" rel="noopener" class="btn btn-primary">
+                            <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><path d="M6 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1"/><path d="M6 14h12v7H6z"/></svg>
+                            Cetak
+                        </a>
+                    </div>
+                </section>
 
-        <div class="grid">
-          <section class="col-12 card">
-            <div class="data-toolbar">
-              <div class="data-toolbar-left">
-                <div class="input-icon" style="flex: 1; max-width: 320px;">
-                  <span class="ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
-                  <input class="input" type="search" placeholder="Search users by name, email, or ID...">
-                </div>
-                <button class="btn btn--ghost">
-                  <svg viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-                  Filter <span class="badge primary" style="margin-left: 4px;">2</span>
-                </button>
-              </div>
-              <div class="data-toolbar-right">
-                <select class="select" style="width: auto; padding: 7px 28px 7px 10px; font-size: 12px;">
-                  <option>All roles</option>
-                  <option>Admin</option>
-                  <option>Editor</option>
-                  <option>Viewer</option>
-                </select>
-                <select class="select" style="width: auto; padding: 7px 28px 7px 10px; font-size: 12px;">
-                  <option>All status</option>
-                  <option>Active</option>
-                  <option>Pending</option>
-                  <option>Inactive</option>
-                </select>
-                <button class="btn btn--ghost btn--icon" aria-label="Columns">
-                  <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="18"/><rect x="14" y="3" width="7" height="11"/></svg>
-                </button>
-              </div>
-            </div>
+                <section class="card report-filters no-print">
+                    <form method="get" class="report-filter-form">
+                        <div class="report-filter-grid">
+                            <div>
+                                <label class="form-label">Kata Kunci</label>
+                                <input class="form-control" type="search" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Cari nama, email, gedung, ruangan, alasan...">
+                            </div>
+                            <div>
+                                <label class="form-label">Jenis Filter</label>
+                                <select class="form-select" name="filter_type">
+                                    <option value="all" <?php echo $filterType === 'all' ? 'selected' : ''; ?>>Semua Data</option>
+                                    <option value="date" <?php echo $filterType === 'date' ? 'selected' : ''; ?>>Tanggal</option>
+                                    <option value="month" <?php echo $filterType === 'month' ? 'selected' : ''; ?>>Bulan</option>
+                                    <option value="year" <?php echo $filterType === 'year' ? 'selected' : ''; ?>>Tahun</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="form-label">Tanggal</label>
+                                <input class="form-control" type="date" name="filter_date" value="<?php echo htmlspecialchars($filterDate); ?>">
+                            </div>
+                            <div>
+                                <label class="form-label">Bulan</label>
+                                <input class="form-control" type="month" name="filter_month" value="<?php echo htmlspecialchars($filterMonth); ?>">
+                            </div>
+                            <div>
+                                <label class="form-label">Tahun</label>
+                                <select class="form-select" name="filter_year">
+                                    <?php foreach ($yearOptions as $yearOption): ?>
+                                        <option value="<?php echo htmlspecialchars($yearOption); ?>" <?php echo $filterYear === $yearOption ? 'selected' : ''; ?>><?php echo htmlspecialchars($yearOption); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="report-filter-actions">
+                            <button type="submit" class="btn btn-primary">Terapkan Filter</button>
+                            <a href="report.php" class="btn btn-outline-secondary">Reset</a>
+                            <a href="<?php echo htmlspecialchars($printUrl); ?>" target="_blank" rel="noopener" class="btn btn-outline-dark">Cetak Hasil Filter</a>
+                        </div>
+                    </form>
+                </section>
 
-            <div style="overflow-x: auto; margin: 0 -22px;">
-              <table class="data-table" style="margin: 0 22px; min-width: 900px;">
-                <thead>
-                  <tr>
-                    <th style="width: 32px;"><label class="check"><input type="checkbox"><span class="box"></span></label></th>
-                    <th class="sorted-asc">User <span class="sort"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></th>
-                    <th>Role <span class="sort"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></th>
-                    <th>Department</th>
-                    <th>Status</th>
-                    <th>ID</th>
-                    <th>Last active <span class="sort"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                <tr class="data-row is-selected">
-                  <td><label class="check"><input type="checkbox" checked="checked"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-2">SK</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Sara Kim</div>
-                        <div class="data-cell-user-email">sara.kim@northwind.com</div>
-                      </div>
+                <section class="card report-sheet">
+                    <div class="report-header">
+                        <div>
+                            <div class="report-kicker">RentRoom Admin Report</div>
+                            <h2 class="report-title">Laporan Reservasi Ruangan</h2>
+                            <p class="report-meta">Filter aktif: <strong><?php echo htmlspecialchars($filterLabel); ?></strong></p>
+                        </div>
+                        <div class="report-meta-box">
+                            <div>Dibuat: <strong><?php echo date('d M Y H:i'); ?></strong></div>
+                            <div>Total data: <strong><?php echo $summaryTotal; ?></strong></div>
+                        </div>
                     </div>
-                  </td>
-                  <td><span class="badge primary">Admin</span></td>
-                  <td>Engineering</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1042</span></td>
-                  <td><span class="data-cell-mono">Apr 22 · 09:42</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-3">LR</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Leo Reyes</div>
-                        <div class="data-cell-user-email">leo@adminator.app</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge primary">Admin</span></td>
-                  <td>Engineering</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1041</span></td>
-                  <td><span class="data-cell-mono">Apr 22 · 08:18</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-4">MD</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Mira Doe</div>
-                        <div class="data-cell-user-email">mira.doe@northwind.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge success">Editor</span></td>
-                  <td>Design</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1040</span></td>
-                  <td><span class="data-cell-mono">Apr 21 · 17:32</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-1">AT</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Anya Trent</div>
-                        <div class="data-cell-user-email">anya@studio.io</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge success">Editor</span></td>
-                  <td>Marketing</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1039</span></td>
-                  <td><span class="data-cell-mono">Apr 21 · 14:08</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-5">PV</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Paolo Vega</div>
-                        <div class="data-cell-user-email">p.vega@northwind.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge info">Viewer</span></td>
-                  <td>Sales</td>
-                  <td><span class="badge warning dot">Pending</span></td>
-                  <td><span class="data-cell-mono">USR-1038</span></td>
-                  <td><span class="data-cell-mono">Apr 21 · 11:54</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-6">JC</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Jess Choi</div>
-                        <div class="data-cell-user-email">j.choi@studio.io</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge success">Editor</span></td>
-                  <td>Design</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1037</span></td>
-                  <td><span class="data-cell-mono">Apr 20 · 19:21</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-2">RG</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Rita Gomez</div>
-                        <div class="data-cell-user-email">rita@northwind.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge primary">Admin</span></td>
-                  <td>Operations</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1036</span></td>
-                  <td><span class="data-cell-mono">Apr 20 · 09:00</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-3">MW</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Marcus Wei</div>
-                        <div class="data-cell-user-email">m.wei@northwind.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge purple">Owner</span></td>
-                  <td>Executive</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1035</span></td>
-                  <td><span class="data-cell-mono">Apr 19 · 22:14</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-4">YT</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Yuki Tanaka</div>
-                        <div class="data-cell-user-email">y.tanaka@studio.io</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge success">Editor</span></td>
-                  <td>Engineering</td>
-                  <td><span class="badge dot" style="color: var(--t-light);">Inactive</span></td>
-                  <td><span class="data-cell-mono">USR-1034</span></td>
-                  <td><span class="data-cell-mono">Apr 18 · 13:47</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-1">CB</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Carla Brun</div>
-                        <div class="data-cell-user-email">c.brun@northwind.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge info">Viewer</span></td>
-                  <td>Finance</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1033</span></td>
-                  <td><span class="data-cell-mono">Apr 18 · 10:30</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-5">DP</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Diego Pinto</div>
-                        <div class="data-cell-user-email">d.pinto@studio.io</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge success">Editor</span></td>
-                  <td>Design</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1032</span></td>
-                  <td><span class="data-cell-mono">Apr 17 · 16:55</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-6">HB</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Hannah Bell</div>
-                        <div class="data-cell-user-email">h.bell@northwind.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge primary">Admin</span></td>
-                  <td>Engineering</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1031</span></td>
-                  <td><span class="data-cell-mono">Apr 17 · 09:12</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-2">OS</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Omar Saleh</div>
-                        <div class="data-cell-user-email">o.saleh@studio.io</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge info">Viewer</span></td>
-                  <td>Sales</td>
-                  <td><span class="badge warning dot">Pending</span></td>
-                  <td><span class="data-cell-mono">USR-1030</span></td>
-                  <td><span class="data-cell-mono">Apr 16 · 14:20</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-3">IL</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Iris Larsen</div>
-                        <div class="data-cell-user-email">i.larsen@northwind.com</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge success">Editor</span></td>
-                  <td>Marketing</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1029</span></td>
-                  <td><span class="data-cell-mono">Apr 16 · 11:08</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="data-row">
-                  <td><label class="check"><input type="checkbox"><span class="box"></span></label></td>
-                  <td>
-                    <div class="data-cell-user">
-                      <div class="av ma-4">TP</div>
-                      <div class="data-cell-user-meta">
-                        <div class="data-cell-user-name">Tom Park</div>
-                        <div class="data-cell-user-email">t.park@studio.io</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td><span class="badge success">Editor</span></td>
-                  <td>Engineering</td>
-                  <td><span class="badge success dot">Active</span></td>
-                  <td><span class="data-cell-mono">USR-1028</span></td>
-                  <td><span class="data-cell-mono">Apr 15 · 17:42</span></td>
-                  <td>
-                    <div class="data-cell-actions">
-                      <button class="btn--icon" aria-label="View"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                      <button class="btn--icon" aria-label="Edit"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/></svg></button>
-                      <button class="btn--icon" aria-label="More"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-                    </div>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
 
-            <div class="data-foot">
-              <div class="data-foot-info">
-                <span>Showing <strong style="color: var(--t-base);">1–15</strong> of <strong style="color: var(--t-base);">142</strong></span>
-                <select class="select">
-                  <option>15 per page</option>
-                  <option>25 per page</option>
-                  <option>50 per page</option>
-                  <option>100 per page</option>
-                </select>
-              </div>
-              <div class="pager">
-                <button class="pager-btn" disabled="disabled" aria-label="Previous">
-                  <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
-                </button>
-                <button class="pager-btn is-active">1</button>
-                <button class="pager-btn">2</button>
-                <button class="pager-btn">3</button>
-                <button class="pager-btn">…</button>
-                <button class="pager-btn">10</button>
-                <button class="pager-btn" aria-label="Next">
-                  <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
-                </button>
-              </div>
-            </div>
-          </section>
-        </div>
+                    <div class="report-stats">
+                        <div class="report-stat stat-total">
+                            <span>Total Reservasi</span>
+                            <strong><?php echo $summaryTotal; ?></strong>
+                        </div>
+                        <div class="report-stat stat-approved">
+                            <span>Approved</span>
+                            <strong><?php echo $summaryApproved; ?></strong>
+                        </div>
+                        <div class="report-stat stat-waiting">
+                            <span>Waiting</span>
+                            <strong><?php echo $summaryWaiting; ?></strong>
+                        </div>
+                        <div class="report-stat stat-rejected">
+                            <span>Rejected</span>
+                            <strong><?php echo $summaryRejected; ?></strong>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive report-table-wrap">
+                        <table class="table report-table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Peminjam</th>
+                                    <th>Email</th>
+                                    <th>Gedung</th>
+                                    <th>Ruangan</th>
+                                    <th>Tanggal</th>
+                                    <th>Jam</th>
+                                    <th>Alasan</th>
+                                    <th>Status</th>
+                                    <th>Disetujui Oleh</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (empty($filteredReservations)): ?>
+                                    <tr>
+                                        <td colspan="10" class="text-center py-4 text-muted">Tidak ada data reservasi yang cocok dengan filter.</td>
+                                    </tr>
+                                <?php else: ?>
+                                    <?php foreach ($filteredReservations as $index => $row): ?>
+                                        <?php
+                                            $status = $row['status'] ?? 'waiting';
+                                            $statusClass = report_status_class($status);
+                                            $statusText = report_status_label($status);
+                                            $timeRange = report_time_range($row);
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $index + 1; ?></td>
+                                            <td>
+                                                <div class="fw-semibold"><?php echo htmlspecialchars($row['user_name'] ?? '-'); ?></div>
+                                                <div class="small text-muted">ID #<?php echo htmlspecialchars((string)($row['user_id'] ?? '-')); ?></div>
+                                            </td>
+                                            <td><?php echo htmlspecialchars($row['user_email'] ?? '-'); ?></td>
+                                            <td><?php echo htmlspecialchars($row['building_name'] ?? '-'); ?></td>
+                                            <td><?php echo htmlspecialchars($row['room_name'] ?? '-'); ?></td>
+                                            <td><?php echo htmlspecialchars(date('d M Y', strtotime($row['reservation_date']))); ?></td>
+                                            <td><?php echo htmlspecialchars($timeRange); ?></td>
+                                            <td class="report-reason"><?php echo htmlspecialchars($row['reason'] ?? '-'); ?></td>
+                                            <td><span class="badge <?php echo $statusClass; ?> dot"><?php echo htmlspecialchars($statusText); ?></span></td>
+                                            <td><?php echo htmlspecialchars($row['approved_by_name'] ?? '-'); ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </main>
-        <?php include __DIR__ . '/../../includes/footer.php'; ?>
-    </div>
+            <?php include __DIR__ . '/../../includes/footer.php'; ?>
+        </div>
 
-    <?php include __DIR__ . '/../../includes/script.php'; ?>
+        <?php include __DIR__ . '/../../includes/script.php'; ?>
 </body>
 
 </html>
