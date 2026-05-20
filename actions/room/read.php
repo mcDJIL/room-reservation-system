@@ -1,42 +1,17 @@
 <?php
+include '/config/connection.php';
 
-include 'connection.php';
-
-$sql = "SELECT id, room_name, capacity, facility, short_description, detail_description, is_active FROM rooms";
+$rooms = [];
+$sql = "SELECT r.id, r.room_name, r.capacity, r.is_active, b.building_name 
+        FROM rooms r 
+        LEFT JOIN buildings b ON r.building_id = b.id";
+        
 $result = mysqli_query($conn, $sql);
 
-if ($result) {
-    if (mysqli_num_rows($result) > 0) {
-        echo "<table border='1' cellpadding='10' cellspacing='0'>";
-        echo "<tr>
-                <th>ID</th>
-                <th>Nama Ruangan</th>
-                <th>Kapasitas</th>
-                <th>Fasilitas</th>
-                <th>Deskripsi Singkat</th>
-                <th>Deskripsi Detail</th>
-                <th>Status</th>
-              </tr>";
-
-        while ($row = mysqli_fetch_assoc($result)) {
-            $status = $row['is_active'] == 1 ? 'Aktif' : 'Tidak Aktif';
-            
-            echo "<tr>";
-            echo "<td>" . htmlspecialchars($row['id']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['room_name']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['capacity']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['facility']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['short_description']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['detail_description']) . "</td>";
-            echo "<td>" . $status . "</td>";
-            echo "</tr>";
-        }
-        echo "</table>";
-    } else {
-        echo "Tidak ada data ruangan.";
+if ($result && mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $rooms[] = $row;
     }
-} else {
-    echo "Gagal mengambil data: " . mysqli_error($conn);
 }
 
 mysqli_close($conn);
