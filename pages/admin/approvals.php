@@ -7,6 +7,8 @@
 <?php
 $active = 'peminjaman';
 $crumbs = 'Manajemen | Peminjaman';
+
+session_start();
 ?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">

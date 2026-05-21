@@ -1,4 +1,8 @@
 <?php
+
+$role = $_SESSION['role'];
+$name = $_SESSION['name'];
+
 if (!isset($active)) $active = '';
 $NAV = [
   [
@@ -23,7 +27,7 @@ $NAV = [
   ],
 ];
 
-$BRAND_LOGO = '<img src="../../assets/images/logo-white.png"></img>';
+$BRAND_LOGO = '<img style="width: 20px;" src="../../assets/images/logo-white.png"></img>';
 
 function esc($s) { return htmlspecialchars($s, ENT_QUOTES); }
 
@@ -67,11 +71,11 @@ function renderSection($section, $active) {
   return "<nav class=\"nav-section\">\n      <div class=\"nav-label\">".esc($section['label'])."</div>\n      ".$itemsHtml."\n    </nav>";
 }
 
-function renderSidebar($NAV, $BRAND_LOGO, $active) {
+function renderSidebar($NAV, $BRAND_LOGO, $active, $name, $role) {
   $sections = '';
   foreach ($NAV as $s) $sections .= renderSection($s, $active);
-  $html = "<aside class=\"d-sidebar\">\n      <div class=\"brand\">\n        <div class=\"brand-logo\">".$BRAND_LOGO."</div>\n        <div class=\"brand-text\">\n          <div class=\"brand-name\">SatSet</div>\n                  </div>\n      </div>\n      ".$sections."\n      <div class=\"sidebar-footer\">\n        <div class=\"workspace\">\n          <div class=\"workspace-avatar\">JD</div>\n          <div class=\"workspace-text\">\n            <div class=\"workspace-name\">John Doe</div>\n            <div class=\"workspace-role\">admin</div>\n          </div>\n          <svg class=\"workspace-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\">\n            <path d=\"m7 9 5-5 5 5\"/><path d=\"m7 15 5 5 5-5\"/>\n          </svg>\n        </div>\n      </div>\n    </aside>";
+  $html = "<aside class=\"d-sidebar\">\n      <div class=\"brand\">\n        <div class=\"brand-logo\">".$BRAND_LOGO."</div>\n        <div class=\"brand-text\">\n          <div class=\"brand-name\">SatSet</div>\n                  </div>\n      </div>\n      ".$sections."\n      <div class=\"sidebar-footer\">\n        <div class=\"workspace\">\n          <div class=\"workspace-avatar\">AD</div>\n          <div class=\"workspace-text\">\n            <div class=\"workspace-name\">$name</div>\n            <div class=\"workspace-role\">$role</div>\n          </div>\n          <svg class=\"workspace-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\">\n            <path d=\"m7 9 5-5 5 5\"/><path d=\"m7 15 5 5 5-5\"/>\n          </svg>\n        </div>\n      </div>\n    </aside>";
   echo $html;
 }
 
-renderSidebar($NAV, $BRAND_LOGO, $active);
+renderSidebar($NAV, $BRAND_LOGO, $active, $name, $role);

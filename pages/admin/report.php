@@ -2,6 +2,8 @@
 $active = 'laporan';
 $crumbs = 'Laporan | Cetak Laporan';
 
+session_start();
+
 require_once __DIR__ . '/../../actions/report/report_action.php';
 
 $printQuery = $_SERVER['QUERY_STRING'] ?? '';
