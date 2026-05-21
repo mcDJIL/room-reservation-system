@@ -22,7 +22,8 @@
   }
 
   $tanggal_hari_ini=date('Y-m-d');
-  $list_agenda="SELECT room_id, reason, start_hour, end_hour FROM reservations WHERE reservation_date='$tanggal_hari_ini' AND status='approved' ORDER BY start_hour ASC";
+
+  $list_agenda="SELECT room_id, reason, start_hour, end_hour, reservation_date FROM reservations WHERE status='approved' ORDER BY start_hour ASC";
   $result_agenda=mysqli_query($conn, $list_agenda);
 
   $agenda=[];
@@ -284,22 +285,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                   <span class="current-time-badge" id="live-time-badge">00:00 SEKARANG</span>
                 </div>
 
-                <!-- Booked: Weekly Sync - Marketing 09:00–10:30
-                     top = 1×64 = 64px, height = 1.5×64 = 96px -->
-                <div class="timeline-event booked-event"
-                     style="top: 64px; height: 96px;">
-                  <p class="event-title">Weekly Sync – Marketing</p>
-                  <p class="event-meta">09:00 – 10:30 &bull; Rina Pratama</p>
-                </div>
-
-                <!-- Booked: Review Budget 12:30–13:30
-                     top = 4.5×64 = 288px, height = 1×64 = 64px -->
-                <div class="timeline-event booked-event"
-                     style="top: 288px; height: 64px;">
-                  <p class="event-title">Review Budget</p>
-                  <p class="event-meta">12:30 – 13:30 &bull; Budi Santoso</p>
-                </div>
-
                 <!-- Selected: Pilihan Anda 15:00–16:30
                      top = 7×64 = 448px, height = 1.5×64 = 96px -->
                 <div class="timeline-event selected-event"
@@ -356,7 +341,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
     function updateDateDisplay() {
       if (!tanggalInput || !dateDisplay || !tanggalInput.value) return;
 
-      const dateObj = new Date(tanggalInput.value);
+      const [y, m, d]=tanggalInput.value.split('-').map(Number);
+      const dateObj=new Date(y, m-1, d);
       
       const opsiFormat = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
       const tanggalFormatIndo = dateObj.toLocaleDateString('id-ID', opsiFormat);
@@ -472,6 +458,44 @@ $current_page = basename($_SERVER['PHP_SELF']);
     updateSelectedBlock();
     updateDateDisplay();
 
+    const btnPrev=document.querySelector('[aria-label="Hari sebelumnya"]');
+    const btnNext=document.querySelector('[aria-label="Hari berikutnya"]');
+
+    function updateDateButtons() {
+      if (!btnPrev || !tanggalInput) return;
+      const today="<?= $tanggal_hari_ini; ?>";
+      btnPrev.disabled=tanggalInput.value<=today;
+    }
+
+    if (btnPrev && btnNext) {
+      btnPrev.addEventListener('click', function() {
+        const [y, m, d]=tanggalInput.value.split('-').map(Number);
+        const prev=new Date(y, m-1, d-1);
+        tanggalInput.value=prev.getFullYear() + '-' + String(prev.getMonth()+1).padStart(2, '0') + '-' + String(prev.getDate()).padStart(2, '0');
+        //getFullYear untuk mendapat tahun dengan format 4 digit penuh
+        //getMonth perlu +1 karena javascript menganggap bulan sebagai array, jadi index januari adalah 0
+        //getDate normal lah ya
+        //padStart menyetting agar masukan dengan format 2 digit, kalau angkanya masih satuan, akan ditambahkan 0 didepannya
+        updateDateDisplay();
+        refreshCalendar();
+        updateDateButtons();
+      });
+      btnNext.addEventListener('click', function() {
+        const [y, m, d]=tanggalInput.value.split('-').map(Number);
+        const next=new Date(y, m-1, d+1);
+        tanggalInput.value=next.getFullYear() + '-' + String(next.getMonth()+1).padStart(2, '0') + '-' + String(next.getDate()).padStart(2, '0');
+        //getFullYear untuk mendapat tahun dengan format 4 digit penuh
+        //getMonth perlu +1 karena javascript menganggap bulan sebagai array, jadi index januari adalah 0
+        //getDate normal lah ya
+        //padStart menyetting agar masukan dengan format 2 digit, kalau angkanya masih satuan, akan ditambahkan 0 didepannya
+        updateDateDisplay();
+        refreshCalendar();
+        updateDateButtons();
+      });
+    }
+
+    updateDateButtons();
+
     mulaiInput.addEventListener('change', function() {
       validasiBatasanWaktu(this);
       updateSelectedBlock();
@@ -481,10 +505,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
       updateSelectedBlock();
     });
 
-    if (tanggalInput) {
-      tanggalInput.addEventListener('change', updateDateDisplay);
-    }
-
     document.querySelectorAll('.booking-form [required]').forEach(function (field) {
         field.addEventListener('invalid', function (event) {
         event.preventDefault();
@@ -493,6 +513,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
     });
 
     const listRuangan = <?= json_encode($gedung_ruangan); ?>;
+    const listAgenda = <?= json_encode($agenda); ?>;
     const gedungSelected = document.getElementById('gedung');
     const ruanganSelected = document.getElementById('ruangan');
     if (gedungSelected && ruanganSelected) {
@@ -521,6 +542,57 @@ $current_page = basename($_SERVER['PHP_SELF']);
         });
       });
     }
+
+    let roomId = ruanganSelected?ruanganSelected.value:null; //ternary operator
+    let tanggal = tanggalInput?tanggalInput.value:'<?= $tanggal_hari_ini; ?>'; //ternary operator
+    function refreshCalendar() {
+      roomId = ruanganSelected ? ruanganSelected.value : null; //ternary operator
+      tanggal = tanggalInput ? tanggalInput.value : ''; //ternary operator
+      const filtered = listAgenda.filter(a => //listAgenda dimisalkan 'a'
+        a.room_id == roomId && a.reservation_date == tanggal //difilter dengan kondisi tersebut
+      );
+      renderAgenda(filtered); //mengirim listAgenda yang sudah difilter ke fungsi renderAgenda
+    }
+    
+    //javascript tidak memperhatikan urutan fungsi
+    if (tanggalInput) {
+      tanggalInput.addEventListener('change', function() {
+        updateDateDisplay();
+        refreshCalendar();
+        updateDateButtons();
+      });
+    }
+
+    if (ruanganSelected) {
+      ruanganSelected.addEventListener('change', refreshCalendar);
+    }
+
+    function renderAgenda(agendaData) { //membuat blok agenda yang sudah ada
+      document.querySelectorAll('.booked-event').forEach(el => el.remove()); //membersihkan tampilan kalender
+
+      const eventsArea = document.querySelector('.timeline-events-area');
+      if (!eventsArea) return; //kalau tidak ada agenda, langsung keluar fungsi
+
+      agendaData.forEach(item => {
+        const [sh, sm] = item.start_hour.split(':').map(Number); //memisahkan jam dan menit
+        const [eh, em] = item.end_hour.split(':').map(Number); //memisahkan jam dan menit
+
+        const topPx    = ((sh + sm / 60) - GRID_START) * HOUR_PX; //membuat garis atas blok agenda
+        const heightPx = ((eh + em / 60) - (sh + sm / 60)) * HOUR_PX; //membuat tinggi blok agenda
+
+        const div = document.createElement('div');
+        div.className = 'timeline-event booked-event';
+        div.style.top    = topPx + 'px';
+        div.style.height = heightPx + 'px';
+        div.innerHTML = `
+          <p class="event-title">${item.reason}</p>
+          <p class="event-meta">${item.start_hour} – ${item.end_hour}</p>
+        `; //menampilkan keperluan, jam mulai dan jam selesai agenda
+        eventsArea.appendChild(div); //mengirim eventsArea dan menampilkannya sesuai format yang ada di div
+      });
+    }
+
+    refreshCalendar();
 
     const bookingForm = document.querySelector('.booking-form');
     if (bookingForm) {

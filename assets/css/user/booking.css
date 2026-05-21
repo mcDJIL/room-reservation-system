@@ -84,6 +84,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  margin-bottom: 12px;
 }
 
 .field-select {
@@ -125,6 +126,10 @@
   align-items: center;
 }
 
+.hide-arrow .select-chevron {
+  display: none;
+}
+
 .error-message {
   position: absolute;
   color: #dc3545;
@@ -137,24 +142,6 @@
   gap: 4px;
   white-space: nowrap;
   z-index: 5;
-}
-
-.select-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px; 
-}
-
-.field-select:user-invalid,
-.field-input:user-invalid {
-  border-color: #dc3545 !important;
-  background-color: #fff8f8 !important;
-}
-
-.field-select:user-invalid ~ .error-message,
-.field-input:user-invalid ~ .error-message {
-  display: flex !important;
 }
 
 .field-select:disabled {
@@ -366,6 +353,14 @@
 .schedule-nav-btn:hover {
   background: #F2F4F6;
   border-color: #505F76;
+}
+
+.schedule-nav-btn:disabled,
+ .schedule-nav-btn:disabled:hover {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: #fff;
+  border-color: #C4C5D5;
 }
 
 /* ===================================================
@@ -594,6 +589,12 @@
   font-weight: 600;
   color: #505F76;
   white-space: nowrap;
+}
+
+.booking-form:not(.was-validated) select:invalid,
+.booking-form:not(.was-validated) input:invalid {
+  border-color: #C4C5D5;
+  box-shadow: none;
 }
 
 /* ===================================================
