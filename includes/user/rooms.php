@@ -186,112 +186,6 @@ function renderRoomCard(array $row, string $people_svg, string $video_svg): stri
                 gap: 0.5rem !important;
             }
         }
-        
-        /* ========== ROOM CARD ========== */
-        .rooms-section {
-            padding: 4rem 0;
-        }
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .section-subtitle {
-            color: #5b6e8c;
-            max-width: 600px;
-        }
-        .room-card {
-            background: white;
-            border-radius: 1.25rem;
-            overflow: hidden;
-            transition: all 0.25s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-            border: 1px solid #edf2f7;
-            height: 100%;
-        }
-        .room-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.1);
-            border-color: #e2e8f0;
-        }
-        .room-card-img {
-            position: relative;
-            height: 180px;
-            overflow: hidden;
-        }
-        .room-card-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .room-availability-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 4px 10px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .status-available {
-            color: #059669;
-            background: #d1fae5;
-        }
-        .status-booked {
-            color: #b91c1c;
-            background: #fee2e2;
-        }
-        .room-card-body {
-            padding: 1.2rem;
-        }
-        .room-name {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            color: #0f172a;
-        }
-        .room-desc {
-            font-size: 0.85rem;
-            color: #5b6e8c;
-            margin-bottom: 1rem;
-            line-height: 1.4;
-        }
-        .room-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-        .room-tag {
-            background: #f1f5f9;
-            padding: 4px 10px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            color: #334155;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-room-detail {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            padding: 0.5rem 1rem;
-            border-radius: 40px;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #1e40af;
-            transition: 0.2s;
-            display: inline-block;
-        }
-        .btn-room-detail:hover {
-            background: #2563eb;
-            border-color: #2563eb;
-            color: white;
-            transform: translateY(-2px);
-        }
         .tab-pane {
             margin-top: 1.5rem;
         }
@@ -375,7 +269,7 @@ function renderRoomCard(array $row, string $people_svg, string $video_svg): stri
     <?php endif; ?>
 
     <!-- Tabs Gedung -->
-    <ul class="nav nav-tabs border-0 justify-content-start gap-2 flex-wrap" id="roomTab" role="tablist">
+    <ul class="nav nav-tabs pb-2 border-0 justify-content-start gap-2 flex-wrap" id="roomTab" role="tablist">
       <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#panel-pasca" type="button" role="tab">Pascasarjana</button></li>
       <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#panel-d4" type="button" role="tab">Gedung D4</button></li>
       <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#panel-rektor" type="button" role="tab">Rektorat</button></li>
