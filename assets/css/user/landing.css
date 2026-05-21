@@ -382,7 +382,7 @@ body {
 .btn-room-detail {
   display: block;
   width: 100%;
-  background: var(--primary);
+  background-color: var(--primary);
   color: #fff;
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
