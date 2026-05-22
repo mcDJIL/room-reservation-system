@@ -427,7 +427,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
       }
     }
     updateLiveIndicator();
-    setInterval(updateLiveIndicator, 60000);
+    setInterval(updateLiveIndicator, 10000);
     const sekarang = new Date();
     let jam = sekarang.getHours();
     let menit = sekarang.getMinutes();
@@ -507,8 +507,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
 
     document.querySelectorAll('.booking-form [required]').forEach(function (field) {
         field.addEventListener('invalid', function (event) {
-        event.preventDefault();
-        this.closest('.booking-form').classList.add('was-validated');
+          event.preventDefault();
+          this.closest('.booking-form').classList.add('was-validated');
         });
     });
 
