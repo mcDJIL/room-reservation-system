@@ -1,7 +1,7 @@
 <?php
 // hero.php - Halaman utama dengan filter ruangan
 
-include '../../config/connection.php';
+require_once __DIR__ . '/../../config/connection.php';
 
 // ---------- FILTER LOGIC (dengan checkbox facilities) ----------
 $search         = isset($_GET['search']) ? trim($_GET['search']) : '';
