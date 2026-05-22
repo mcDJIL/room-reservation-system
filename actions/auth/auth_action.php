@@ -1,10 +1,6 @@
 <?php
 session_start();
 
-// 1. Masuk ke folder config, lalu ambil database.php
-require_once '../../config/database.php';
-
-// 2. Masuk ke folder config, lalu ambil connection.php
 require_once '../../config/connection.php';
 
 // Sekarang variabel $conn sudah siap digunakan untuk query database!
@@ -43,9 +39,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['is_login'] = true;
             $_SESSION['user_id']  = $user['id'];
             $_SESSION['name']     = $user['name'];
+            $_SESSION['role']     = $user['role'];
+            $_SESSION['email']     = $user['email'];
 
-            // Arahkan kembali ke home setelah login sukses
-            header("Location: ../../index.php");
+            if ($user['role'] === 'admin') {
+                header("Location: ../../pages/admin/dashboard.php");
+            } else {
+                header("Location: ../../index.php");
+            }
+
             exit(); 
        } else {
             header("Location: ../../pages/auth/login.php?error=wrong_password");

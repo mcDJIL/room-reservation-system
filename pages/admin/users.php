@@ -7,6 +7,8 @@
 <?php
 $active = 'pengguna';
 $crumbs = 'Manajemen | Pengguna';
+
+session_start();
 ?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">
@@ -45,7 +47,7 @@ $crumbs = 'Manajemen | Pengguna';
                             </div>
                         </div>
 
-                        <div style="overflow-x: auto; margin: 0 -22px;">
+                        <div>
                             <table class="data-table" style="margin: 0 22px; min-width: 900px;">
                                 <thead>
                                     <tr>

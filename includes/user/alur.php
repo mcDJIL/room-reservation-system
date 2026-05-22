@@ -5,8 +5,8 @@
     <div class="text-center mb-5">
       <h2 class="section-title mb-3">Alur Peminjaman</h2>
       <p class="section-subtitle mx-auto">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-        do eiusmod tempor incididunt ut labore et
+        Ikuti langkah sederhana berikut untuk meminjam ruangan secara cepat
+        dan aman, mulai dari pemilihan hingga bukti reservasi.
       </p>
     </div>
 
@@ -22,8 +22,8 @@
         </div>
         <h3 class="alur-step-title">Pilih Ruangan</h3>
         <p class="alur-step-desc">
-          Aliquam erat volutpat. Integer malesuada turpis id fringilla suscipit.
-          Maecenas ultrices, orci vitae convallis mattis.
+          Telusuri daftar ruangan, lihat fasilitas dan kapasitas, lalu pilih
+          ruangan yang sesuai dengan kebutuhan Anda.
         </p>
       </div>
 
@@ -43,8 +43,8 @@
         </div>
         <h3 class="alur-step-title">Tentukan Jadwal</h3>
         <p class="alur-step-desc">
-          Aliquam erat volutpat. Integer malesuada turpis id fringilla suscipit.
-          Maecenas ultrices, orci vitae convallis mattis.
+          Pilih tanggal dan jam yang tersedia, lalu lengkapi informasi
+          penggunaan untuk memastikan ketersediaan.
         </p>
       </div>
 
@@ -64,8 +64,8 @@
         </div>
         <h3 class="alur-step-title">Cetak Bukti Reservasi</h3>
         <p class="alur-step-desc">
-          Aliquam erat volutpat. Integer malesuada turpis id fringilla suscipit.
-          Maecenas ultrices, orci vitae convallis mattis.
+          Setelah konfirmasi, unduh atau cetak bukti reservasi yang dapat
+          digunakan sebagai bukti sah saat menggunakan ruangan.
         </p>
       </div>
 

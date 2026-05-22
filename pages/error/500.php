@@ -28,9 +28,9 @@
             <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
             Try again
           </a>
-          <a href="index.html" class="btn btn--ghost">
+          <a href="../../index.php" class="btn btn--ghost">
             <svg viewBox="0 0 24 24"><path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
-            Dashboard
+            Back to home
           </a>
         </div>
         <div class="error-meta">

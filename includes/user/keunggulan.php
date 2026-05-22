@@ -5,8 +5,8 @@
     <div class="text-center mb-5">
       <h2 class="section-title mb-3">Keunggulan Kami</h2>
       <p class="section-subtitle mx-auto">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-        do eiusmod tempor incididunt ut labore e
+        Solusi pemesanan ruangan yang cepat, aman, dan terjangkau untuk
+        memenuhi kebutuhan kegiatan Anda di berbagai lokasi.
       </p>
     </div>
 
@@ -34,8 +34,8 @@
           <div>
             <h3 class="keunggulan-item-title">Customer Support</h3>
             <p class="keunggulan-item-desc">
-              Aliquam erat volutpat. Integer malesuada turpis id fringilla
-              suscipit. Maecenas ultrices.
+              Tim kami siap membantu 24/7 untuk pertanyaan dan dukungan
+              terkait pemesanan ruangan.
             </p>
           </div>
         </div>
@@ -57,8 +57,8 @@
           <div>
             <h3 class="keunggulan-item-title">Best Price Guarantted</h3>
             <p class="keunggulan-item-desc">
-              Aliquam erat volutpat. Integer malesuada turpis id fringilla
-              suscipit. Maecenas ultrices.
+              Harga transparan dan kompetitif untuk berbagai pilihan
+              ruangan, tanpa biaya tersembunyi.
             </p>
           </div>
         </div>
@@ -72,8 +72,8 @@
           <div>
             <h3 class="keunggulan-item-title">Many Location</h3>
             <p class="keunggulan-item-desc">
-              Aliquam erat volutpat. Integer malesuada turpis id fringilla
-              suscipit. Maecenas ultrices.
+              Tersedia di banyak lokasi dengan informasi fasilitas lengkap
+              sehingga memudahkan pemilihan sesuai kebutuhan.
             </p>
           </div>
         </div>
