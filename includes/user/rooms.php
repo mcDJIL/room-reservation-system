@@ -1,16 +1,7 @@
 <?php
 // hero.php - Halaman utama dengan filter ruangan
 
-// Database connection
-$host = 'localhost';
-$user = 'root';
-$password = '';
-$database = 'satset_db';
-
-$conn = mysqli_connect($host, $user, $password, $database);
-if (!$conn) {
-    die('Connection failed: ' . mysqli_connect_error());
-}
+include '../../config/connection.php';
 
 // ---------- FILTER LOGIC (dengan checkbox facilities) ----------
 $search         = isset($_GET['search']) ? trim($_GET['search']) : '';
