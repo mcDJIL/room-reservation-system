@@ -16,7 +16,7 @@ $navSections = [
     'label' => 'Manajemen',
     'items' => [
       ['key' => 'ruangan', 'text' => 'Ruangan', 'href' => 'rooms.php', 'icon' => 'fa-solid fa-house'],
-      ['key' => 'peminjaman', 'text' => 'Peminjaman', 'href' => 'approvals.php', 'icon' => 'fa-solid fa-house-circle-check'],
+      ['key' => 'peminjaman', 'text' => 'Peminjaman', 'href' => 'approvals.php', 'icon' => 'fa-solid fa-calendar'],
       ['key' => 'pengguna', 'text' => 'Pengguna', 'href' => 'users.php', 'icon' => 'fa-solid fa-user'],
     ],
   ],
