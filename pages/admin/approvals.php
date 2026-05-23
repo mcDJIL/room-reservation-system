@@ -8,7 +8,9 @@
 $active = 'peminjaman';
 $crumbs = 'Manajemen | Peminjaman';
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
 ?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">

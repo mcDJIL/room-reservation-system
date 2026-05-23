@@ -8,7 +8,9 @@
 $active = 'pengguna';
 $crumbs = 'Manajemen | Pengguna';
 
-session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
 ?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">

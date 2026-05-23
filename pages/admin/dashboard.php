@@ -7,6 +7,10 @@
 <?php
 $active = 'dashboard';
 $crumbs = 'Workspace | Dashboard';
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
 ?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">
