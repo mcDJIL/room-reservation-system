@@ -296,7 +296,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  top: 24px;
+  min-height: 0;
 }
 
 /* Schedule Header */
@@ -371,7 +372,7 @@
   overflow-x: auto;
   overflow-y: auto;
   flex: 1;
-  max-height: 688px;
+  max-height: none;
   -webkit-overflow-scrolling: touch;
 }
 
