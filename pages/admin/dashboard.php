@@ -7,8 +7,6 @@
 <?php
 $active = 'dashboard';
 $crumbs = 'Workspace | Dashboard';
-
-session_start();
 ?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">
