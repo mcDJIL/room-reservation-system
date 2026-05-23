@@ -13,6 +13,12 @@ $search_term = isset($_GET['q']) ? trim($_GET['q']) : '';
 $filter_date = isset($_GET['date']) ? trim($_GET['date']) : '';
 $filter_status = isset($_GET['status']) ? trim($_GET['status']) : '';
 
+$page_title = 'Riwayat Reservasiku - SatSet';
+$is_logged_in = isset($_SESSION['is_login']) && $_SESSION['is_login'] === true;
+
+$start_item = $total_rows > 0 ? (($current_page - 1) * $per_page) + 1 : 0;
+$end_item = min($current_page * $per_page, $total_rows);
+
 $allowed_status = ['approved', 'waiting', 'rejected'];
 if (!in_array($filter_status, $allowed_status, true)) {
         $filter_status = '';
@@ -122,8 +128,11 @@ if (isset($_SESSION['user_id']) && is_numeric($_SESSION['user_id'])) {
                 $data_result = mysqli_stmt_get_result($data_stmt);
 
                 if ($data_result) {
+                        $row_number = $start_item;
                         while ($row = mysqli_fetch_assoc($data_result)) {
+                                $row['display_number'] = $row_number;
                                 $history_rows[] = $row;
+                                $row_number++;
                         }
                 }
         }
