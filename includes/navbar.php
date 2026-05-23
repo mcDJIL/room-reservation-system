@@ -1,5 +1,7 @@
 <?php
 
+session_start();
+
 if (!isset($crumbs)) $crumbs = '';
 // render crumbs
 $crumbsHtml = '';
