@@ -41,4 +41,3 @@
 <script defer="defer" src="../../assets/js/vendor-chartjs.js"></script>
 <script defer="defer" src="../../assets/js/vendors.js"></script>
 <script defer="defer" src="../../assets/js/2026.js"></script>
-<script defer src="../../assets/js/charts.js"></script>
