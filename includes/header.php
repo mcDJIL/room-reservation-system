@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 <link rel="stylesheet" href="../../assets/css/admin/dashboard.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode-dashboard.css">
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
 <script>
   (function () {
     function syncTheme() {
