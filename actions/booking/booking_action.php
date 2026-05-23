@@ -19,7 +19,7 @@
     $insert="INSERT INTO reservations (user_id, room_id, reservation_date, start_hour, end_hour, reason, status) VALUES ($id_user, $id_room, '$date', '$start', '$end', '$reason', 'waiting')";
     $result=mysqli_query($conn, $insert);
 
-    if ($result) echo "mantaf";
-    else echo "nono";
+    if ($result) header("Location: ../../pages/user/booking.php?status=berhasil");
+    else header("Location: ../../pages/user/booking.php?status=gagal");
     exit();
 ?>
