@@ -1,18 +1,18 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+$active = 'ruangan';
+$crumbs = 'Manajemen | Ruangan';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <?php include __DIR__ . '/../../includes/header.php'; ?>
-    <?php require_once dirname(__DIR__, 2) . '/actions/room/read.php'; ?>
+        <?php include __DIR__ . '/../../includes/header.php'; ?>
+        <?php require_once dirname(__DIR__, 2) . '/actions/room/read.php'; ?>
 </head>
-<?php
-$active = 'ruangan';
-$crumbs = 'Manajemen | Ruangan';
-
-if (session_status() !== PHP_SESSION_ACTIVE) {
-  session_start();
-}
-?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">
     <div class="shell">
