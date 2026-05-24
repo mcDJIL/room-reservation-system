@@ -28,7 +28,7 @@ function format_date_local($value)
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cetak Bukti Reservasi - SatSet</title>
   <link rel="stylesheet" href="../../assets/css/user/proof.css">
-  <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
 </head>
 <body>
   <main class="proof-page">
