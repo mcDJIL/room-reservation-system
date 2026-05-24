@@ -26,7 +26,7 @@ if (!isset($_FILES) || empty($_FILES)) {
     exit;
 }
 
-$uploadDir = __DIR__ . '/../../static/images/rooms';
+$uploadDir = __DIR__ . '/../../assets/images/uploads';
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0755, true)) {
         $response['message'] = 'Failed to create upload directory';

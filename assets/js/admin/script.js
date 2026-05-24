@@ -44,20 +44,6 @@
   if (formAdd)
     formAdd.addEventListener("submit", function (e) {
       e.preventDefault();
-      // Jika baris mempunyai atribut data-active (ruangan), tampilkan detail sebagai ruangan
-      var rowActiveVal = row.dataset.active;
-      if (typeof rowActiveVal !== "undefined") {
-        document.getElementById("d-name").textContent = row.dataset.name || "";
-        document.getElementById("d-building").textContent =
-          row.dataset.building || "";
-        document.getElementById("d-capacity").textContent =
-          row.dataset.capacity || "";
-        document.getElementById("d-status").textContent =
-          String(rowActiveVal) === "1" ? "Aktif" : "Tidak Aktif";
-        modalDetail.show();
-        return;
-      }
-
       if (isApprovalsPage) {
         alert("Peminjaman disubmit (implementasikan penyimpanan)");
         if (modalAdd) modalAdd.hide();
@@ -70,23 +56,30 @@
         method: "POST",
         body: formData,
       })
-        .then((r) => r.json())
+        .then((r) => {
+          return r.text().then((text) => {
+            try {
+              return JSON.parse(text);
+            } catch (err) {
+              throw new Error(text || "Invalid JSON response");
+            }
+          });
+        })
         .then((data) => {
           if (!data || !data.success) {
             alert(
               "Gagal menyimpan: " +
-                (data && data.message ? data.message : "Unknown"),
+                (data && data.message ? data.message : "Server error"),
             );
             return;
           }
 
-          // Sukses: reload halaman agar tabel terupdate (sederhana)
           if (modalAdd) modalAdd.hide();
           window.location.reload();
         })
         .catch((err) => {
           console.error(err);
-          alert("Terjadi kesalahan jaringan saat menyimpan");
+          alert("Terjadi kesalahan saat menyimpan: " + err.message);
         });
     });
 
@@ -98,9 +91,6 @@
       // set photo upload target room id
       const photoUploadBtn = document.getElementById("photo-upload-btn");
       if (photoUploadBtn) photoUploadBtn.dataset.roomId = id;
-
-      modalDetail.show();
-      return;
 
       if (isApprovalsPage) {
         const userName = row.dataset.userName || row.dataset.name || "";
