@@ -80,7 +80,7 @@ $crumbs = 'Manajemen | Ruangan';
                     $status_text = $room['is_active'] == 1 ? 'Aktif' : 'Tidak Aktif';
                     $status_class = $room['is_active'] == 1 ? 'success' : 'danger';
                 ?>
-                <tr class="data-row" data-id="<?= $id ?>" data-name="<?= $name ?>" data-building="<?= $building ?>" data-capacity="<?= $capacity ?>" data-status="<?= $status_text ?>" data-active="<?= $room['is_active'] ?>">
+                <tr class="data-row" data-id="<?= $id ?>" data-name="<?= $name ?>" data-building="<?= $building ?>" data-capacity="<?= $capacity ?>" data-status="<?= $status_text ?>">
                     <td>
                         <div class="fw-bold"><?= $name ?></div>
                     </td>
