@@ -25,7 +25,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <h1 class="hero-title">Ruangan</h1>
                     </div>
                     <div class="hero-actions">
-                        <button id="btn-add" class="btn btn-primary d-flex s">
+                        <button type="button" id="btn-add" class="btn btn-primary d-flex s" data-bs-toggle="modal" data-bs-target="#modalAdd">
                             <svg viewBox="0 0 24 24">
                                 <path d="M12 5v14M5 12h14" />
                             </svg>
