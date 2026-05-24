@@ -95,15 +95,12 @@ $image_placeholder = "data:image/svg+xml;utf8," . rawurlencode('<svg xmlns="http
 // Fungsi render kartu ruangan (tombol Detail ke actions/room/room_action.php)
 function renderRoomCard(array $row, string $people_svg, string $video_svg, string $image_placeholder): string {
   $img = !empty($row['photo']) ? 'uploads/' . $row['photo'] : $image_placeholder;
-    $status_label = $row['is_booked'] > 0 ? "Sedang Dipakai" : "Tersedia";
-    $status_class = $row['is_booked'] > 0 ? "status-booked" : "status-available";
     
     return '
     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
         <div class="room-card">
             <div class="room-card-img">
           <img src="' . htmlspecialchars($img) . '" alt="' . htmlspecialchars($row['room_name']) . '" loading="lazy" onerror="this.onerror=null;this.src=\'' . htmlspecialchars($image_placeholder, ENT_QUOTES) . '\';">
-                <span class="room-availability-badge ' . $status_class . '">' . $status_label . '</span>
             </div>
             <div class="room-card-body">
                 <h3 class="room-name">' . htmlspecialchars($row['room_name']) . '</h3>
