@@ -272,14 +272,12 @@
                   <div class="time-slot-label">15:00</div>
                   <div class="time-slot-label">16:00</div>
                   <div class="time-slot-label">17:00</div>
-                  <div class="time-slot-label">18:00</div>
                 </div>
 
                 <!-- Events Area -->
                 <div class="timeline-events-area">
                   <!-- Hour grid lines -->
                   <div class="timeline-hour-lines">
-                    <div class="hour-line"></div>
                     <div class="hour-line"></div>
                     <div class="hour-line"></div>
                     <div class="hour-line"></div>
@@ -411,13 +409,24 @@
         }
 
         if (isHariIni) {
-        const sekarang = new Date();
-        const menitSekarang = sekarang.getHours() * 60 + sekarang.getMinutes();
-        const menitInput = jam * 60 + menit;
-        if (menitInput < menitSekarang) {
-          input.value = formatWaktu(sekarang.getHours(), sekarang.getMinutes());
+          const sekarang = new Date();
+          const menitSekarang = sekarang.getHours() * 60 + sekarang.getMinutes();
+          const menitInput = jam * 60 + menit;
+          if (menitInput < menitSekarang) {
+            input.value = formatWaktu(sekarang.getHours(), sekarang.getMinutes());
+          }
         }
-      }
+
+        if (mulaiInput.value && selesaiInput.value) {
+          const [jm, mm] = mulaiInput.value.split(':').map(Number);
+          const [js, ms] = selesaiInput.value.split(':').map(Number);
+          const totalMulai   = jm * 60 + mm;
+          const totalSelesai = js * 60 + ms;
+
+          if (totalSelesai - totalMulai < 60) {
+            selesaiInput.value = formatWaktu(jm + 1, mm);
+          }
+        }
       }
 
       function updateSelectedBlock() {
@@ -485,7 +494,7 @@
             timeIndicator.style.display = 'none';
           }
         } else {
-          timeBadge.textContent='08:00 SEKARANG';
+          timeBadge.textContent='08:00';
           timeBadge.style.transform='translateY(0)';
           timeIndicator.style.display='flex';
           timeIndicator.style.top='0px';
@@ -500,7 +509,7 @@
 
           mulaiInput.value = formatWaktu(jam, menit);
 
-          let totalSelesai = (jam * 60) + menit + 90;
+          let totalSelesai = (jam * 60) + menit + 60;
           let jamSelesai = Math.floor(totalSelesai / 60) % 24;
           let menitSelesai = totalSelesai % 60;
           if (jamSelesai > 18 || (jamSelesai === 18 && menitSelesai > 0)) { jamSelesai = 18; menitSelesai = 0; }
@@ -527,7 +536,7 @@
 
         mulaiInput.value=formatWaktu(jam, menit);
 
-        let totalMenitSelesai = (jam * 60) + menit + 90;
+        let totalMenitSelesai = (jam * 60) + menit + 60;
         let jamSelesai = Math.floor(totalMenitSelesai / 60) % 24;
         let menitSelesai = totalMenitSelesai % 60;
         selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);

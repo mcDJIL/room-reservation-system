@@ -410,7 +410,7 @@
 .timeline-events-area {
   flex: 1;
   position: relative;
-  min-height: 704px; /* 11 slots × 64px */
+  min-height: 640px; /* 10 slots × 64px */
 }
 
 /* Hour grid lines (background rows) */
