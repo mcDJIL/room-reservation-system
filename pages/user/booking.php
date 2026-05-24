@@ -87,7 +87,7 @@
             <a class="nav-link me-3" href="../admin/dashboard.php">Dashboard</a>
           <?php endif; ?>
           <?php if(isset($_SESSION['user_id'])):?>
-            <a href="actions/auth/logout.php" class="btn btn-danger">Logout</a>
+            <a href="../../actions/auth/logout.php" class="btn btn-danger">Logout</a>
           <?php else:?>
             <a href="../../pages/auth/register.php" class="nav-register">Register</a>
             <div class="nav-divider d-none d-lg-block"></div>
@@ -342,6 +342,7 @@
         icon:"success",
         title:"Reservasi Berhasil!",
         text:"Permintaan Anda sedang menunggu persetujuan.",
+        width:"360px",
         showConfirmButton:false,
         timer:3000
       });
@@ -353,6 +354,7 @@
           icon:"error",
           title:"Reservasi Gagal!",
           text:"Terjadi kesalahan, silakan coba lagi.",
+          width:"360px",
           showConfirmButton:false,
           timer:3000
         });
