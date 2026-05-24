@@ -409,6 +409,15 @@
         else if (jam === 18 && menit > 0) {
           input.value = "18:00";
         }
+
+        if (isHariIni) {
+        const sekarang = new Date();
+        const menitSekarang = sekarang.getHours() * 60 + sekarang.getMinutes();
+        const menitInput = jam * 60 + menit;
+        if (menitInput < menitSekarang) {
+          input.value = formatWaktu(sekarang.getHours(), sekarang.getMinutes());
+        }
+      }
       }
 
       function updateSelectedBlock() {
@@ -440,61 +449,93 @@
         }
       }
 
+      const formatWaktu = (h, m) => String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+      let ubahManual=false;
+
       function updateLiveIndicator() {
         if (!timeIndicator || !timeBadge) return;
 
-        const sekarangLive = new Date();
-        const jamLive = sekarangLive.getHours();
-        const menitLive = sekarangLive.getMinutes();
+        const hariIni='<?= $tanggal_hari_ini?>';
+        const tanggalPilihan=tanggalInput?tanggalInput.value:hariIni;
+        const ishariIni=tanggalPilihan===hariIni;
 
-        const jamFmt = String(jamLive).padStart(2, '0');
-        const menitFmt = String(menitLive).padStart(2, '0');
-        timeBadge.textContent = `${jamFmt}:${menitFmt} SEKARANG`;
+        if (ishariIni) {
+          const sekarangLive = new Date();
+          const jamLive = sekarangLive.getHours();
+          const menitLive = sekarangLive.getMinutes();
 
-        const totalMenitSekarang = (jamLive * 60) + menitLive;
-        const totalMenitMulaiGrid = GRID_START * 60; // 08:00 = 480 menit
+          const jamFmt = String(jamLive).padStart(2, '0');
+          const menitFmt = String(menitLive).padStart(2, '0');
+          timeBadge.textContent = `${jamFmt}:${menitFmt} SEKARANG`;
 
-        if (jamLive >= GRID_START && jamLive < 19) {
-          timeIndicator.style.display = 'flex';
+          const totalMenitSekarang = (jamLive * 60) + menitLive;
+          const totalMenitMulaiGrid = GRID_START * 60; // 08:00 = 480 menit
 
-          const selisihMenit = totalMenitSekarang - totalMenitMulaiGrid;
-          
-          const posisiTopPx = (selisihMenit / 60) * HOUR_PX;
-          timeIndicator.style.top = posisiTopPx + 'px';
+          if (jamLive >= GRID_START && jamLive < 19) {
+            timeIndicator.style.display = 'flex';
+            const selisihMenit = totalMenitSekarang - totalMenitMulaiGrid;
+            const posisiTopPx = (selisihMenit / 60) * HOUR_PX;
+            timeIndicator.style.top = posisiTopPx + 'px';
+            if (posisiTopPx < 24) {
+              timeBadge.style.transform = 'translateY(0)';
+            } else {
+              timeBadge.style.transform = 'translateY(-100%)';
+            }
+          } else {
+            timeIndicator.style.display = 'none';
+          }
         } else {
-          timeIndicator.style.display = 'none';
+          timeBadge.textContent='08:00 SEKARANG';
+          timeBadge.style.transform='translateY(0)';
+          timeIndicator.style.display='flex';
+          timeIndicator.style.top='0px';
         }
+
+        if (ishariIni && !ubahManual) {
+          const sekarang = new Date();
+          let jam = sekarang.getHours();
+          let menit = sekarang.getMinutes();
+
+          if (jam < 8 || jam >= 18) { jam = 8; menit = 0; }
+
+          mulaiInput.value = formatWaktu(jam, menit);
+
+          let totalSelesai = (jam * 60) + menit + 90;
+          let jamSelesai = Math.floor(totalSelesai / 60) % 24;
+          let menitSelesai = totalSelesai % 60;
+          if (jamSelesai > 18 || (jamSelesai === 18 && menitSelesai > 0)) { jamSelesai = 18; menitSelesai = 0; }
+          selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);
+        }
+
+        updateSelectedBlock();
       }
       updateLiveIndicator();
       setInterval(updateLiveIndicator, 1000);
-      const sekarang = new Date();
-      let jam = sekarang.getHours();
-      let menit = sekarang.getMinutes();
 
-      if (jam < 8 || jam >= 18) {
-        jam = 8;
-        menit = 0;
-      } else {
-        if (menit < 30) {
-          menit = 30;
-        } else {
+      function resetWaktuDefault() {
+        const hariIni='<?= $tanggal_hari_ini?>';
+        const ishariIni=tanggalInput.value===hariIni;
+        
+        const sekarang = new Date();
+        let jam = ishariIni?sekarang.getHours():8;
+        let menit = ishariIni?sekarang.getMinutes():0;
+
+        if (jam < 8 || jam >= 18) {
+          jam = 8;
           menit = 0;
-          jam = (jam + 1) % 24;
         }
+
+        mulaiInput.value=formatWaktu(jam, menit);
+
+        let totalMenitSelesai = (jam * 60) + menit + 90;
+        let jamSelesai = Math.floor(totalMenitSelesai / 60) % 24;
+        let menitSelesai = totalMenitSelesai % 60;
+        selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);
+
+        updateSelectedBlock();
       }
 
-      const formatWaktu = (h, m) => String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
-
-      const waktuMulaiString = formatWaktu(jam, menit);
-      mulaiInput.value = waktuMulaiString;
-
-      let totalMenitSelesai = (jam * 60) + menit + 90;
-      let jamSelesai = Math.floor(totalMenitSelesai / 60) % 24;
-      let menitSelesai = totalMenitSelesai % 60;
-
-      selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);
-
-      updateSelectedBlock();
+      resetWaktuDefault();
       updateDateDisplay();
 
       const btnPrev=document.querySelector('[aria-label="Hari sebelumnya"]');
@@ -536,11 +577,13 @@
       updateDateButtons();
 
       mulaiInput.addEventListener('change', function() {
+        ubahManual=true;
         validasiBatasanWaktu(this);
         updateSelectedBlock();
         cekBentrok();
       });
       selesaiInput.addEventListener('change', function() {
+        ubahManual=true;
         validasiBatasanWaktu(this);
         updateSelectedBlock();
         cekBentrok();
@@ -593,6 +636,8 @@
           a.room_id == roomId && a.reservation_date == tanggal //difilter dengan kondisi tersebut
         );
         renderAgenda(filtered); //mengirim listAgenda yang sudah difilter ke fungsi renderAgenda
+        updateLiveIndicator();
+        resetWaktuDefault();
       }
 
       function cekBentrok() {
@@ -633,8 +678,10 @@
       //javascript tidak memperhatikan urutan fungsi
       if (tanggalInput) {
         tanggalInput.addEventListener('change', function() {
+          ubahManual=false;
           updateDateDisplay();
           refreshCalendar();
+          resetWaktuDefault();
           updateDateButtons();
         });
       }
