@@ -40,7 +40,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= $page_title ?></title>
+  <title>Reservasi · SatSet</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../../assets/css/user/landing.css">
   <link rel="stylesheet" href="../../assets/css/user/booking.css">
@@ -466,7 +466,7 @@
         }
       }
       updateLiveIndicator();
-      setInterval(updateLiveIndicator, 10000);
+      setInterval(updateLiveIndicator, 1000);
       const sekarang = new Date();
       let jam = sekarang.getHours();
       let menit = sekarang.getMinutes();

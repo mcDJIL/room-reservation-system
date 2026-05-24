@@ -8,7 +8,7 @@ include '../../actions/history/function.php';
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= esc($page_title) ?></title>
+  <title>Riwayat · SatSet</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="../../assets/css/user/landing.css">
   <link rel="stylesheet" href="../../assets/css/user/history.css">
