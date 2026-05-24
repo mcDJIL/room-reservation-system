@@ -80,7 +80,7 @@ $crumbs = 'Manajemen | Ruangan';
                     $status_text = $room['is_active'] == 1 ? 'Aktif' : 'Tidak Aktif';
                     $status_class = $room['is_active'] == 1 ? 'success' : 'danger';
                 ?>
-                <tr class="data-row" data-id="<?= $id ?>" data-name="<?= $name ?>" data-building="<?= $building ?>" data-capacity="<?= $capacity ?>" data-status="<?= $status_text ?>">
+                <tr class="data-row" data-id="<?= $id ?>" data-name="<?= $name ?>" data-building="<?= $building ?>" data-capacity="<?= $capacity ?>" data-status="<?= $status_text ?>" data-active="<?= $room['is_active'] ?>">
                     <td>
                         <div class="fw-bold"><?= $name ?></div>
                     </td>
@@ -156,7 +156,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <h5 class="modal-title" id="modalAddLabel">Tambah Ruangan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form method="create.php" id="form-add">
+                    <form action="../../actions/room/create.php" method="post" id="form-add">
                         <div class="modal-body">
                             <div class="row g-3">
                                 <div class="col-md-6">
