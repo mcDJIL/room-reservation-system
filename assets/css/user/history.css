@@ -204,8 +204,6 @@
   white-space: nowrap;
 }
 
-.reservation-table thead .col-aksi { text-align: right; }
-
 /* Table Body */
 .reservation-table tbody tr {
   border-top: 1px solid #C4C5D5;
@@ -282,7 +280,6 @@
 .action-buttons {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
   gap: 8px;
 }
 
