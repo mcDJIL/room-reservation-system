@@ -20,6 +20,7 @@
       $gedung_ruangan[]=$row;
     }
   }
+  $preselect_room_id=isset($_GET['room_id'])?intval($_GET['room_id']):0;
 
   $tanggal_hari_ini=date('Y-m-d');
 
@@ -186,6 +187,9 @@
                     </div>
                   </div>
                 </div>
+                <p class="hint-message">
+                  Minimal durasi reservasi adalah 1 jam
+                </p>
               </div>
 
               <!-- Keperluan -->
@@ -696,6 +700,20 @@
 
       if (ruanganSelected) {
         ruanganSelected.addEventListener('change', refreshCalendar);
+      }
+
+      const preselectRoomId = <?= $preselect_room_id ?>;
+      if (preselectRoomId && gedungSelected && ruanganSelected) {
+        const targetRoom = listRuangan.find(r => r.id == preselectRoomId);
+        if (targetRoom) {
+          gedungSelected.value = targetRoom.building_id;
+          gedungSelected.dispatchEvent(new Event('change'));
+
+          setTimeout(function() {
+            ruanganSelected.value = preselectRoomId;
+            ruanganSelected.dispatchEvent(new Event('change'));
+          }, 100);
+        }
       }
 
       function renderAgenda(agendaData) { //membuat blok agenda yang sudah ada

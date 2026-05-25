@@ -178,6 +178,14 @@
   border-color: #00288E;
 }
 
+.hint-message {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #00288E;
+  margin: 0;
+}
+
 /* Konfirmasi button */
 .btn-konfirmasi {
   width: 100%;

@@ -92,6 +92,6 @@ sendRoomResponse(200, [
         'photo_url' => $photo_path,
         'status_label' => $status_label,
         'status_class' => $status_class,
-        'booking_url' => 'pages/user/booking.php?id=' . (int) $room['id'],
+        'booking_url' => 'pages/user/booking.php?room_id=' . (int) $room['id'],
     ],
 ]);
