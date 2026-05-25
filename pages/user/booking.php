@@ -350,6 +350,12 @@
         width:"360px",
         showConfirmButton:false,
         timer:3000
+      }).then(function(){
+        document.body.style.transition = 'opacity 0.5s ease';
+        document.body.style.opacity = '0';
+        setTimeout(function() {
+          window.location.href = '../../pages/user/history.php';
+        }, 500);
       });
     </script>
     <?php elseif (isset($_GET['status']) && $_GET['status']==='gagal'): ?>
@@ -364,7 +370,7 @@
           timer:3000
         });
       </script>
-    <?php endif;?>
+  <?php endif;?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>

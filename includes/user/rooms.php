@@ -407,6 +407,16 @@ function renderRoomCard(array $row, string $people_svg, string $video_svg, strin
       }
 
       document.getElementById('room-detail-booking').href = room.booking_url;
+      const bookingBtn = document.getElementById('room-detail-booking');
+      bookingBtn.onclick = function(e) {
+        e.preventDefault();
+        const url = this.href;
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 0.5s ease';
+        setTimeout(function() {
+          window.location.href = url;
+        }, 500);
+      };
 
       loading.classList.add('d-none');
       errorBox.classList.add('d-none');
