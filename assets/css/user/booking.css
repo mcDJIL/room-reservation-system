@@ -247,20 +247,6 @@
   margin: 0;
 }
 
-.availability-badge {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-.availability-badge.available {
-  color: #1a7a4a;
-  background: #d4f5e6;
-}
-
 .room-preview-tags {
   display: flex;
   flex-wrap: wrap;
@@ -358,10 +344,10 @@
 
 .schedule-nav-btn:disabled,
  .schedule-nav-btn:disabled:hover {
-  opacity: 0.35;
-  cursor: not-allowed;
-  background: #fff;
-  border-color: #C4C5D5;
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  background: #fff !important;
+  border-color: #C4C5D5 !important;
 }
 
 /* ===================================================

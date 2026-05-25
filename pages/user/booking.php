@@ -158,7 +158,12 @@
                 <label class="field-label" for="tanggal">Tanggal</label>
                 <div class="select-wrapper">
                   <input class="field-input" type="date" id="tanggal" name="tanggal"
-                        value="<?= date('Y-m-d'); ?>" min="<?= date('Y-m-d'); ?>">
+                    <?php
+                      $hourNow=(int)date('H');
+                      $dateDefault=$hourNow>=17?date('Y-m-d', strtotime('+1 day')):date('Y-m-d');
+                      $dateMinimum=$dateDefault;
+                    ?>  
+                    value="<?= $dateDefault; ?>" min="<?= $dateMinimum; ?>">
                 </div>
               </div>
 
@@ -205,7 +210,6 @@
             <div class="room-preview-info">
               <div class="room-preview-header">
                 <h4 class="room-preview-name">Ruang Borobudur</h4>
-                <span class="availability-badge available">&#9679; TERSEDIA</span>
               </div>
               <div class="room-preview-tags">
                 <span class="room-feature-tag">
@@ -229,7 +233,6 @@
               </div>
             </div>
           </div>
-
         </div>
 
         <!-- ===== RIGHT: Schedule Visualizer ===== -->
@@ -408,7 +411,7 @@
           input.value = "18:00";
         }
 
-        if (isHariIni) {
+        if (ishariIni) {
           const sekarang = new Date();
           const menitSekarang = sekarang.getHours() * 60 + sekarang.getMinutes();
           const menitInput = jam * 60 + menit;
@@ -477,19 +480,20 @@
           const menitFmt = String(menitLive).padStart(2, '0');
           timeBadge.textContent = `${jamFmt}:${menitFmt} SEKARANG`;
 
-          const totalMenitSekarang = (jamLive * 60) + menitLive;
-          const totalMenitMulaiGrid = GRID_START * 60; // 08:00 = 480 menit
-
-          if (jamLive >= GRID_START && jamLive < 19) {
+          if (jamLive < GRID_START) {
+            timeBadge.textContent = '08:00';
+            timeBadge.style.transform = 'translateY(0)';
             timeIndicator.style.display = 'flex';
+            timeIndicator.style.top = '0px';
+          } else if (jamLive >= GRID_START && jamLive < 19) {
+            timeBadge.textContent = `${jamFmt}:${menitFmt} SEKARANG`;
+            const totalMenitSekarang = (jamLive * 60) + menitLive;
+            const totalMenitMulaiGrid = GRID_START * 60;
             const selisihMenit = totalMenitSekarang - totalMenitMulaiGrid;
             const posisiTopPx = (selisihMenit / 60) * HOUR_PX;
+            timeIndicator.style.display = 'flex';
             timeIndicator.style.top = posisiTopPx + 'px';
-            if (posisiTopPx < 24) {
-              timeBadge.style.transform = 'translateY(0)';
-            } else {
-              timeBadge.style.transform = 'translateY(-100%)';
-            }
+            timeBadge.style.transform = posisiTopPx < 24 ? 'translateY(0)' : 'translateY(-100%)';
           } else {
             timeIndicator.style.display = 'none';
           }
@@ -544,9 +548,6 @@
         updateSelectedBlock();
       }
 
-      resetWaktuDefault();
-      updateDateDisplay();
-
       const btnPrev=document.querySelector('[aria-label="Hari sebelumnya"]');
       const btnNext=document.querySelector('[aria-label="Hari berikutnya"]');
 
@@ -584,6 +585,8 @@
       }
 
       updateDateButtons();
+      resetWaktuDefault();
+      updateDateDisplay();
 
       mulaiInput.addEventListener('change', function() {
         ubahManual=true;
@@ -670,9 +673,6 @@
             adaBentrok=true;
             document.querySelectorAll('.booked-event').forEach(ex => {
               const metaEx=ex.querySelector('.event-meta');
-              if (metaEx && metaEx.textContent.includes(item.start_hour)) {
-                ex.classList.add('booked-event');
-              }
             });
           }
         });
@@ -687,7 +687,6 @@
       //javascript tidak memperhatikan urutan fungsi
       if (tanggalInput) {
         tanggalInput.addEventListener('change', function() {
-          ubahManual=false;
           updateDateDisplay();
           refreshCalendar();
           resetWaktuDefault();
