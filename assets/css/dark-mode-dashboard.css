@@ -257,3 +257,7 @@
 :root[data-theme="dark"] .main {
   background-color: #0f172a;
 }
+
+:root[data-theme="dark"] .d-footer {
+  background-color: #0f172a;
+}
