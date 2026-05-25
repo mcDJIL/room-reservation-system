@@ -273,7 +273,6 @@ function renderRoomCard(array $row, string $people_svg, string $video_svg, strin
               <div class="room-detail-hero mb-3">
                 <img id="room-detail-photo" src="" alt="Detail ruangan" onerror="this.onerror=null;this.src='<?= htmlspecialchars($image_placeholder, ENT_QUOTES) ?>'">
               </div>
-              <div id="room-detail-status" class="room-detail-status mb-3"></div>
               <p id="room-detail-short" class="text-secondary mb-0"></p>
             </div>
 
@@ -376,10 +375,6 @@ function renderRoomCard(array $row, string $people_svg, string $video_svg, strin
       document.getElementById('room-detail-capacity').textContent = `${room.capacity} orang`;
       document.getElementById('room-detail-building').textContent = room.building_name;
       document.getElementById('room-detail-building-card').textContent = room.building_name;
-
-      const status = document.getElementById('room-detail-status');
-      status.className = `room-detail-status bg-${room.status_class} bg-opacity-10 text-${room.status_class}`;
-      status.textContent = room.status_label;
 
       const facilities = document.getElementById('room-detail-facilities');
       facilities.innerHTML = '';
