@@ -41,4 +41,11 @@ while ($row = mysqli_fetch_assoc($qTopRooms)) {
     $roomLabel[] = $row['room_name'];
     $roomData[] = (int)$row['total']; // Ambil nilai sebagai integer
 }
+
+// Tambahan Antisipasi: Jika data di database masih kosong / kurang dari 3,
+// kita penuhi slotnya dengan angka 0 agar Chart.js tidak error atau kosong.
+while (count($roomData) < 3) {
+    $roomLabel[] = "Tidak Ada Data";
+    $roomData[] = 0;
+}
 ?>

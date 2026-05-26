@@ -38,10 +38,6 @@ include __DIR__ . '/analytics_query.php';
 		</section>
 	</div>
 </div>
-
-<!-- =====================================================
-     CHART.JS SCRIPT
-===================================================== -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
@@ -51,15 +47,13 @@ include __DIR__ . '/analytics_query.php';
 new Chart(document.getElementById('trendChart'), {
     type: 'line',
     data: {
-        // Menggunakan nama bulan konstan agar sumbu X selalu rapi dari Jan - Dec
         labels: <?= json_encode($monthsMaster) ?>, 
         datasets: [{
             label: 'Jumlah Peminjaman',
-            // Data dinamis dari database yang sudah diisi slotnya
             data: <?= json_encode($trendDataFilled) ?>, 
             borderWidth: 2,
             tension: 0.4,
-            borderColor: '#3b82f6', // Sesuaikan warna garis dengan UI gelapmu
+            borderColor: '#3b82f6', 
             backgroundColor: 'rgba(59, 130, 246, 0.1)',
             fill: true
         }]
@@ -72,25 +66,38 @@ new Chart(document.getElementById('trendChart'), {
 
 
 /* =========================
-   PIE / DOUGHNUT CHARTi
+   PIE / DOUGHNUT CHART (PERBAIKAN HOVER)
 ========================= */
 new Chart(document.getElementById('topRoomsChart'), {
     type: 'doughnut',
     data: {
+        // Menggunakan nama ruangan dari database sebagai label data chart
         labels: <?= json_encode($roomLabel) ?>,
         datasets: [{
             data: <?= json_encode($roomData) ?>,
             borderWidth: 1,
-            // Tambahkan warna agar donatnya berwarna warni sesuai UI dashboard
-            backgroundColor: ['#3b82f6', '#f43f5e', '#f59e0b'] 
+            // Warna disesuaikan dengan tema UI gelap di screenshot Anda (Cyan, Ungu, Biru)
+            backgroundColor: ['#60a5fa', '#a78bfa', '#22d3ee'],
+            
+            // KUNCI UTAMA: Mengunci ukuran border dan offset agar chart tetap diam/statis saat dihover
+            hoverOffset: 0,
+            hoverBorderWidth: 1,
+            hoverBackgroundColor: ['#60a5fa', '#a78bfa', '#22d3ee']
         }]
     },
     options: {
         responsive: true,
         maintainAspectRatio: false,
+        // Mematikan animasi perubahan skala/interaksi default Chart.js saat pointer masuk
+        hover: {
+            mode: null
+        },
         plugins: {
             legend: {
-                display: false // Sembunyikan legend default bawaan Chart.js jika ingin memakai HTML custom sampingnya
+                display: false // Tetap false karena legend bawaan Anda diatur lewat HTML eksternal
+            },
+            tooltip: {
+                enabled: true // Tooltip bawaan tetap aktif menampilkan info data riil database
             }
         }
     }
