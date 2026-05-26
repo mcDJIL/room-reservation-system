@@ -8,7 +8,6 @@ $crumbs = 'Manajemen | Pengguna';
 
 include __DIR__ . '/../../config/connection.php';
 
-// --- Search & Filter Logic ---
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $role   = isset($_GET['role']) ? trim($_GET['role']) : '';
 
