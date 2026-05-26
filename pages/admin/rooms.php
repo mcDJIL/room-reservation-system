@@ -25,7 +25,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <h1 class="hero-title">Ruangan</h1>
                     </div>
                     <div class="hero-actions">
-                        <button type="button" id="btn-add" class="btn btn-primary d-flex s" data-bs-toggle="modal" data-bs-target="#modalAdd">
+                        <button type="button" id="btn-add" class="btn btn-primary d-flex" data-bs-toggle="modal" data-bs-target="#modalAdd">
                             <svg viewBox="0 0 24 24">
                                 <path d="M12 5v14M5 12h14" />
                             </svg>
@@ -44,17 +44,19 @@ $crumbs = 'Manajemen | Ruangan';
                                             <path d="m21 21-4.3-4.3" />
                                         </svg></span>
                                     <input class="input" type="search"
-                                        placeholder="Search users by name, email, or ID...">
+                                        placeholder="Cari berdasarkan nama ruangan, gedung, atau fasilitas..." id="search-input"
+                                        >
                                 </div>
                             </div>
                             <div class="data-toolbar-right">
-                                <select class="select"
+                                <form id="status-form" style="display: inline;">
+                                    <select name="status" id="status-select" class="select"
                                     style="width: auto; padding: 7px 28px 7px 10px; font-size: 12px;">
-                                    <option>All status</option>
-                                    <option>Active</option>
-                                    <option>Pending</option>
-                                    <option>Inactive</option>
-                                </select>
+                                        <option value="" <?= !isset($_GET['status']) || $_GET['status'] === '' ? 'selected' : '' ?>>Semua Status</option>
+                                        <option value="aktif" <?= isset($_GET['status']) && $_GET['status'] === 'aktif' ? 'selected' : '' ?>>Aktif</option>
+                                        <option value="tidak_aktif" <?= isset($_GET['status']) && $_GET['status'] === 'tidak_aktif' ? 'selected' : '' ?>>Tidak Aktif</option>
+                                    </select>
+                                </form>
                             </div>
                         </div>
 
@@ -62,7 +64,7 @@ $crumbs = 'Manajemen | Ruangan';
                             <table class="data-table" style="margin: 0 22px; min-width: 900px;">
     <thead>
         <tr>
-            <th class="sorted-asc">Nama <span class="sort"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></svg></span></th>
+            <th class="sorted-asc">Nama Ruangan<span class="sort"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></svg></span></th>
             <th>Gedung</th>
             <th>Kapasitas</th>
             <th>Aktif/Tidak Aktif</th>
@@ -113,27 +115,22 @@ $crumbs = 'Manajemen | Ruangan';
 
                         <div class="data-foot">
                             <div class="data-foot-info">
-                                <span>Showing <strong style="color: var(--t-base);">1–15</strong> of <strong
-                                        style="color: var(--t-base);">142</strong></span>
-                                <select class="select">
-                                    <option>15 per page</option>
-                                    <option>25 per page</option>
-                                    <option>50 per page</option>
-                                    <option>100 per page</option>
+                                <span>Showing <strong style="color: var(--t-base);" id="pag-from"><?= $pagination['from'] ?></strong>–<strong style="color: var(--t-base);" id="pag-to"><?= $pagination['to'] ?></strong> of <strong style="color: var(--t-base);" id="pag-total"><?= $pagination['total_rows'] ?></strong></span>
+                                <select class="select" id="per-page-select">
+                                    <option value="15" <?= $per_page === 15 ? 'selected' : '' ?>>15 per page</option>
+                                    <option value="25" <?= $per_page === 25 ? 'selected' : '' ?>>25 per page</option>
+                                    <option value="50" <?= $per_page === 50 ? 'selected' : '' ?>>50 per page</option>
+                                    <option value="100" <?= $per_page === 100 ? 'selected' : '' ?>>100 per page</option>
                                 </select>
                             </div>
-                            <div class="pager">
-                                <button class="pager-btn" disabled="disabled" aria-label="Previous">
+                            <div class="pager" id="pager-container">
+                                <button class="pager-btn pager-prev" id="pager-prev" <?= $pagination['current_page'] <= 1 ? 'disabled' : '' ?> aria-label="Previous">
                                     <svg viewBox="0 0 24 24">
                                         <path d="m15 18-6-6 6-6" />
                                     </svg>
                                 </button>
-                                <button class="pager-btn is-active">1</button>
-                                <button class="pager-btn">2</button>
-                                <button class="pager-btn">3</button>
-                                <button class="pager-btn">…</button>
-                                <button class="pager-btn">10</button>
-                                <button class="pager-btn" aria-label="Next">
+                                <div id="pager-pages"></div>
+                                <button class="pager-btn pager-next" id="pager-next" <?= $pagination['current_page'] >= $pagination['total_pages'] ? 'disabled' : '' ?> aria-label="Next">
                                     <svg viewBox="0 0 24 24">
                                         <path d="m9 18 6-6-6-6" />
                                     </svg>
@@ -147,6 +144,174 @@ $crumbs = 'Manajemen | Ruangan';
         </div>
 
         <!-- Bootstrap modals -->
+
+        <script>
+        // Real-time search functionality
+        const searchInput = document.getElementById('search-input');
+        const statusFilter = document.querySelector('select[name="status"]');
+        const perPageSelect = document.getElementById('per-page-select');
+        const tbody = document.querySelector('table tbody');
+        const pagerContainer = document.getElementById('pager-container');
+        const pagerPages = document.getElementById('pager-pages');
+        const pagFrom = document.getElementById('pag-from');
+        const pagTo = document.getElementById('pag-to');
+        const pagTotal = document.getElementById('pag-total');
+        const pagerPrev = document.getElementById('pager-prev');
+        const pagerNext = document.getElementById('pager-next');
+        
+        let currentPage = 1;
+        let perPage = 15;
+        let searchTimeout;
+
+        function renderPagination(pagination) {
+            pagerPages.innerHTML = '';
+            const total = pagination.total_pages;
+            const current = pagination.current_page;
+            
+            // Tentukan range halaman yang ditampilkan
+            let start = Math.max(1, current - 2);
+            let end = Math.min(total, current + 2);
+            
+            // Jika kurang dari 5 halaman, tampilkan semua
+            if (total <= 5) {
+                start = 1;
+                end = total;
+            }
+            
+            // Tombol angka halaman
+            for (let i = start; i <= end; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'pager-btn' + (i === current ? ' is-active' : '');
+                btn.textContent = i;
+                btn.addEventListener('click', () => goToPage(i));
+                pagerPages.appendChild(btn);
+            }
+            
+            // Update prev/next buttons
+            pagerPrev.disabled = current <= 1;
+            pagerNext.disabled = current >= total;
+            
+            // Update info
+            pagFrom.textContent = pagination.from;
+            pagTo.textContent = pagination.to;
+            pagTotal.textContent = pagination.total_rows;
+            
+            currentPage = current;
+        }
+
+        async function performSearch(query = '', status = '', page = 1) {
+            try {
+                const params = new URLSearchParams();
+                if (query) params.append('q', query);
+                if (status) params.append('status', status);
+                params.append('page', page);
+                params.append('per_page', perPage);
+                
+                const response = await fetch('../../actions/room/search.php?' + params.toString());
+                const result = await response.json();
+
+                if (result.success) {
+                    const data = result.data;
+                    const pagination = result.pagination;
+                    
+                    if (data.length === 0 && page === 1) {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada data ruangan.</td></tr>';
+                        pagerPages.innerHTML = '';
+                        pagerPrev.disabled = true;
+                        pagerNext.disabled = true;
+                        pagFrom.textContent = '0';
+                        pagTo.textContent = '0';
+                        pagTotal.textContent = '0';
+                        return;
+                    }
+
+                    tbody.innerHTML = data.map(room => {
+                        const statusText = room.is_active == 1 ? 'Aktif' : 'Tidak Aktif';
+                        const statusClass = room.is_active == 1 ? 'success' : 'danger';
+                        const building = room.building_name || 'Tanpa Gedung';
+                        
+                        return `<tr class="data-row" data-id="${room.id}" data-name="${room.room_name}" data-building="${building}" data-capacity="${room.capacity}" data-status="${statusText}">
+                            <td><div class="fw-bold">${room.room_name}</div></td>
+                            <td><span class="badge primary">${building}</span></td>
+                            <td>${room.capacity} Orang</td>
+                            <td><span class="badge ${statusClass} dot">${statusText}</span></td>
+                            <td>
+                                <div class="data-cell-actions">
+                                    <button class="btn--icon btn-view" aria-label="View" data-id="${room.id}">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                    <button class="btn--icon btn-edit" aria-label="Edit" data-id="${room.id}">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </button>
+                                    <button class="btn--icon btn-delete" aria-label="Delete" data-id="${room.id}">
+                                        <i class="fa-regular fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }).join('');
+                    
+                    renderPagination(pagination);
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Error mengambil data.</td></tr>';
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Error melakukan pencarian.</td></tr>';
+            }
+        }
+
+        function goToPage(page) {
+            const query = searchInput ? searchInput.value : '';
+            const status = statusFilter ? statusFilter.value : '';
+            performSearch(query, status, page);
+        }
+
+        // Search on input dengan debounce
+        if (searchInput) {
+            searchInput.addEventListener('keyup', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    const query = searchInput.value;
+                    const status = statusFilter ? statusFilter.value : '';
+                    performSearch(query, status, 1);
+                }, 300);
+            });
+        }
+
+        // Search on status filter change
+        if (statusFilter) {
+            statusFilter.addEventListener('change', () => {
+                const query = searchInput ? searchInput.value : '';
+                const status = statusFilter.value;
+                performSearch(query, status, 1);
+            });
+        }
+
+        // Per-page change
+        if (perPageSelect) {
+            perPageSelect.addEventListener('change', () => {
+                perPage = parseInt(perPageSelect.value);
+                const query = searchInput ? searchInput.value : '';
+                const status = statusFilter ? statusFilter.value : '';
+                performSearch(query, status, 1);
+            });
+        }
+
+        // Prev button
+        if (pagerPrev) {
+            pagerPrev.addEventListener('click', () => {
+                if (currentPage > 1) goToPage(currentPage - 1);
+            });
+        }
+
+        // Next button
+        if (pagerNext) {
+            pagerNext.addEventListener('click', () => {
+                goToPage(currentPage + 1);
+            });
+        }
+        </script>
 
         <!-- Add Modal -->
         <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
