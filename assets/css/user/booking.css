@@ -15,7 +15,7 @@
 }
 
 .booking-container {
-  max-width: 1310px;
+  max-width: 1387px;
   margin: 0 auto;
   padding: 0 66px;
 }
@@ -44,7 +44,7 @@
 }
 
 .form-section-title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-size: 1.25rem;
   font-weight: 600;
   color: #191C1E;
@@ -84,6 +84,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  margin-bottom: 12px;
 }
 
 .field-select {
@@ -125,6 +126,10 @@
   align-items: center;
 }
 
+.hide-arrow .select-chevron {
+  display: none;
+}
+
 .error-message {
   position: absolute;
   color: #dc3545;
@@ -137,24 +142,6 @@
   gap: 4px;
   white-space: nowrap;
   z-index: 5;
-}
-
-.select-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px; 
-}
-
-.field-select:user-invalid,
-.field-input:user-invalid {
-  border-color: #dc3545 !important;
-  background-color: #fff8f8 !important;
-}
-
-.field-select:user-invalid ~ .error-message,
-.field-input:user-invalid ~ .error-message {
-  display: flex !important;
 }
 
 .field-select:disabled {
@@ -189,6 +176,14 @@
 
 .field-input:focus {
   border-color: #00288E;
+}
+
+.hint-message {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #00288E;
+  margin: 0;
 }
 
 /* Konfirmasi button */
@@ -260,20 +255,6 @@
   margin: 0;
 }
 
-.availability-badge {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-.availability-badge.available {
-  color: #1a7a4a;
-  background: #d4f5e6;
-}
-
 .room-preview-tags {
   display: flex;
   flex-wrap: wrap;
@@ -309,7 +290,8 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  top: 24px;
+  min-height: 0;
 }
 
 /* Schedule Header */
@@ -368,6 +350,14 @@
   border-color: #505F76;
 }
 
+.schedule-nav-btn:disabled,
+ .schedule-nav-btn:disabled:hover {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+  background: #fff !important;
+  border-color: #C4C5D5 !important;
+}
+
 /* ===================================================
    TIMELINE
    =================================================== */
@@ -376,7 +366,7 @@
   overflow-x: auto;
   overflow-y: auto;
   flex: 1;
-  max-height: 688px;
+  max-height: none;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -414,7 +404,7 @@
 .timeline-events-area {
   flex: 1;
   position: relative;
-  min-height: 704px; /* 11 slots × 64px */
+  min-height: 640px; /* 10 slots × 64px */
 }
 
 /* Hour grid lines (background rows) */
@@ -434,6 +424,7 @@
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   display: flex;
   align-items: center;
   z-index: 3;
@@ -451,7 +442,7 @@
 .current-time-badge {
   position: absolute;
   left: 4px;
-  transform: translateY(-50%);
+  top: 0;
   background: #00288E;
   color: #fff;
   font-family: 'Inter', sans-serif;
@@ -594,6 +585,12 @@
   font-weight: 600;
   color: #505F76;
   white-space: nowrap;
+}
+
+.booking-form:not(.was-validated) select:invalid,
+.booking-form:not(.was-validated) input:invalid {
+  border-color: #C4C5D5;
+  box-shadow: none;
 }
 
 /* ===================================================

@@ -69,6 +69,8 @@ http://localhost/room-reservation-system/
 - Halaman admin ada di `pages/admin/` (akses setelah login sebagai admin).
 - Halaman user ada di `pages/user/`.
 
+Jika menjalankan lewat Docker dan phpMyAdmin menolak `GRANT` untuk user baru, pastikan container MySQL dibuat ulang setelah perubahan environment. Volume `mysql_data` menyimpan user root lama, jadi kadang perlu `docker compose down -v` lalu `docker compose up -d --build` agar `MYSQL_ROOT_HOST=%` berlaku.
+
 **Struktur penting**
 - `config/` — konfigurasi koneksi database
 - `database/schema.sql` — file skema database (struktur tabel + data awal jika ada)

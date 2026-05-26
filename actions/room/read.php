@@ -8,8 +8,7 @@ if ($conn->connect_error) {
 $rooms = [];
 $sql = "SELECT r.id, r.room_name, r.capacity, r.is_active, b.name AS building_name 
         FROM rooms r 
-        LEFT JOIN buildings b ON r.building_id = b.id
-        WHERE r.is_active = 1";
+        LEFT JOIN buildings b ON r.building_id = b.id";
 
 $result = mysqli_query($conn, $sql);
 if ($result === false) {

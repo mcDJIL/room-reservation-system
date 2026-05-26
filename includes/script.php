@@ -1,61 +1,93 @@
+<?php
+$isDashboard = isset($active) && $active === 'dashboard';
+$chartMonths = $monthsMaster ?? [];
+$chartTrend = $trendDataFilled ?? [];
+$chartRoomLabels = $roomLabel ?? [];
+$chartRoomData = $roomData ?? [];
+?>
+
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script defer src="../../assets/js/admin/script.js"></script>
+<?php if ($isDashboard): ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<?php endif; ?>
 
 <script>
     (function () {
-        function run() {
-            if (window.initCharts) return window.initCharts();
-            let tries = 0;
-            const id = setInterval(() => {
-                if (window.initCharts) {
-                    clearInterval(id);
-                    return window.initCharts();
-                }
-                if (++tries > 80) clearInterval(id);
-            }, 25);
+        function hidePageLoader() {
+            var loader = document.getElementById('page-loader');
+            if (!loader) return;
+
+            loader.classList.add('is-hidden');
+            window.setTimeout(function () {
+                if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
+            }, 260);
         }
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
 
-        if (window.SEEDS) { window.SEEDS['devices-doughnut'] = (t) => ({ type: 'doughnut', data: { labels: ['Auditorium', 'Mini Teater D3', 'Mini Teater Pascasarjana'], datasets: [{ data: [62, 30, 8], backgroundColor: [t.primary, t.purple, t.info], borderColor: t.bg, borderWidth: 3 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { position: 'right' } } } }); if (window.initCharts) window.initCharts(); }
+        function runDashboardCharts() {
+            var body = document.body;
+            if (!body || body.getAttribute('data-active') !== 'dashboard') return;
+            if (!window.Chart) return;
 
-        (function () {
-                        function cssToken(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+            var trendCanvas = document.getElementById('trendChart');
+            var roomsCanvas = document.getElementById('topRoomsChart');
 
-                        function buildDoughnut() {
-                            const canvas = document.querySelector('canvas[data-chart-key="devices-doughnut"], #topRoomsChart');
-                            if (!canvas) return;
+            if (trendCanvas) {
+                new Chart(trendCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: <?= json_encode($chartMonths) ?>,
+                        datasets: [{
+                            label: 'Jumlah Peminjaman',
+                            data: <?= json_encode($chartTrend) ?>,
+                            borderWidth: 2,
+                            tension: 0.4,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
 
-                            const t = {
-                                primary: cssToken('--primary') || '#6366F1',
-                                purple: cssToken('--purple') || '#7C3AED',
-                                info: cssToken('--info') || '#06B6D4',
-                                bg: cssToken('--bg-card') || '#fff'
-                            };
-
-                            const cfg = {
-                                type: 'doughnut',
-                                data: {
-                                    labels: ['Auditorium','Mini Teater D3','Mini Teater Pascasarjana'],
-                                    datasets: [{ data: [62,30,8], backgroundColor: [t.primary, t.purple, t.info], borderColor: t.bg, borderWidth: 3 }]
-                                },
-                                options: { responsive: true, maintainAspectRatio: false, cutout: '68%', plugins: { legend: { position: 'right' } } }
-                            };
-
-                            function create() {
-                                try { if (canvas.__chartInstance) canvas.__chartInstance.destroy(); } catch (e) {}
-                                canvas.__chartInstance = new (window.Chart)(canvas, cfg);
+            if (roomsCanvas) {
+                new Chart(roomsCanvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: <?= json_encode($chartRoomLabels) ?>,
+                        datasets: [{
+                            data: <?= json_encode($chartRoomData) ?>,
+                            borderWidth: 1,
+                            backgroundColor: ['#3b82f6', '#f43f5e', '#f59e0b']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
                             }
-
-                            if (window.Chart) return create();
-
-                            // wait for Chart to become available
-                            let tries = 0; const id = setInterval(() => {
-                                if (window.Chart) { clearInterval(id); create(); }
-                                if (++tries > 80) { clearInterval(id); console.warn('Could not init doughnut chart: Chart not available'); }
-                            }, 25);
                         }
+                    }
+                });
+            }
+        }
 
-                        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', buildDoughnut); else buildDoughnut();
-                    })();
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', hidePageLoader, { once: true });
+        } else {
+            hidePageLoader();
+        }
+
+        if (document.readyState === 'complete') {
+            runDashboardCharts();
+        } else {
+            window.addEventListener('load', runDashboardCharts, { once: true });
+        }
     })();
 </script>

@@ -1,14 +1,18 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+$active = 'ruangan';
+$crumbs = 'Manajemen | Ruangan';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <?php include __DIR__ . '/../../includes/header.php'; ?>
-    <?php require_once dirname(__DIR__, 2) . '/actions/room/read.php'; ?>
+        <?php include __DIR__ . '/../../includes/header.php'; ?>
+        <?php require_once dirname(__DIR__, 2) . '/actions/room/read.php'; ?>
 </head>
-<?php
-$active = 'ruangan';
-$crumbs = 'Manajemen | Ruangan';
-?>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">
     <div class="shell">
@@ -21,7 +25,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <h1 class="hero-title">Ruangan</h1>
                     </div>
                     <div class="hero-actions">
-                        <button id="btn-add" class="btn btn-primary d-flex s">
+                        <button type="button" id="btn-add" class="btn btn-primary d-flex s" data-bs-toggle="modal" data-bs-target="#modalAdd">
                             <svg viewBox="0 0 24 24">
                                 <path d="M12 5v14M5 12h14" />
                             </svg>
@@ -152,7 +156,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <h5 class="modal-title" id="modalAddLabel">Tambah Ruangan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form method="create.php" id="form-add">
+                    <form action="../../actions/room/create.php" method="post" id="form-add">
                         <div class="modal-body">
                             <div class="row g-3">
                                 <div class="col-md-6">

@@ -2,6 +2,10 @@
 $active = 'laporan';
 $crumbs = 'Laporan | Cetak Laporan';
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+  session_start();
+}
+
 require_once __DIR__ . '/../../actions/report/report_action.php';
 
 $printQuery = $_SERVER['QUERY_STRING'] ?? '';

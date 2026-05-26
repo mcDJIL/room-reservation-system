@@ -6,6 +6,10 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
   header("Location: ../../index.php");
 }
 
+$errors = $_SESSION['errors_login'] ?? [];
+$old = $_SESSION['old_login'] ?? [];
+unset($_SESSION['errors_login'], $_SESSION['old_login']);
+
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +39,9 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
         </div>
 
         <!-- Login Form -->
+        <?php if (!empty($errors['general'])): ?>
+          <div class="error-message" style="margin-bottom:12px"><?php echo htmlspecialchars($errors['general']) ?></div>
+        <?php endif; ?>
         <form class="login-form" method="POST" action="../../actions/auth/auth_action.php">
           <input type="hidden" name="action" value="login">
 
@@ -42,9 +49,17 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
           <div class="form-field">
             <label class="field-label" for="email">Alamat Email</label>
             <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 16C1.45 16 0.979167 15.8042 0.5875 15.4125C0.195833 15.0208 0 14.55 0 14V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H18C18.55 0 19.0208 0.195833 19.4125 0.5875C19.8042 0.979167 20 1.45 20 2V14C20 14.55 19.8042 15.0208 19.4125 15.4125C19.0208 15.8042 18.55 16 18 16H2ZM10 9L2 4V14H18V4L10 9ZM10 7L18 2H2L10 7ZM2 4V2V14V4Z" fill="#757684"/>
+                </svg>
+              </span>
               <input id="email" class="text-input" type="email" name="email"
-                placeholder="nama@perusahaan.com" autocomplete="email" required>
+                placeholder="nama@perusahaan.com" autocomplete="email" required value="<?php echo htmlspecialchars($old['email'] ?? '') ?>">
             </div>
+            <?php if (!empty($errors['email'])): ?>
+              <small class="error-message" id="error-email"><?php echo htmlspecialchars($errors['email']) ?></small>
+            <?php endif; ?>
           </div>
 
           <!-- Kata Sandi -->
@@ -54,6 +69,11 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
               <a href="#" class="forgot-link">Lupa kata sandi?</a>
             </div>
             <div class="input-wrapper">
+              <span class="input-icon">
+                <svg width="16" height="21" viewBox="0 0 16 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 21C1.45 21 0.979167 20.8042 0.5875 20.4125C0.195833 20.0208 0 19.55 0 19V9C0 8.45 0.195833 7.97917 0.5875 7.5875C0.979167 7.19583 1.45 7 2 7H3V5C3 3.61667 3.4875 2.4375 4.4625 1.4625C5.4375 0.4875 6.61667 0 8 0C9.38333 0 10.5625 0.4875 11.5375 1.4625C12.5125 2.4375 13 3.61667 13 5V7H14C14.55 7 15.0208 7.19583 15.4125 7.5875C15.8042 7.97917 16 8.45 16 9V19C16 19.55 15.8042 20.0208 15.4125 20.4125C15.0208 20.8042 14.55 21 14 21H2ZM8 16C8.55 16 9.02083 15.8042 9.4125 15.4125C9.80417 15.0208 10 14.55 10 14C10 13.45 9.80417 12.9792 9.4125 12.5875C9.02083 12.1958 8.55 12 8 12C7.45 12 6.97917 12.1958 6.5875 12.5875C6.19583 12.9792 6 13.45 6 14C6 14.55 6.19583 15.0208 6.5875 15.4125C6.97917 15.8042 7.45 16 8 16ZM5 7H11V5C11 4.16667 10.7083 3.45833 10.125 2.875C9.54167 2.29167 8.83333 2 8 2C7.16667 2 6.45833 2.29167 5.875 2.875C5.29167 3.45833 5 4.16667 5 5V7Z" fill="#757684"/>
+                </svg>
+              </span>
               <input id="password" class="text-input password-input" type="password" name="password"
                 placeholder="••••••••" autocomplete="current-password" required>
               <button type="button" class="password-toggle" id="togglePasswordBtn" aria-label="Tampilkan kata sandi">
@@ -65,6 +85,9 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
                 </svg>
               </button>
             </div>
+            <?php if (!empty($errors['password'])): ?>
+              <small class="error-message" id="error-password"><?php echo htmlspecialchars($errors['password']) ?></small>
+            <?php endif; ?>
           </div>
 
           <!-- Submit Button -->
@@ -110,31 +133,6 @@ if (!empty($_SESSION['is_login']) && $_SESSION['is_login'] === true) {
         width: "360px", // Biar ukurannya kecil minimalis sama kayak eror merah kemarin
         showConfirmButton: false,
         timer: 2500 
-    });
-</script>
-<?php endif; ?>
-<?php if (isset($_GET['error'])): ?>
-<script>
-    let msgTitle = "Oops...";
-    let msgText = "Terjadi kesalahan.";
-
-    if ("<?php echo $_GET['error']; ?>" === "wrong_password") {
-        msgTitle = "Password Salah!";
-        msgText = "Kata sandi yang Anda masukkan tidak sesuai.";
-    } else if ("<?php echo $_GET['error']; ?>" === "email_not_found") {
-        msgTitle = "Email Tidak Terdaftar!";
-        msgText = "Email kerja yang Anda masukkan belum terdaftar.";
-    }
-
-    Swal.fire({
-        position: "top",
-        icon: "error",
-        title: msgTitle,
-        text: msgText,
-        width: "360px", // <-- Tambahkan baris ini untuk mengecilkan (bisa diganti misal 380px atau 400px sesuai selera)
-        showConfirmButton: true,
-        confirmButtonColor: "#d33"
-    
     });
 </script>
 <?php endif; ?>

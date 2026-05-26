@@ -14,7 +14,7 @@ include __DIR__ . '/analytics_query.php';
 				</div>
 				<div class="card-body">
 					<div class="chart-canvas-wrap" style="height:320px;">
-						<canvas id="trendChart" data-chart-key="dashboard-monthly"></canvas>
+						<canvas id="trendChart"></canvas>
 					</div>
 				</div>
 			</div>
@@ -31,12 +31,13 @@ include __DIR__ . '/analytics_query.php';
 				</div>
 				<div class="card-body d-flex align-items-center justify-content-center">
 					<div class="chart-canvas-wrap" style="height:280px; width:100%; max-width:320px;">
-						<canvas id="topRoomsChart" data-chart-key="devices-doughnut"></canvas>
+						<canvas id="topRoomsChart"></canvas>
 					</div>
 				</div>
 			</div>
 		</section>
 	</div>
+<<<<<<< HEAD
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -103,3 +104,6 @@ new Chart(document.getElementById('topRoomsChart'), {
     }
 });
 </script>
+=======
+</div>
+>>>>>>> 95b48ef92929bbc9d16204f67d6fa2fd38a3bb3b

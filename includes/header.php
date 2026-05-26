@@ -1,3 +1,7 @@
+<?php
+  include '../../config/middleware.php';
+?>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard · 2026 Redesign Preview</title>
@@ -6,6 +10,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 <link rel="stylesheet" href="../../assets/css/admin/dashboard.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode-dashboard.css">
+<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
 <script>
   (function () {
     function syncTheme() {
@@ -41,4 +46,3 @@
 <script defer="defer" src="../../assets/js/vendor-chartjs.js"></script>
 <script defer="defer" src="../../assets/js/vendors.js"></script>
 <script defer="defer" src="../../assets/js/2026.js"></script>
-<script defer src="../../assets/js/charts.js"></script>
