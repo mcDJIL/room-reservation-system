@@ -158,9 +158,10 @@ $crumbs = 'Manajemen | Ruangan';
         const pagTotal = document.getElementById('pag-total');
         const pagerPrev = document.getElementById('pager-prev');
         const pagerNext = document.getElementById('pager-next');
+        const initialPagination = <?= json_encode($pagination) ?>;
         
-        let currentPage = 1;
-        let perPage = 15;
+        let currentPage = initialPagination.current_page || 1;
+        let perPage = initialPagination.per_page || 15;
         let searchTimeout;
 
         function renderPagination(pagination) {
@@ -168,24 +169,41 @@ $crumbs = 'Manajemen | Ruangan';
             const total = pagination.total_pages;
             const current = pagination.current_page;
             
-            // Tentukan range halaman yang ditampilkan
-            let start = Math.max(1, current - 2);
-            let end = Math.min(total, current + 2);
-            
-            // Jika kurang dari 5 halaman, tampilkan semua
-            if (total <= 5) {
-                start = 1;
-                end = total;
+            const pages = [];
+
+            if (total <= 7) {
+                for (let i = 1; i <= total; i++) pages.push(i);
+            } else {
+                pages.push(1);
+
+                const start = Math.max(2, current - 1);
+                const end = Math.min(total - 1, current + 1);
+
+                if (start > 2) pages.push('...');
+                for (let i = start; i <= end; i++) pages.push(i);
+                if (end < total - 1) pages.push('...');
+
+                pages.push(total);
             }
-            
+
             // Tombol angka halaman
-            for (let i = start; i <= end; i++) {
+            pages.forEach((pageItem) => {
+                if (pageItem === '...') {
+                    const gap = document.createElement('span');
+                    gap.className = 'pager-gap';
+                    gap.textContent = '...';
+                    pagerPages.appendChild(gap);
+                    return;
+                }
+
                 const btn = document.createElement('button');
-                btn.className = 'pager-btn' + (i === current ? ' is-active' : '');
-                btn.textContent = i;
-                btn.addEventListener('click', () => goToPage(i));
+                btn.type = 'button';
+                btn.className = 'pager-btn' + (pageItem === current ? ' is-active' : '');
+                btn.textContent = pageItem;
+                btn.setAttribute('aria-label', `Halaman ${pageItem}`);
+                btn.addEventListener('click', () => goToPage(pageItem));
                 pagerPages.appendChild(btn);
-            }
+            });
             
             // Update prev/next buttons
             pagerPrev.disabled = current <= 1;
@@ -300,6 +318,7 @@ $crumbs = 'Manajemen | Ruangan';
 
         // Prev button
         if (pagerPrev) {
+            pagerPrev.type = 'button';
             pagerPrev.addEventListener('click', () => {
                 if (currentPage > 1) goToPage(currentPage - 1);
             });
@@ -307,10 +326,17 @@ $crumbs = 'Manajemen | Ruangan';
 
         // Next button
         if (pagerNext) {
+            pagerNext.type = 'button';
             pagerNext.addEventListener('click', () => {
                 goToPage(currentPage + 1);
             });
         }
+
+        if (perPageSelect) {
+            perPageSelect.value = String(perPage);
+        }
+
+        renderPagination(initialPagination);
         </script>
 
         <!-- Add Modal -->

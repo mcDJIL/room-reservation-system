@@ -1,6 +1,6 @@
 <?php
 
-$role = $_SESSION['role'] ?? '';
+$session_role = $_SESSION['role'] ?? '';
 $name = $_SESSION['name'] ?? '';
 
 if (!isset($active)) $active = '';
@@ -67,7 +67,7 @@ $navSections = [
       <div class="workspace-avatar">AD</div>
       <div class="workspace-text">
         <div class="workspace-name"><?php echo htmlspecialchars($name, ENT_QUOTES); ?></div>
-        <div class="workspace-role"><?php echo htmlspecialchars($role, ENT_QUOTES); ?></div>
+          <div class="workspace-role"><?php echo htmlspecialchars($session_role, ENT_QUOTES); ?></div>
       </div>
       <svg class="workspace-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
         <path d="m7 9 5-5 5 5"/><path d="m7 15 5 5 5-5"/>
