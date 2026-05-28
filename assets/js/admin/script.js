@@ -122,6 +122,20 @@
     const row = document.querySelector('tr[data-id="' + id + '"]');
     if (!row || !modalDetail) return;
 
+    const approveBtn = document.getElementById('btn-approve');
+    const rejectBtn  = document.getElementById('btn-reject');
+
+    function setApprovalButtonsVisible(visible) {
+      if (approveBtn) {
+        approveBtn.hidden = !visible;
+        if (!visible) delete approveBtn.dataset.id;
+      }
+      if (rejectBtn) {
+        rejectBtn.hidden = !visible;
+        if (!visible) delete rejectBtn.dataset.id;
+      }
+    }
+
     if (isApprovalsPage) {
       document.getElementById('d-name').textContent    = row.dataset.userName  || '';
       document.getElementById('d-email').textContent   = row.dataset.userEmail || '';
@@ -131,11 +145,20 @@
       document.getElementById('d-time').textContent    = (row.dataset.start||'-') + ' - ' + (row.dataset.end||'-');
       document.getElementById('d-reason').textContent  = row.dataset.reason    || '';
       document.getElementById('d-status').textContent  = statusLabel(row.dataset.status);
-      document.getElementById('btn-approve').dataset.id = id;
-      document.getElementById('btn-reject').dataset.id  = id;
+
+      const canChangeStatus = row.dataset.status === 'waiting';
+      setApprovalButtonsVisible(canChangeStatus);
+
+      if (canChangeStatus) {
+        if (approveBtn) approveBtn.dataset.id = id;
+        if (rejectBtn) rejectBtn.dataset.id = id;
+      }
+
       modalDetail.show();
       return;
     }
+
+    setApprovalButtonsVisible(false);
     // rooms page detail
     document.getElementById('d-name').textContent     = row.dataset.name     || '';
     document.getElementById('d-building').textContent = row.dataset.building || '';
@@ -149,91 +172,6 @@
     const photoBtn = document.getElementById('photo-upload-btn');
     if (photoBtn) photoBtn.dataset.roomId = id;
     modalDetail.show();
-  }
-
-  // ── Open Edit modal ────────────────────────────────────────────────────────
-  function openEdit(id) {
-    const row = document.querySelector('tr[data-id="' + id + '"]');
-    if (!row || !modalEdit) return;
-    document.getElementById('e-id').value = id;
-
-    if (isApprovalsPage) {
-      document.getElementById('e-user').value   = row.dataset.userId  || '';
-      document.getElementById('e-room').value   = row.dataset.roomId  || '';
-      document.getElementById('e-date').value   = row.dataset.date    || '';
-      document.getElementById('e-start').value  = row.dataset.start   || '';
-      document.getElementById('e-end').value    = row.dataset.end     || '';
-      document.getElementById('e-reason').value = row.dataset.reason  || '';
-      document.getElementById('e-status').value = row.dataset.status  || 'waiting';
-      modalEdit.show();
-      return;
-    }
-    // rooms page
-    document.getElementById('e-name').value     = row.dataset.name     || '';
-    document.getElementById('e-building').value = row.dataset.building || '';
-    document.getElementById('e-capacity').value = row.dataset.capacity || '';
-    document.getElementById('e-status').value   = row.dataset.status   || '';
-    modalEdit.show();
-  }
-
-  // ── Submit Edit ────────────────────────────────────────────────────────────
-  const formEdit = document.getElementById('form-edit');
-  if (formEdit) {
-    formEdit.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const id = document.getElementById('e-id').value;
-      if (!id) return;
-
-      if (!isApprovalsPage) { handleRoomEdit(id); return; }
-
-      const fd = new FormData(this);
-      fd.append('action', 'edit');
-      fetch('../../actions/booking/reservation_action.php', { method: 'POST', body: fd })
-        .then(r => r.json())
-        .then(data => {
-          if (!data.success) { alert('Gagal: ' + (data.message || 'Unknown')); return; }
-          const row = document.querySelector('tr[data-id="' + id + '"]');
-          if (row) updateRowFromData(row, data.row);
-          modalEdit.hide();
-        })
-        .catch(() => alert('Terjadi kesalahan jaringan'));
-    });
-  }
-
-  // ── Open Delete modal ──────────────────────────────────────────────────────
-  function openDelete(id) {
-    const row = document.querySelector('tr[data-id="' + id + '"]');
-    if (!row || !modalDelete) return;
-    document.getElementById('del-name').textContent = isApprovalsPage
-      ? (row.dataset.userName || '')
-      : (row.dataset.name     || '');
-    document.getElementById('del-id').value = id;
-    modalDelete.show();
-  }
-
-  // ── Confirm Delete ─────────────────────────────────────────────────────────
-  const delConfirm = document.getElementById('del-confirm');
-  if (delConfirm) {
-    delConfirm.addEventListener('click', function () {
-      const id = document.getElementById('del-id').value;
-      if (!id) return;
-
-      if (!isApprovalsPage) { handleRoomDelete(id); return; }
-
-      const payload = new URLSearchParams({ action: 'delete', id });
-      fetch('../../actions/booking/reservation_action.php', {
-        method: 'POST', body: payload,
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-      })
-        .then(r => r.json())
-        .then(data => {
-          if (!data.success) { alert('Gagal: ' + (data.message || 'Unknown')); return; }
-          const row = document.querySelector('tr[data-id="' + id + '"]');
-          if (row) row.remove();
-          modalDelete.hide();
-        })
-        .catch(() => alert('Terjadi kesalahan jaringan'));
-    });
   }
 
   // ── Approve / Reject ───────────────────────────────────────────────────────
