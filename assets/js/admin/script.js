@@ -51,8 +51,14 @@
             <div class="photo-card-meta">
               <span class="photo-card-badge ${isPrimary ? 'primary' : ''}">${isPrimary ? 'Primary' : 'Foto'}</span>
             </div>
-            <button type="button" class="btn btn-sm btn-outline-primary btn-set-primary" data-room-id="${roomId}" data-photo-id="${photo.id}">Jadikan Primary</button>
-            <button type="button" class="btn btn-sm btn-outline-danger btn-delete-photo" data-room-id="${roomId}" data-photo-id="${photo.id}">Hapus Foto</button>
+            <div class="photo-card-actions">
+              <button type="button" class="btn btn-outline-primary photo-icon-btn btn-set-primary" data-room-id="${roomId}" data-photo-id="${photo.id}" aria-label="Jadikan primary" title="Jadikan primary">
+                <i class="fa-solid fa-star"></i>
+              </button>
+              <button type="button" class="btn btn-outline-danger photo-icon-btn btn-delete-photo" data-room-id="${roomId}" data-photo-id="${photo.id}" aria-label="Hapus foto" title="Hapus foto">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
           </div>
         </div>`;
     }).join('');

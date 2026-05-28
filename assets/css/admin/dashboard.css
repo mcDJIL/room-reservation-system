@@ -279,6 +279,42 @@ body {
   width: 100%;
 }
 
+.photo-card-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.photo-icon-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex: 0 0 30px;
+}
+
+.photo-icon-btn i {
+  font-size: 12px;
+}
+
+.photo-icon-btn.btn-set-primary {
+  color: #00288E;
+}
+
+.photo-icon-btn.btn-delete-photo {
+  color: #dc3545;
+}
+.photo-icon-btn.btn-set-primary:hover {
+  color: #fff;
+}
+
+.photo-icon-btn.btn-delete-photo:hover {
+  color: #fff;
+}
+
 /* =====================================================
    KPI CARDS
    ===================================================== */
