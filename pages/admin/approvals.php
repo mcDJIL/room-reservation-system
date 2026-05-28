@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../config/connection.php';
 $q       = trim($_GET['q']      ?? '');
 $status_f = trim($_GET['status'] ?? '');
 $page    = max(1, intval($_GET['page'] ?? 1));
-$per     = 15;
+$per = isset($_GET['per_page']) ? intval($_GET['per_page']) : 15;
 
 $allowed_status = ['waiting', 'approved', 'rejected'];
 if (!in_array($status_f, $allowed_status, true)) $status_f = '';
@@ -102,6 +102,7 @@ $rooms = $conn->query("SELECT r.id, r.room_name, b.name AS building_name
                                 <button type="submit" class="btn btn-primary" style="font-size:12px;padding:7px 14px;">Cari</button>
                             </div>
                         </div>
+                        <input type="hidden" name="per_page" id="filter-per-page" value="<?= $per ?>">
                     </form>
 
                     <!-- Table -->
@@ -168,12 +169,20 @@ $rooms = $conn->query("SELECT r.id, r.room_name, b.name AS building_name
                             $to_n   = min($page*$per, $total);
                             ?>
                             <span>Showing <strong style="color:var(--t-base)"><?= $from_n ?>–<?= $to_n ?></strong> of <strong style="color:var(--t-base)"><?= $total ?></strong></span>
+                            <select class="select" name="per_page"
+                                style="width:auto; padding:7px 28px 7px 10px; font-size:12px; margin-right:10px;"
+                                onchange="document.getElementById('filter-per-page').value=this.value; document.getElementById('filter-form').submit();">
+                                <option value="15" <?= $per === 15 ? 'selected' : '' ?>>15 per page</option>
+                                <option value="25" <?= $per === 25 ? 'selected' : '' ?>>25 per page</option>
+                                <option value="50" <?= $per === 50 ? 'selected' : '' ?>>50 per page</option>
+                                <option value="100" <?= $per === 100 ? 'selected' : '' ?>>100 per page</option>
+                            </select>
                         </div>
                         <?php if ($total_pages > 1): ?>
                         <div class="pager">
                             <?php
-                            $qs = function($p) use ($q, $status_f) {
-                                return '?' . http_build_query(array_filter(['q'=>$q,'status'=>$status_f,'page'=>$p], fn($v)=>$v!==''));
+                            $qs = function($p) use ($q, $status_f, $per) {
+                                return '?' . http_build_query(array_filter(['q'=>$q,'status'=>$status_f,'page'=>$p,'per_page'=>$per], fn($v)=>$v!==''));
                             };
                             ?>
                             <a href="<?= $qs($page-1) ?>" class="pager-btn <?= $page<=1?'disabled':'' ?>" <?= $page<=1?'aria-disabled="true"':'' ?>>
