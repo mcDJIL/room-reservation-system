@@ -4,6 +4,13 @@ $chartMonths = $monthsMaster ?? [];
 $chartTrend = $trendDataFilled ?? [];
 $chartRoomLabels = $roomLabel ?? [];
 $chartRoomData = $roomData ?? [];
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+$toastFlash = $_SESSION['flash_toast'] ?? null;
+unset($_SESSION['flash_toast']);
 ?>
 
 <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -12,8 +19,44 @@ $chartRoomData = $roomData ?? [];
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <?php endif; ?>
 
+<div class="toast-container position-fixed admin-toast-container p-3" id="adminToastContainer" aria-live="polite" aria-atomic="true"></div>
+
 <script>
     (function () {
+        var toastContainer = document.getElementById('adminToastContainer');
+
+        function toastTitle(type) {
+            if (type === 'success') return 'Berhasil';
+            if (type === 'danger') return 'Gagal';
+            if (type === 'warning') return 'Peringatan';
+            return 'Info';
+        }
+
+        window.showToast = function (message, type) {
+            if (!toastContainer || !message) return;
+
+            var level = type || 'success';
+            var toast = document.createElement('div');
+            toast.className = 'toast align-items-center text-bg-' + level + ' border-0 admin-toast';
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            toast.innerHTML = '<div class="d-flex"><div class="toast-body"><strong class="me-2">' + toastTitle(level) + '</strong>' + message + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>';
+
+            toastContainer.appendChild(toast);
+            var instance = bootstrap.Toast.getOrCreateInstance(toast, { delay: 3200 });
+            toast.addEventListener('hidden.bs.toast', function () {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            });
+            instance.show();
+        };
+
+        <?php if (!empty($toastFlash) && is_array($toastFlash)): ?>
+        window.addEventListener('load', function () {
+            window.showToast(<?= json_encode($toastFlash['message'] ?? '') ?>, <?= json_encode($toastFlash['type'] ?? 'success') ?>);
+        }, { once: true });
+        <?php endif; ?>
+
         function hidePageLoader() {
             var loader = document.getElementById('page-loader');
             if (!loader) return;

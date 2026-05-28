@@ -13,6 +13,9 @@ if (isset($_POST['deactivate_user']) && isset($_POST['user_id'])) {
     $user_id = intval($_POST['user_id']);
     if ($user_id != ($_SESSION['user_id'] ?? 0)) {
         mysqli_query($conn, "UPDATE users SET is_active = 0 WHERE id = $user_id");
+        $_SESSION['flash_toast'] = ['type' => 'success', 'message' => 'User berhasil dinonaktifkan'];
+    } else {
+        $_SESSION['flash_toast'] = ['type' => 'warning', 'message' => 'Akun sendiri tidak bisa dinonaktifkan'];
     }
     header("Location: " . strtok($_SERVER['REQUEST_URI'], '?'));
     exit;
@@ -20,6 +23,7 @@ if (isset($_POST['deactivate_user']) && isset($_POST['user_id'])) {
 if (isset($_POST['activate_user']) && isset($_POST['user_id'])) {
     $user_id = intval($_POST['user_id']);
     mysqli_query($conn, "UPDATE users SET is_active = 1 WHERE id = $user_id");
+    $_SESSION['flash_toast'] = ['type' => 'success', 'message' => 'User berhasil diaktifkan'];
     header("Location: " . strtok($_SERVER['REQUEST_URI'], '?'));
     exit;
 }

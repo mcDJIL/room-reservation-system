@@ -23,7 +23,8 @@ if ($action === 'delete') {
 
     $stmt = $conn->prepare('DELETE FROM reservations WHERE id = ?');
     $stmt->bind_param('i', $id);
-    echo json_encode(['success' => $stmt->execute(), 'message' => $stmt->error]);
+    $ok = $stmt->execute();
+    echo json_encode(['success' => $ok, 'message' => $ok ? 'Peminjaman berhasil dihapus' : $stmt->error]);
     $stmt->close();
     exit();
 }
@@ -70,7 +71,7 @@ if ($action === 'add') {
         WHERE r.id = $new_id LIMIT 1
     ")->fetch_assoc();
 
-    echo json_encode(['success' => true, 'row' => $row]);
+    echo json_encode(['success' => true, 'message' => 'Peminjaman berhasil ditambahkan', 'row' => $row]);
     exit();
 }
 
@@ -115,7 +116,7 @@ if ($action === 'edit') {
         WHERE r.id = $id LIMIT 1
     ")->fetch_assoc();
 
-    echo json_encode(['success' => true, 'row' => $row]);
+    echo json_encode(['success' => true, 'message' => 'Peminjaman berhasil diperbarui', 'row' => $row]);
     exit();
 }
 

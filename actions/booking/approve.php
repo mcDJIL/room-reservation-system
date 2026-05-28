@@ -27,7 +27,7 @@ $stmt = $conn->prepare("UPDATE reservations SET status = ?, approved_by = ? WHER
 $stmt->bind_param('sii', $action, $admin_id, $id);
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'status' => $action]);
+    echo json_encode(['success' => true, 'status' => $action, 'message' => 'Status peminjaman berhasil diubah menjadi ' . ucfirst($action)]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Gagal memperbarui status']);
 }
