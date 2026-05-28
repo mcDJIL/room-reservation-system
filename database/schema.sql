@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `buildings` (
   `id` int NOT NULL,
   `name` varchar(100) NOT NULL COMMENT 'Contoh: Gedung D4, Gedung D3'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 --
 -- Dumping data for table `buildings`
@@ -61,7 +61,7 @@ CREATE TABLE `reservations` (
   `status` enum('waiting','approved','rejected') DEFAULT 'waiting',
   `approved_by` int DEFAULT NULL COMMENT 'Fitur Audit Trail',
   `created_at` timestamp NULL DEFAULT (now())
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 --
 -- Dumping data for table `reservations`
@@ -108,7 +108,7 @@ CREATE TABLE `rooms` (
   `short_description` text,
   `detail_description` text,
   `is_active` tinyint DEFAULT '1' COMMENT 'Untuk fitur Soft Delete'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 --
 -- Dumping data for table `rooms`
@@ -145,7 +145,7 @@ CREATE TABLE `room_photos` (
   `room_id` int NOT NULL,
   `photo` varchar(255) DEFAULT NULL,
   `is_primary` int DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+);
 
 --
 -- Dumping data for table `room_photos`
@@ -193,7 +193,7 @@ CREATE TABLE `users` (
   `email` varchar(100) DEFAULT NULL,
   `is_active` tinyint DEFAULT '1' COMMENT 'Untuk fitur Soft Delete',
   `role` enum('admin','user') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='Tabel untuk login Admin dan Mahasiswa/Dosen';
+);
 
 --
 -- Dumping data for table `users`
