@@ -39,7 +39,7 @@ if (!$okPhotos || !$okReservations || !$okRoom) {
 
 $conn->commit();
 
-echo json_encode(['success' => true]);
+echo json_encode(['success' => true, 'message' => 'Ruangan berhasil dihapus']);
 exit;
 
 ?>
