@@ -13,6 +13,126 @@
   // Detect which page we're on
   const isApprovalsPage = !!document.getElementById('d-email');
 
+  function notify(message, type) {
+    if (!message) return;
+    if (window.showToast) {
+      window.showToast(message, type || 'success');
+      return;
+    }
+    alert(message);
+  }
+
+  function roomPhotoUrl(photoPath) {
+    if (!photoPath) {
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><rect width="800" height="500" fill="#e2e8f0"/><rect x="70" y="70" width="660" height="360" rx="28" fill="#f8fafc" stroke="#cbd5e1" stroke-width="8"/><path d="M170 340l110-120 90 92 70-70 140 148H170z" fill="#cbd5e1"/><circle cx="290" cy="185" r="38" fill="#cbd5e1"/><text x="400" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#64748b">Gambar ruangan belum tersedia</text></svg>');
+    }
+    if (photoPath.startsWith('http://') || photoPath.startsWith('https://') || photoPath.startsWith('data:') || photoPath.startsWith('../') || photoPath.startsWith('/')) return photoPath;
+    return '../../assets/images/' + photoPath.replace(/^\/+/, '');
+  }
+
+  function renderPhotoGallery(photos, roomId) {
+    const gallery = document.getElementById('photo-gallery');
+    if (!gallery) return;
+
+    gallery.classList.remove('photo-gallery--empty');
+    if (!photos || !photos.length) {
+      gallery.innerHTML = '<div class="photo-gallery-empty">Belum ada foto ruangan.</div>';
+      gallery.classList.add('photo-gallery--empty');
+      return;
+    }
+
+    gallery.innerHTML = photos.map((photo) => {
+      const isPrimary = Number(photo.is_primary) === 1;
+      const imgSrc = roomPhotoUrl(photo.photo_url || photo.photo);
+      return `
+        <div class="photo-card ${isPrimary ? 'is-primary' : ''}" data-photo-id="${photo.id}">
+          <img src="${imgSrc}" alt="Foto ruangan" loading="lazy">
+          <div class="photo-card-body">
+            <div class="photo-card-meta">
+              <span class="photo-card-badge ${isPrimary ? 'primary' : ''}">${isPrimary ? 'Primary' : 'Foto'}</span>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-primary btn-set-primary" data-room-id="${roomId}" data-photo-id="${photo.id}">Jadikan Primary</button>
+            <button type="button" class="btn btn-sm btn-outline-danger btn-delete-photo" data-room-id="${roomId}" data-photo-id="${photo.id}">Hapus Foto</button>
+          </div>
+        </div>`;
+    }).join('');
+
+    gallery.querySelectorAll('.btn-set-primary').forEach((button) => {
+      button.addEventListener('click', function () {
+        setPrimaryPhoto(this.dataset.roomId, this.dataset.photoId);
+      });
+    });
+
+    gallery.querySelectorAll('.btn-delete-photo').forEach((button) => {
+      button.addEventListener('click', function () {
+        deleteRoomPhoto(this.dataset.roomId, this.dataset.photoId);
+      });
+    });
+  }
+
+  function loadRoomGallery(roomId) {
+    const gallery = document.getElementById('photo-gallery');
+    if (!gallery || !roomId) return;
+
+    gallery.classList.add('photo-gallery--empty');
+    gallery.innerHTML = '<div class="photo-gallery-empty">Memuat foto...</div>';
+
+    fetch(`../../actions/room/photos.php?room_id=${encodeURIComponent(roomId)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.success) {
+          renderPhotoGallery([], roomId);
+          notify(data.message || 'Gagal memuat foto ruangan', 'danger');
+          return;
+        }
+        renderPhotoGallery(data.photos || [], roomId);
+      })
+      .catch(() => {
+        renderPhotoGallery([], roomId);
+        notify('Terjadi kesalahan saat memuat foto ruangan', 'danger');
+      });
+  }
+
+  function setPrimaryPhoto(roomId, photoId) {
+    const payload = new URLSearchParams({ room_id: roomId, photo_id: photoId });
+    fetch('../../actions/room/set_primary_photo.php', {
+      method: 'POST',
+      body: payload,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.success) {
+          notify(data.message || 'Gagal mengubah primary', 'danger');
+          return;
+        }
+        notify(data.message || 'Foto utama berhasil diubah', 'success');
+        loadRoomGallery(roomId);
+      })
+      .catch(() => notify('Terjadi kesalahan jaringan', 'danger'));
+  }
+
+  function deleteRoomPhoto(roomId, photoId) {
+    if (!window.confirm('Hapus foto ini?')) return;
+
+    const payload = new URLSearchParams({ room_id: roomId, photo_id: photoId });
+    fetch('../../actions/room/delete_photo.php', {
+      method: 'POST',
+      body: payload,
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.success) {
+          notify(data.message || 'Gagal menghapus foto', 'danger');
+          return;
+        }
+        notify(data.message || 'Foto berhasil dihapus', 'success');
+        loadRoomGallery(roomId);
+      })
+      .catch(() => notify('Terjadi kesalahan jaringan', 'danger'));
+  }
+
   // ── Helpers ────────────────────────────────────────────────────────────────
   function statusLabel(s) {
     return s === 'approved' ? 'Approved' : s === 'rejected' ? 'Rejected' : 'Waiting';
@@ -105,15 +225,16 @@
       fetch('../../actions/booking/reservation_action.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(data => {
-          if (!data.success) { alert('Gagal: ' + (data.message || 'Unknown')); return; }
+          if (!data.success) { notify('Gagal: ' + (data.message || 'Unknown'), 'danger'); return; }
           const tbody = document.querySelector('#modalAdd').closest('.card')
                         ? document.querySelector('tbody') : document.querySelector('tbody');
           const empty = document.querySelector('tbody tr td[colspan]');
           if (empty) empty.closest('tr').remove();
           document.querySelector('tbody').prepend(buildRow(data.row));
+          notify(data.message || 'Peminjaman berhasil ditambahkan', 'success');
           modalAdd.hide();
         })
-        .catch(() => alert('Terjadi kesalahan jaringan'));
+        .catch(() => notify('Terjadi kesalahan jaringan', 'danger'));
     });
   }
 
@@ -171,6 +292,7 @@
     }
     const photoBtn = document.getElementById('photo-upload-btn');
     if (photoBtn) photoBtn.dataset.roomId = id;
+    loadRoomGallery(id);
     modalDetail.show();
   }
 
@@ -183,13 +305,14 @@
     })
       .then(r => r.json())
       .then(data => {
-        if (!data.success) { alert('Gagal: ' + (data.message || 'Unknown')); return; }
+        if (!data.success) { notify('Gagal: ' + (data.message || 'Unknown'), 'danger'); return; }
         const row = document.querySelector('tr[data-id="' + id + '"]');
         if (row) { row.dataset.status = action; setStatusBadge(row, action); }
         document.getElementById('d-status').textContent = statusLabel(action);
+        notify(data.message || 'Status peminjaman berhasil diperbarui', 'success');
         if (modalDetail) modalDetail.hide();
       })
-      .catch(() => alert('Terjadi kesalahan jaringan'));
+      .catch(() => notify('Terjadi kesalahan jaringan', 'danger'));
   }
 
   const approveBtn = document.getElementById('btn-approve');
@@ -211,9 +334,9 @@
     photoUploadBtn.addEventListener('click', function (e) {
       e.preventDefault();
       const roomId = this.dataset.roomId;
-      if (!roomId) { alert('Buka detail ruangan terlebih dahulu.'); return; }
+      if (!roomId) { notify('Buka detail ruangan terlebih dahulu.', 'warning'); return; }
       const input = document.getElementById('photo-input');
-      if (!input || !input.files.length) { alert('Pilih file foto terlebih dahulu'); return; }
+      if (!input || !input.files.length) { notify('Pilih file foto terlebih dahulu', 'warning'); return; }
       const fd = new FormData();
       fd.append('room_id', roomId);
       for (let i = 0; i < input.files.length; i++) fd.append('photos[]', input.files[i]);
@@ -221,11 +344,11 @@
       fetch('../../actions/room/upload_photo.php', { method: 'POST', body: fd })
         .then(r => r.json())
         .then(data => {
-          if (!data.success) { alert('Gagal upload: ' + (data.message || 'Unknown')); return; }
-          alert('Upload sukses');
-          window.location.reload();
+          if (!data.success) { notify('Gagal upload: ' + (data.message || 'Unknown'), 'danger'); return; }
+          notify(data.message || 'Upload sukses', 'success');
+          window.setTimeout(function () { window.location.reload(); }, 800);
         })
-        .catch(() => alert('Terjadi kesalahan saat upload'))
+        .catch(() => notify('Terjadi kesalahan saat upload', 'danger'))
         .finally(() => { photoUploadBtn.disabled = false; photoUploadBtn.textContent = 'Upload Foto'; });
     });
   }
@@ -235,11 +358,12 @@
     fetch('../../actions/room/create.php', { method: 'POST', body: new FormData(form) })
       .then(r => r.json())
       .then(data => {
-        if (!data.success) { alert('Gagal: ' + (data.message || 'Unknown')); return; }
+        if (!data.success) { notify('Gagal: ' + (data.message || 'Unknown'), 'danger'); return; }
+        notify(data.message || 'Ruangan berhasil ditambahkan', 'success');
         if (modalAdd) modalAdd.hide();
-        window.location.reload();
+        window.setTimeout(function () { window.location.reload(); }, 800);
       })
-      .catch(() => alert('Terjadi kesalahan jaringan'));
+      .catch(() => notify('Terjadi kesalahan jaringan', 'danger'));
   }
 
   // ── Rooms page: Edit ───────────────────────────────────────────────────────
@@ -257,7 +381,7 @@
     })
       .then(r => r.json())
       .then(data => {
-        if (!data.success) { alert('Gagal: ' + (data.message || 'Unknown')); return; }
+        if (!data.success) { notify('Gagal: ' + (data.message || 'Unknown'), 'danger'); return; }
         const row  = document.querySelector('tr[data-id="' + id + '"]');
         const room = data.room || {};
         if (row) {
@@ -277,9 +401,10 @@
             sBadge.textContent = room.is_active == 1 ? 'Aktif' : 'Tidak Aktif';
           }
         }
+        notify(data.message || 'Ruangan berhasil diperbarui', 'success');
         if (modalEdit) modalEdit.hide();
       })
-      .catch(() => alert('Terjadi kesalahan jaringan'));
+      .catch(() => notify('Terjadi kesalahan jaringan', 'danger'));
   }
 
   // ── Rooms page: Delete ─────────────────────────────────────────────────────
@@ -291,11 +416,12 @@
     })
       .then(r => r.json())
       .then(data => {
-        if (!data.success) { alert('Gagal: ' + (data.message || 'Unknown')); return; }
+        if (!data.success) { notify('Gagal: ' + (data.message || 'Unknown'), 'danger'); return; }
         document.querySelector('tr[data-id="' + id + '"]')?.remove();
+        notify(data.message || 'Ruangan berhasil dihapus', 'success');
         if (modalDelete) modalDelete.hide();
       })
-      .catch(() => alert('Terjadi kesalahan jaringan'));
+      .catch(() => notify('Terjadi kesalahan jaringan', 'danger'));
   }
 
   // ── Rooms page: open Add modal ─────────────────────────────────────────────

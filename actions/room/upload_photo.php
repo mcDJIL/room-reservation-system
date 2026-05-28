@@ -71,7 +71,7 @@ foreach ($files as $index => $file) {
     $newName = $safeName . '-' . time() . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
     $targetPath = $uploadDir . '/' . $newName;
     if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-        $dbPath = 'rooms/' . $newName; // store relative path
+        $dbPath = 'uploads/' . $newName; // store relative path
 
         // determine is_primary (first uploaded becomes primary if none exists)
         $is_primary = (!$hasPrimary && $index === 0) ? 1 : 0;
@@ -93,7 +93,7 @@ mysqli_close($conn);
 
 if (!empty($response['photos'])) {
     $response['success'] = true;
-    $response['message'] = 'Files uploaded';
+    $response['message'] = 'Foto berhasil diunggah';
 } else {
     $response['message'] = 'No files were saved';
 }

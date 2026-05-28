@@ -192,6 +192,93 @@ body {
   flex-shrink: 0;
 }
 
+/* Toasts */
+.admin-toast-container {
+  top: 1rem;
+  right: 1rem;
+  z-index: 1085;
+  width: min(360px, calc(100vw - 2rem));
+}
+
+.admin-toast {
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.photo-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.photo-gallery--empty {
+  min-height: 140px;
+  align-items: center;
+}
+
+.photo-gallery-empty {
+  grid-column: 1 / -1;
+  padding: 20px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  text-align: center;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+.photo-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.photo-card.is-primary {
+  border-color: #00288E;
+  box-shadow: 0 0 0 1px rgba(0, 40, 142, 0.12), 0 8px 20px rgba(0, 40, 142, 0.12);
+}
+
+.photo-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.photo-card-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.photo-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.photo-card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.photo-card-badge.primary {
+  background: rgba(0, 40, 142, 0.12);
+  color: #00288E;
+}
+
+.photo-card .btn {
+  width: 100%;
+}
+
 /* =====================================================
    KPI CARDS
    ===================================================== */
