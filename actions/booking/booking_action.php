@@ -3,7 +3,7 @@
     require_once '../../config/connection.php';
 
     if ($_SERVER["REQUEST_METHOD"]!="POST") {
-        header("Location: .././pages/user/booking.php");
+        header("Location: ../../pages/user/booking.php");
         exit();
     }
     $id_user=$_SESSION['user_id'];
