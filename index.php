@@ -5,9 +5,14 @@
 <html lang="id">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SatSet – Pinjam Ruangan Jadi Lebih Mudah & Praktis</title>
+  <?php
+    // Set page-level SEO metadata before including shared meta.
+    $meta_title = 'SatSet – Pinjam Ruangan Jadi Lebih Mudah & Praktis';
+    $meta_description = 'Temukan dan pesan ruangan dengan mudah di SatSet. Sistem reservasi ruangan yang cepat, aman, dan terpercaya.';
+    $meta_keywords = 'satset,ruangan,reservasi,pinjam ruangan,ruang meeting';
+    $meta_image = (isset($_SERVER['HTTP_HOST']) ? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] : '') . '/assets/images/logo.png';
+    include 'includes/meta.php';
+  ?>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/user/landing.css">
   <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">

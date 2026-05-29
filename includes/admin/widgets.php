@@ -23,7 +23,7 @@ include __DIR__ . '/../../includes/admin/calendar_query.php';
           </div>
 
           <div class="d-flex gap-2 flex-wrap mb-3">
-            <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab is-active">Bulan</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab">Bulan</button>
             <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab">Minggu</button>
             <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab">Hari</button>
             <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab">Agenda</button>
@@ -111,6 +111,16 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   calendar.render();
+
+  // Jika layout awal membuat kalender tidak terlihat, perbaiki ukuran setelah render
+  setTimeout(() => {
+    try {
+      calendar.updateSize();
+      updateTitle();
+    } catch (e) {
+      // fallback silent
+    }
+  }, 50);
 
   // Pengendali Toolbar Navigasi & Judul Bulan
   const root = host.closest(".cal-main") || document;

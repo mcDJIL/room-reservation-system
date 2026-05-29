@@ -66,7 +66,7 @@ $res = $q->get_result();
 $row = $res->fetch_assoc();
 $q->close();
 
-echo json_encode(['success' => true, 'room' => $row]);
+echo json_encode(['success' => true, 'message' => 'Ruangan berhasil diperbarui', 'room' => $row]);
 exit;
 
 ?>

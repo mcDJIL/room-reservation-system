@@ -94,7 +94,7 @@ $image_placeholder = "data:image/svg+xml;utf8," . rawurlencode('<svg xmlns="http
 
 // Fungsi render kartu ruangan (tombol Detail ke actions/room/room_action.php)
 function renderRoomCard(array $row, string $people_svg, string $video_svg, string $image_placeholder): string {
-  $img = !empty($row['photo']) ? 'uploads/' . $row['photo'] : $image_placeholder;
+  $img = !empty($row['photo']) ? './assets/images/' . $row['photo'] : $image_placeholder;
     
     return '
     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
@@ -367,6 +367,8 @@ function renderRoomCard(array $row, string $people_svg, string $video_svg, strin
       }
 
       const room = payload.room;
+
+      console.log(room);
 
       modalLabel.textContent = room.room_name;
       document.getElementById('room-detail-name').textContent = room.room_name;

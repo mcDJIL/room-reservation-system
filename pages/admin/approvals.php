@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../config/connection.php';
 $q       = trim($_GET['q']      ?? '');
 $status_f = trim($_GET['status'] ?? '');
 $page    = max(1, intval($_GET['page'] ?? 1));
-$per     = 15;
+$per = isset($_GET['per_page']) ? intval($_GET['per_page']) : 15;
 
 $allowed_status = ['waiting', 'approved', 'rejected'];
 if (!in_array($status_f, $allowed_status, true)) $status_f = '';
@@ -102,6 +102,7 @@ $rooms = $conn->query("SELECT r.id, r.room_name, b.name AS building_name
                                 <button type="submit" class="btn btn-primary" style="font-size:12px;padding:7px 14px;">Cari</button>
                             </div>
                         </div>
+                        <input type="hidden" name="per_page" id="filter-per-page" value="<?= $per ?>">
                     </form>
 
                     <!-- Table -->
@@ -168,12 +169,20 @@ $rooms = $conn->query("SELECT r.id, r.room_name, b.name AS building_name
                             $to_n   = min($page*$per, $total);
                             ?>
                             <span>Showing <strong style="color:var(--t-base)"><?= $from_n ?>–<?= $to_n ?></strong> of <strong style="color:var(--t-base)"><?= $total ?></strong></span>
+                            <select class="select" name="per_page"
+                                style="width:auto; padding:7px 28px 7px 10px; font-size:12px; margin-right:10px;"
+                                onchange="document.getElementById('filter-per-page').value=this.value; document.getElementById('filter-form').submit();">
+                                <option value="15" <?= $per === 15 ? 'selected' : '' ?>>15 per page</option>
+                                <option value="25" <?= $per === 25 ? 'selected' : '' ?>>25 per page</option>
+                                <option value="50" <?= $per === 50 ? 'selected' : '' ?>>50 per page</option>
+                                <option value="100" <?= $per === 100 ? 'selected' : '' ?>>100 per page</option>
+                            </select>
                         </div>
                         <?php if ($total_pages > 1): ?>
                         <div class="pager">
                             <?php
-                            $qs = function($p) use ($q, $status_f) {
-                                return '?' . http_build_query(array_filter(['q'=>$q,'status'=>$status_f,'page'=>$p], fn($v)=>$v!==''));
+                            $qs = function($p) use ($q, $status_f, $per) {
+                                return '?' . http_build_query(array_filter(['q'=>$q,'status'=>$status_f,'page'=>$p,'per_page'=>$per], fn($v)=>$v!==''));
                             };
                             ?>
                             <a href="<?= $qs($page-1) ?>" class="pager-btn <?= $page<=1?'disabled':'' ?>" <?= $page<=1?'aria-disabled="true"':'' ?>>
@@ -192,70 +201,6 @@ $rooms = $conn->query("SELECT r.id, r.room_name, b.name AS building_name
             </div>
         </main>
         <?php include __DIR__ . '/../../includes/footer.php'; ?>
-    </div>
-
-    <!-- ── Add Modal ─────────────────────────────────────────────────────── -->
-    <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalAddLabel">Tambah Peminjaman</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="form-add">
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Peminjam</label>
-                                <select class="form-select" name="user_id" required>
-                                    <option value="">-- Pilih Peminjam --</option>
-                                    <?php foreach ($users as $u): ?>
-                                    <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Ruangan</label>
-                                <select class="form-select" name="room_id" required>
-                                    <option value="">-- Pilih Ruangan --</option>
-                                    <?php foreach ($rooms as $rm): ?>
-                                    <option value="<?= $rm['id'] ?>"><?= htmlspecialchars($rm['room_name']) ?> (<?= htmlspecialchars($rm['building_name']) ?>)</option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Tanggal</label>
-                                <input type="date" class="form-control" name="reservation_date" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Jam Mulai</label>
-                                <input type="time" class="form-control" name="start_hour" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Jam Selesai</label>
-                                <input type="time" class="form-control" name="end_hour" required>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Alasan</label>
-                                <textarea class="form-control" name="reason" rows="3"></textarea>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" name="status">
-                                    <option value="waiting">Waiting</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </div>
 
     <!-- ── Detail Modal ──────────────────────────────────────────────────── -->
@@ -277,94 +222,9 @@ $rooms = $conn->query("SELECT r.id, r.room_name, b.name AS building_name
                     <p><strong>Status:</strong> <span id="d-status"></span></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-danger" id="btn-reject">Tolak</button>
-                    <button type="button" class="btn btn-success"        id="btn-approve">Setuju</button>
+                    <button type="button" class="btn btn-outline-danger" id="btn-reject" hidden>Tolak</button>
+                    <button type="button" class="btn btn-success" id="btn-approve" hidden>Setuju</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── Edit Modal ────────────────────────────────────────────────────── -->
-    <div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditLabel">Edit Peminjaman</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form id="form-edit">
-                    <input type="hidden" name="id" id="e-id">
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Peminjam</label>
-                                <select class="form-select" name="user_id" id="e-user" required>
-                                    <option value="">-- Pilih Peminjam --</option>
-                                    <?php foreach ($users as $u): ?>
-                                    <option value="<?= $u['id'] ?>"><?= htmlspecialchars($u['name']) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Ruangan</label>
-                                <select class="form-select" name="room_id" id="e-room" required>
-                                    <option value="">-- Pilih Ruangan --</option>
-                                    <?php foreach ($rooms as $rm): ?>
-                                    <option value="<?= $rm['id'] ?>"><?= htmlspecialchars($rm['room_name']) ?> (<?= htmlspecialchars($rm['building_name']) ?>)</option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Tanggal</label>
-                                <input type="date" class="form-control" name="reservation_date" id="e-date" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Jam Mulai</label>
-                                <input type="time" class="form-control" name="start_hour" id="e-start" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Jam Selesai</label>
-                                <input type="time" class="form-control" name="end_hour" id="e-end" required>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Alasan</label>
-                                <textarea class="form-control" name="reason" id="e-reason" rows="3"></textarea>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Status</label>
-                                <select class="form-select" name="status" id="e-status">
-                                    <option value="waiting">Waiting</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- ── Delete Modal ──────────────────────────────────────────────────── -->
-    <div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalDeleteLabel">Konfirmasi Hapus</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Hapus peminjaman milik <strong id="del-name"></strong>? Aksi ini tidak dapat dikembalikan.</p>
-                    <input type="hidden" id="del-id">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="button" class="btn btn-danger" id="del-confirm">Hapus Permanen</button>
                 </div>
             </div>
         </div>

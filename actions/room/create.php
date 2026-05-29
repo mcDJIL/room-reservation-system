@@ -40,7 +40,7 @@ if ($stmt = mysqli_prepare($conn, $sql)) {
     if (mysqli_stmt_execute($stmt)) {
         $insertId = mysqli_insert_id($conn);
         $response['success'] = true;
-        $response['message'] = 'Data berhasil ditambahkan';
+        $response['message'] = 'Ruangan berhasil ditambahkan';
         $response['room'] = [
             'id' => $insertId,
             'room_name' => $room_name,

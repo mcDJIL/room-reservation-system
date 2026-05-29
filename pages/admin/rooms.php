@@ -10,8 +10,8 @@ $crumbs = 'Manajemen | Ruangan';
 <html lang="en">
 
 <head>
-        <?php include __DIR__ . '/../../includes/header.php'; ?>
-        <?php require_once dirname(__DIR__, 2) . '/actions/room/read.php'; ?>
+    <?php include __DIR__ . '/../../includes/header.php'; ?>
+    <?php require_once dirname(__DIR__, 2) . '/actions/room/read.php'; ?>
 </head>
 
 <body data-active="<?php echo htmlspecialchars($active); ?>" data-crumbs="<?php echo htmlspecialchars($crumbs); ?>">
@@ -25,7 +25,8 @@ $crumbs = 'Manajemen | Ruangan';
                         <h1 class="hero-title">Ruangan</h1>
                     </div>
                     <div class="hero-actions">
-                        <button type="button" id="btn-add" class="btn btn-primary d-flex" data-bs-toggle="modal" data-bs-target="#modalAdd">
+                        <button type="button" id="btn-add" class="btn btn-primary d-flex" data-bs-toggle="modal"
+                            data-bs-target="#modalAdd">
                             <svg viewBox="0 0 24 24">
                                 <path d="M12 5v14M5 12h14" />
                             </svg>
@@ -44,14 +45,14 @@ $crumbs = 'Manajemen | Ruangan';
                                             <path d="m21 21-4.3-4.3" />
                                         </svg></span>
                                     <input class="input" type="search"
-                                        placeholder="Cari berdasarkan nama ruangan, gedung, atau fasilitas..." id="search-input"
-                                        >
+                                        placeholder="Cari berdasarkan nama ruangan, gedung, atau fasilitas..."
+                                        id="search-input">
                                 </div>
                             </div>
                             <div class="data-toolbar-right">
                                 <form id="status-form" style="display: inline;">
                                     <select name="status" id="status-select" class="select"
-                                    style="width: auto; padding: 7px 28px 7px 10px; font-size: 12px;">
+                                        style="width: auto; padding: 7px 28px 7px 10px; font-size: 12px;">
                                         <option value="" <?= !isset($_GET['status']) || $_GET['status'] === '' ? 'selected' : '' ?>>Semua Status</option>
                                         <option value="aktif" <?= isset($_GET['status']) && $_GET['status'] === 'aktif' ? 'selected' : '' ?>>Aktif</option>
                                         <option value="tidak_aktif" <?= isset($_GET['status']) && $_GET['status'] === 'tidak_aktif' ? 'selected' : '' ?>>Tidak Aktif</option>
@@ -62,60 +63,71 @@ $crumbs = 'Manajemen | Ruangan';
 
                         <div>
                             <table class="data-table" style="margin: 0 22px; min-width: 900px;">
-    <thead>
-        <tr>
-            <th class="sorted-asc">Nama Ruangan<span class="sort"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6" /></svg></span></th>
-            <th>Gedung</th>
-            <th>Kapasitas</th>
-            <th>Aktif/Tidak Aktif</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (!empty($rooms)): ?>
-            <?php foreach ($rooms as $room): ?>
-                <?php 
-                    $id = htmlspecialchars($room['id']);
-                    $name = htmlspecialchars($room['room_name']);
-                    $building = htmlspecialchars($room['building_name'] ?? 'Tanpa Gedung');
-                    $capacity = htmlspecialchars($room['capacity']);
-                    $status_text = $room['is_active'] == 1 ? 'Aktif' : 'Tidak Aktif';
-                    $status_class = $room['is_active'] == 1 ? 'success' : 'danger';
-                ?>
-                <tr class="data-row" data-id="<?= $id ?>" data-name="<?= $name ?>" data-building="<?= $building ?>" data-capacity="<?= $capacity ?>" data-status="<?= $status_text ?>">
-                    <td>
-                        <div class="fw-bold"><?= $name ?></div>
-                    </td>
-                    <td><span class="badge primary"><?= $building ?></span></td>
-                    <td><?= $capacity ?> Orang</td>
-                    <td><span class="badge <?= $status_class ?> dot"><?= $status_text ?></span></td>
-                    <td>
-                        <div class="data-cell-actions">
-                            <button class="btn--icon btn-view" aria-label="View" data-id="<?= $id ?>">
-                                <i class="fa-regular fa-eye"></i>
-                            </button>
-                            <button class="btn--icon btn-edit" aria-label="Edit" data-id="<?= $id ?>">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                            </button>
-                            <button class="btn--icon btn-delete" aria-label="Delete" data-id="<?= $id ?>">
-                                <i class="fa-regular fa-trash-can"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="5" style="text-align: center;">Tidak ada data ruangan.</td>
-            </tr>
-        <?php endif; ?>
-    </tbody>
-</table>
+                                <thead>
+                                    <tr>
+                                        <th class="sorted-asc">Nama Ruangan<span class="sort"><svg viewBox="0 0 24 24">
+                                                    <path d="m6 9 6 6 6-6" />
+                                                </svg></span></th>
+                                        <th>Gedung</th>
+                                        <th>Kapasitas</th>
+                                        <th>Aktif/Tidak Aktif</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php if (!empty($rooms)): ?>
+                                        <?php foreach ($rooms as $room): ?>
+                                            <?php
+                                            $id = htmlspecialchars($room['id']);
+                                            $name = htmlspecialchars($room['room_name']);
+                                            $building = htmlspecialchars($room['building_name'] ?? 'Tanpa Gedung');
+                                            $capacity = htmlspecialchars($room['capacity']);
+                                            $status_text = $room['is_active'] == 1 ? 'Aktif' : 'Tidak Aktif';
+                                            $status_class = $room['is_active'] == 1 ? 'success' : 'danger';
+                                            ?>
+                                            <tr class="data-row" data-id="<?= $id ?>" data-name="<?= $name ?>"
+                                                data-building="<?= $building ?>" data-capacity="<?= $capacity ?>"
+                                                data-status="<?= $status_text ?>">
+                                                <td>
+                                                    <div class="fw-bold"><?= $name ?></div>
+                                                </td>
+                                                <td><span class="badge primary"><?= $building ?></span></td>
+                                                <td><?= $capacity ?> Orang</td>
+                                                <td><span class="badge <?= $status_class ?> dot"><?= $status_text ?></span></td>
+                                                <td>
+                                                    <div class="data-cell-actions">
+                                                        <button class="btn--icon btn-view" aria-label="View"
+                                                            data-id="<?= $id ?>">
+                                                            <i class="fa-regular fa-eye"></i>
+                                                        </button>
+                                                        <button class="btn--icon btn-edit" aria-label="Edit"
+                                                            data-id="<?= $id ?>">
+                                                            <i class="fa-regular fa-pen-to-square"></i>
+                                                        </button>
+                                                        <button class="btn--icon btn-delete" aria-label="Delete"
+                                                            data-id="<?= $id ?>">
+                                                            <i class="fa-regular fa-trash-can"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php else: ?>
+                                        <tr>
+                                            <td colspan="5" style="text-align: center;">Tidak ada data ruangan.</td>
+                                        </tr>
+                                    <?php endif; ?>
+                                </tbody>
+                            </table>
                         </div>
 
                         <div class="data-foot">
                             <div class="data-foot-info">
-                                <span>Showing <strong style="color: var(--t-base);" id="pag-from"><?= $pagination['from'] ?></strong>–<strong style="color: var(--t-base);" id="pag-to"><?= $pagination['to'] ?></strong> of <strong style="color: var(--t-base);" id="pag-total"><?= $pagination['total_rows'] ?></strong></span>
+                                <span>Showing <strong style="color: var(--t-base);"
+                                        id="pag-from"><?= $pagination['from'] ?></strong>–<strong
+                                        style="color: var(--t-base);" id="pag-to"><?= $pagination['to'] ?></strong> of
+                                    <strong style="color: var(--t-base);"
+                                        id="pag-total"><?= $pagination['total_rows'] ?></strong></span>
                                 <select class="select" id="per-page-select">
                                     <option value="15" <?= $per_page === 15 ? 'selected' : '' ?>>15 per page</option>
                                     <option value="25" <?= $per_page === 25 ? 'selected' : '' ?>>25 per page</option>
@@ -146,91 +158,109 @@ $crumbs = 'Manajemen | Ruangan';
         <!-- Bootstrap modals -->
 
         <script>
-        // Real-time search functionality
-        const searchInput = document.getElementById('search-input');
-        const statusFilter = document.querySelector('select[name="status"]');
-        const perPageSelect = document.getElementById('per-page-select');
-        const tbody = document.querySelector('table tbody');
-        const pagerContainer = document.getElementById('pager-container');
-        const pagerPages = document.getElementById('pager-pages');
-        const pagFrom = document.getElementById('pag-from');
-        const pagTo = document.getElementById('pag-to');
-        const pagTotal = document.getElementById('pag-total');
-        const pagerPrev = document.getElementById('pager-prev');
-        const pagerNext = document.getElementById('pager-next');
-        
-        let currentPage = 1;
-        let perPage = 15;
-        let searchTimeout;
+            // Real-time search functionality
+            const searchInput = document.getElementById('search-input');
+            const statusFilter = document.querySelector('select[name="status"]');
+            const perPageSelect = document.getElementById('per-page-select');
+            const tbody = document.querySelector('table tbody');
+            const pagerContainer = document.getElementById('pager-container');
+            const pagerPages = document.getElementById('pager-pages');
+            const pagFrom = document.getElementById('pag-from');
+            const pagTo = document.getElementById('pag-to');
+            const pagTotal = document.getElementById('pag-total');
+            const pagerPrev = document.getElementById('pager-prev');
+            const pagerNext = document.getElementById('pager-next');
+            const initialPagination = <?= json_encode($pagination) ?>;
 
-        function renderPagination(pagination) {
-            pagerPages.innerHTML = '';
-            const total = pagination.total_pages;
-            const current = pagination.current_page;
-            
-            // Tentukan range halaman yang ditampilkan
-            let start = Math.max(1, current - 2);
-            let end = Math.min(total, current + 2);
-            
-            // Jika kurang dari 5 halaman, tampilkan semua
-            if (total <= 5) {
-                start = 1;
-                end = total;
-            }
-            
-            // Tombol angka halaman
-            for (let i = start; i <= end; i++) {
-                const btn = document.createElement('button');
-                btn.className = 'pager-btn' + (i === current ? ' is-active' : '');
-                btn.textContent = i;
-                btn.addEventListener('click', () => goToPage(i));
-                pagerPages.appendChild(btn);
-            }
-            
-            // Update prev/next buttons
-            pagerPrev.disabled = current <= 1;
-            pagerNext.disabled = current >= total;
-            
-            // Update info
-            pagFrom.textContent = pagination.from;
-            pagTo.textContent = pagination.to;
-            pagTotal.textContent = pagination.total_rows;
-            
-            currentPage = current;
-        }
+            let currentPage = initialPagination.current_page || 1;
+            let perPage = initialPagination.per_page || 15;
+            let searchTimeout;
 
-        async function performSearch(query = '', status = '', page = 1) {
-            try {
-                const params = new URLSearchParams();
-                if (query) params.append('q', query);
-                if (status) params.append('status', status);
-                params.append('page', page);
-                params.append('per_page', perPage);
-                
-                const response = await fetch('../../actions/room/search.php?' + params.toString());
-                const result = await response.json();
+            function renderPagination(pagination) {
+                pagerPages.innerHTML = '';
+                const total = pagination.total_pages;
+                const current = pagination.current_page;
 
-                if (result.success) {
-                    const data = result.data;
-                    const pagination = result.pagination;
-                    
-                    if (data.length === 0 && page === 1) {
-                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada data ruangan.</td></tr>';
-                        pagerPages.innerHTML = '';
-                        pagerPrev.disabled = true;
-                        pagerNext.disabled = true;
-                        pagFrom.textContent = '0';
-                        pagTo.textContent = '0';
-                        pagTotal.textContent = '0';
+                const pages = [];
+
+                if (total <= 7) {
+                    for (let i = 1; i <= total; i++) pages.push(i);
+                } else {
+                    pages.push(1);
+
+                    const start = Math.max(2, current - 1);
+                    const end = Math.min(total - 1, current + 1);
+
+                    if (start > 2) pages.push('...');
+                    for (let i = start; i <= end; i++) pages.push(i);
+                    if (end < total - 1) pages.push('...');
+
+                    pages.push(total);
+                }
+
+                // Tombol angka halaman
+                pages.forEach((pageItem) => {
+                    if (pageItem === '...') {
+                        const gap = document.createElement('span');
+                        gap.className = 'pager-gap';
+                        gap.textContent = '...';
+                        pagerPages.appendChild(gap);
                         return;
                     }
 
-                    tbody.innerHTML = data.map(room => {
-                        const statusText = room.is_active == 1 ? 'Aktif' : 'Tidak Aktif';
-                        const statusClass = room.is_active == 1 ? 'success' : 'danger';
-                        const building = room.building_name || 'Tanpa Gedung';
-                        
-                        return `<tr class="data-row" data-id="${room.id}" data-name="${room.room_name}" data-building="${building}" data-capacity="${room.capacity}" data-status="${statusText}">
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'pager-btn' + (pageItem === current ? ' is-active' : '');
+                    btn.textContent = pageItem;
+                    btn.setAttribute('aria-label', `Halaman ${pageItem}`);
+                    btn.addEventListener('click', () => goToPage(pageItem));
+                    pagerPages.appendChild(btn);
+                });
+
+                // Update prev/next buttons
+                pagerPrev.disabled = current <= 1;
+                pagerNext.disabled = current >= total;
+
+                // Update info
+                pagFrom.textContent = pagination.from;
+                pagTo.textContent = pagination.to;
+                pagTotal.textContent = pagination.total_rows;
+
+                currentPage = current;
+            }
+
+            async function performSearch(query = '', status = '', page = 1) {
+                try {
+                    const params = new URLSearchParams();
+                    if (query) params.append('q', query);
+                    if (status) params.append('status', status);
+                    params.append('page', page);
+                    params.append('per_page', perPage);
+
+                    const response = await fetch('../../actions/room/search.php?' + params.toString());
+                    const result = await response.json();
+
+                    if (result.success) {
+                        const data = result.data;
+                        const pagination = result.pagination;
+
+                        if (data.length === 0 && page === 1) {
+                            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Tidak ada data ruangan.</td></tr>';
+                            pagerPages.innerHTML = '';
+                            pagerPrev.disabled = true;
+                            pagerNext.disabled = true;
+                            pagFrom.textContent = '0';
+                            pagTo.textContent = '0';
+                            pagTotal.textContent = '0';
+                            return;
+                        }
+
+                        tbody.innerHTML = data.map(room => {
+                            const statusText = room.is_active == 1 ? 'Aktif' : 'Tidak Aktif';
+                            const statusClass = room.is_active == 1 ? 'success' : 'danger';
+                            const building = room.building_name || 'Tanpa Gedung';
+
+                            return `<tr class="data-row" data-id="${room.id}" data-name="${room.room_name}" data-building="${building}" data-capacity="${room.capacity}" data-status="${statusText}">
                             <td><div class="fw-bold">${room.room_name}</div></td>
                             <td><span class="badge primary">${building}</span></td>
                             <td>${room.capacity} Orang</td>
@@ -249,68 +279,76 @@ $crumbs = 'Manajemen | Ruangan';
                                 </div>
                             </td>
                         </tr>`;
-                    }).join('');
-                    
-                    renderPagination(pagination);
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Error mengambil data.</td></tr>';
+                        }).join('');
+
+                        renderPagination(pagination);
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Error mengambil data.</td></tr>';
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Error melakukan pencarian.</td></tr>';
                 }
-            } catch (error) {
-                console.error('Search error:', error);
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Error melakukan pencarian.</td></tr>';
             }
-        }
 
-        function goToPage(page) {
-            const query = searchInput ? searchInput.value : '';
-            const status = statusFilter ? statusFilter.value : '';
-            performSearch(query, status, page);
-        }
-
-        // Search on input dengan debounce
-        if (searchInput) {
-            searchInput.addEventListener('keyup', () => {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    const query = searchInput.value;
-                    const status = statusFilter ? statusFilter.value : '';
-                    performSearch(query, status, 1);
-                }, 300);
-            });
-        }
-
-        // Search on status filter change
-        if (statusFilter) {
-            statusFilter.addEventListener('change', () => {
-                const query = searchInput ? searchInput.value : '';
-                const status = statusFilter.value;
-                performSearch(query, status, 1);
-            });
-        }
-
-        // Per-page change
-        if (perPageSelect) {
-            perPageSelect.addEventListener('change', () => {
-                perPage = parseInt(perPageSelect.value);
+            function goToPage(page) {
                 const query = searchInput ? searchInput.value : '';
                 const status = statusFilter ? statusFilter.value : '';
-                performSearch(query, status, 1);
-            });
-        }
+                performSearch(query, status, page);
+            }
 
-        // Prev button
-        if (pagerPrev) {
-            pagerPrev.addEventListener('click', () => {
-                if (currentPage > 1) goToPage(currentPage - 1);
-            });
-        }
+            // Search on input dengan debounce
+            if (searchInput) {
+                searchInput.addEventListener('keyup', () => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        const query = searchInput.value;
+                        const status = statusFilter ? statusFilter.value : '';
+                        performSearch(query, status, 1);
+                    }, 300);
+                });
+            }
 
-        // Next button
-        if (pagerNext) {
-            pagerNext.addEventListener('click', () => {
-                goToPage(currentPage + 1);
-            });
-        }
+            // Search on status filter change
+            if (statusFilter) {
+                statusFilter.addEventListener('change', () => {
+                    const query = searchInput ? searchInput.value : '';
+                    const status = statusFilter.value;
+                    performSearch(query, status, 1);
+                });
+            }
+
+            // Per-page change
+            if (perPageSelect) {
+                perPageSelect.addEventListener('change', () => {
+                    perPage = parseInt(perPageSelect.value);
+                    const query = searchInput ? searchInput.value : '';
+                    const status = statusFilter ? statusFilter.value : '';
+                    performSearch(query, status, 1);
+                });
+            }
+
+            // Prev button
+            if (pagerPrev) {
+                pagerPrev.type = 'button';
+                pagerPrev.addEventListener('click', () => {
+                    if (currentPage > 1) goToPage(currentPage - 1);
+                });
+            }
+
+            // Next button
+            if (pagerNext) {
+                pagerNext.type = 'button';
+                pagerNext.addEventListener('click', () => {
+                    goToPage(currentPage + 1);
+                });
+            }
+
+            if (perPageSelect) {
+                perPageSelect.value = String(perPage);
+            }
+
+            renderPagination(initialPagination);
         </script>
 
         <!-- Add Modal -->
@@ -326,7 +364,8 @@ $crumbs = 'Manajemen | Ruangan';
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Nama Ruangan</label>
-                                    <input type="text" class="form-control form-control-lg" id="add-name" name="room_name" placeholder="Contoh: Auditorium Lt.6" required>
+                                    <input type="text" class="form-control form-control-lg" id="add-name"
+                                        name="room_name" placeholder="Contoh: Auditorium Lt.6" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Gedung</label>
@@ -341,15 +380,18 @@ $crumbs = 'Manajemen | Ruangan';
                                 </div>
                                 <div class="col-md-8">
                                     <label class="form-label">Fasilitas (pisahkan dengan koma)</label>
-                                    <input type="text" class="form-control" id="add-facility" name="facility" placeholder="Projector, AC, Mikrofon">
+                                    <input type="text" class="form-control" id="add-facility" name="facility"
+                                        placeholder="Projector, AC, Mikrofon">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Ringkasan singkat</label>
-                                    <input type="text" class="form-control" id="add-short" name="short_description" maxlength="255" placeholder="Satu kalimat ringkasan">
+                                    <input type="text" class="form-control" id="add-short" name="short_description"
+                                        maxlength="255" placeholder="Satu kalimat ringkasan">
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label">Deskripsi lengkap</label>
-                                    <textarea class="form-control" id="add-detail" name="detail_description" rows="4" placeholder="Deskripsi lengkap ruangan"></textarea>
+                                    <textarea class="form-control" id="add-detail" name="detail_description" rows="4"
+                                        placeholder="Deskripsi lengkap ruangan"></textarea>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Status</label>
@@ -361,7 +403,8 @@ $crumbs = 'Manajemen | Ruangan';
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="button" class="btn btn-outline-secondary"
+                                data-bs-dismiss="modal">Batal</button>
                             <button type="submit" class="btn btn-primary">Simpan Ruangan</button>
                         </div>
                     </form>
@@ -385,14 +428,15 @@ $crumbs = 'Manajemen | Ruangan';
                         <hr>
                         <div class="mb-3">
                             <label class="form-label">Galeri Foto Ruangan</label>
-                            <div id="photo-gallery" class="photo-gallery">
-                                <!-- Thumbnails appended here -->
+                            <div id="photo-gallery" class="photo-gallery photo-gallery--empty">
+                                <div class="photo-gallery-empty">Memuat foto...</div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Unggah Foto</label>
                             <input class="form-control" type="file" id="photo-input" accept="image/*" multiple>
-                            <div class="small text-muted mt-1">Unggah beberapa foto sekaligus. Pilih satu foto sebagai primary setelah upload.</div>
+                            <div class="small text-muted mt-1">Unggah beberapa foto sekaligus. Pilih satu foto sebagai
+                                primary setelah upload.</div>
                             <button class="btn btn-sm btn-primary mt-2" id="photo-upload-btn">Upload Foto</button>
                         </div>
                     </div>
