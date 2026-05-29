@@ -435,7 +435,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <div class="mb-3">
                             <label class="form-label">Unggah Foto</label>
                             <input class="form-control" type="file" id="photo-input" accept="image/*" multiple>
-                            <div class="small text-muted mt-1">Unggah beberapa foto sekaligus. Pilih satu foto sebagai
+                            <div class="small text-muted mt-1">Unggah beberapa foto sekaligus (maks. 20MB per file, total request menyesuaikan server). Pilih satu foto sebagai
                                 primary setelah upload.</div>
                             <button class="btn btn-sm btn-primary mt-2" id="photo-upload-btn">Upload Foto</button>
                         </div>

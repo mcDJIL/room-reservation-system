@@ -6,9 +6,71 @@ require_once __DIR__ . '/../../config/connection.php';
 
 $response = ['success' => false, 'message' => '', 'photos' => []];
 
+function bytes_to_human($bytes)
+{
+    $bytes = (int) $bytes;
+    if ($bytes >= 1073741824) return round($bytes / 1073741824, 2) . ' GB';
+    if ($bytes >= 1048576) return round($bytes / 1048576, 2) . ' MB';
+    if ($bytes >= 1024) return round($bytes / 1024, 2) . ' KB';
+    return $bytes . ' B';
+}
+
+function parse_ini_size_to_bytes($size)
+{
+    $size = trim((string) $size);
+    if ($size === '') return 0;
+
+    $unit = strtolower(substr($size, -1));
+    $value = (int) $size;
+
+    switch ($unit) {
+        case 'g':
+            return $value * 1024 * 1024 * 1024;
+        case 'm':
+            return $value * 1024 * 1024;
+        case 'k':
+            return $value * 1024;
+        default:
+            return (int) $size;
+    }
+}
+
+function file_upload_error_message($errorCode)
+{
+    $uploadLimit = bytes_to_human(parse_ini_size_to_bytes(ini_get('upload_max_filesize')));
+    $postLimit = bytes_to_human(parse_ini_size_to_bytes(ini_get('post_max_size')));
+
+    switch ((int) $errorCode) {
+        case UPLOAD_ERR_INI_SIZE:
+            return 'Ukuran file melebihi batas upload server (upload_max_filesize: ' . $uploadLimit . ').';
+        case UPLOAD_ERR_FORM_SIZE:
+            return 'Ukuran file melebihi batas form upload.';
+        case UPLOAD_ERR_PARTIAL:
+            return 'File hanya terunggah sebagian.';
+        case UPLOAD_ERR_NO_FILE:
+            return 'Tidak ada file yang dipilih.';
+        case UPLOAD_ERR_NO_TMP_DIR:
+            return 'Folder temporary upload tidak ditemukan di server.';
+        case UPLOAD_ERR_CANT_WRITE:
+            return 'Server gagal menulis file ke disk.';
+        case UPLOAD_ERR_EXTENSION:
+            return 'Upload dihentikan oleh ekstensi PHP.';
+        default:
+            return 'Gagal upload file. Batas saat ini: upload_max_filesize=' . $uploadLimit . ', post_max_size=' . $postLimit . '.';
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     $response['message'] = 'Method not allowed';
+    echo json_encode($response);
+    exit;
+}
+
+$contentLength = isset($_SERVER['CONTENT_LENGTH']) ? (int) $_SERVER['CONTENT_LENGTH'] : 0;
+$postMaxBytes = parse_ini_size_to_bytes(ini_get('post_max_size'));
+if ($postMaxBytes > 0 && $contentLength > $postMaxBytes) {
+    $response['message'] = 'Total ukuran upload melebihi batas server (post_max_size: ' . bytes_to_human($postMaxBytes) . ').';
     echo json_encode($response);
     exit;
 }
@@ -53,6 +115,8 @@ foreach ($_FILES as $field => $data) {
     }
 }
 
+$uploadErrors = [];
+
 // Check existing primary
 $hasPrimary = false;
 $q = mysqli_prepare($conn, 'SELECT COUNT(*) FROM room_photos WHERE room_id = ? AND is_primary = 1');
@@ -65,7 +129,10 @@ if ($q) {
 }
 
 foreach ($files as $index => $file) {
-    if ($file['error'] !== UPLOAD_ERR_OK) continue;
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        $uploadErrors[] = file_upload_error_message($file['error']);
+        continue;
+    }
     $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
     $safeName = preg_replace('/[^a-zA-Z0-9-_\.]/', '-', pathinfo($file['name'], PATHINFO_FILENAME));
     $newName = $safeName . '-' . time() . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
@@ -94,8 +161,15 @@ mysqli_close($conn);
 if (!empty($response['photos'])) {
     $response['success'] = true;
     $response['message'] = 'Foto berhasil diunggah';
+    if (!empty($uploadErrors)) {
+        $response['message'] .= ' (Sebagian file gagal: ' . implode(' | ', array_unique($uploadErrors)) . ')';
+    }
 } else {
-    $response['message'] = 'No files were saved';
+    if (!empty($uploadErrors)) {
+        $response['message'] = implode(' | ', array_unique($uploadErrors));
+    } else {
+        $response['message'] = 'No files were saved';
+    }
 }
 
 echo json_encode($response);
