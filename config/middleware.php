@@ -2,6 +2,6 @@
 
 $role = $_SESSION['role'];
 
-if ($role !== 'admin') {
+if (empty($role) || $role !== 'admin') {
     header("Location: ../../index.php");
 }
