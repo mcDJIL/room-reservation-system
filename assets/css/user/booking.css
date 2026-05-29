@@ -186,6 +186,20 @@
   margin: 0;
 }
 
+.terms-link {
+  text-decoration: none;
+  color: #00288E;
+}
+
+.terms-link:hover {
+  text-decoration: underline;
+}
+
+.swal-title-custom {
+  font-size: 30px;
+  color: #00288E;
+}
+
 /* Konfirmasi button */
 .btn-konfirmasi {
   width: 100%;
@@ -350,8 +364,8 @@
   border-color: #505F76;
 }
 
-.schedule-nav-btn:disabled,
- .schedule-nav-btn:disabled:hover {
+.schedule-nav-btn.disabled,
+ .schedule-nav-btn.disabled:hover {
   opacity: 0.35 !important;
   cursor: not-allowed !important;
   background: #fff !important;

@@ -188,7 +188,10 @@
                   </div>
                 </div>
                 <p class="hint-message">
-                  Minimal durasi reservasi adalah 1 jam
+                  <svg width="15" height="15" viewBox="0 0 25 25" fill="none">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" fill="#00288E"/>
+                  </svg>
+                  <a href="#" class="terms-link" id="terms-link">Ketentuan Layanan</a>
                 </p>
               </div>
 
@@ -329,7 +332,6 @@
                 <span class="legend-label">Pilihan Anda</span>
               </div>
             </div>
-
           </div><!-- /.schedule-card -->
         </div><!-- /.col-lg-8 -->
 
@@ -564,11 +566,13 @@
       function updateDateButtons() {
         if (!btnPrev || !tanggalInput) return;
         const today="<?= $tanggal_hari_ini; ?>";
-        btnPrev.disabled=tanggalInput.value<=today;
+        if (tanggalInput.value<=today) btnPrev.classList.add('disabled');
+        else btnPrev.classList.remove('disabled');
       }
 
       if (btnPrev && btnNext) {
         btnPrev.addEventListener('click', function() {
+          if (this.classList.contains('disabled')) return;
           const [y, m, d]=tanggalInput.value.split('-').map(Number);
           const prev=new Date(y, m-1, d-1);
           tanggalInput.value=prev.getFullYear() + '-' + String(prev.getMonth()+1).padStart(2, '0') + '-' + String(prev.getDate()).padStart(2, '0');
@@ -661,6 +665,31 @@
         updateLiveIndicator();
         resetWaktuDefault();
       }
+
+      document.getElementById('terms-link').addEventListener('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+          title:'Ketentuan Layanan',
+          customClass:{
+            title:'swal-title-custom'
+          },
+          width:'450px',
+          html:`
+            <div style="text-align:left; font-size:14px; color:#191C1E; line-height:1.7;">
+              <p>Sebelum melakukan reservasi, harap perhatikan ketentuan berikut:</p>
+              <ol style="padding-left:20px;">
+                <li>Durasi minimal reservasi adalah 1 jam.</li>
+                <li>Ruangan tersedia mulai pukul 08:00 hingga 18:00 WIB.</li>
+                <li>Durasi yang dipilih sudah mencakup waktu antisipasi perpanjangan acara.</li>
+                <li>Pembatalan jadwal dapat dilakukan maksimal 2 jam sebelum waktu reservasi dimulai.</li>
+                <li>Pengguna ruangan wajib menjaga kebersihan dan kelengkapan fasilitas ruangan.</li>
+              </ol>
+            </div>
+          `,
+          confirmButtonText:'Saya Mengerti',
+          confirmButtonColor:'#00288E',
+        });
+      });
 
       function cekBentrok() {
         const mulai=mulaiInput.value;
