@@ -1,10 +1,21 @@
 /* =====================================================
    SHELL LAYOUT – sidebar + main area
    ===================================================== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  font-family: Inter, -apple-system, Roboto, Helvetica, sans-serif;
+  font-family:
+    Inter,
+    -apple-system,
+    Roboto,
+    Helvetica,
+    sans-serif;
   background: #f1f5f9;
   color: #1e293b;
 }
@@ -34,7 +45,7 @@ body {
 .d-sidebar {
   width: 240px;
   flex-shrink: 0;
-  background: #00288E;
+  background: #00288e;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -99,7 +110,9 @@ body {
   font-size: 13.5px;
   font-weight: 500;
   text-decoration: none;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   margin-bottom: 2px;
 }
 
@@ -111,7 +124,7 @@ body {
 }
 
 .nav-link:hover {
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
@@ -129,8 +142,14 @@ body {
   font-weight: 600;
 }
 
-.nav-badge.urgent { background: #ef4444; color: #fff; }
-.nav-badge.info   { background: rgba(255,255,255,0.18); color: #fff; }
+.nav-badge.urgent {
+  background: #ef4444;
+  color: #fff;
+}
+.nav-badge.info {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
 
 /* Sidebar footer / workspace */
 .sidebar-footer {
@@ -150,7 +169,7 @@ body {
 }
 
 .workspace:hover {
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .workspace-avatar {
@@ -236,8 +255,10 @@ body {
 }
 
 .photo-card.is-primary {
-  border-color: #00288E;
-  box-shadow: 0 0 0 1px rgba(0, 40, 142, 0.12), 0 8px 20px rgba(0, 40, 142, 0.12);
+  border-color: #00288e;
+  box-shadow:
+    0 0 0 1px rgba(0, 40, 142, 0.12),
+    0 8px 20px rgba(0, 40, 142, 0.12);
 }
 
 .photo-card img {
@@ -272,7 +293,7 @@ body {
 
 .photo-card-badge.primary {
   background: rgba(0, 40, 142, 0.12);
-  color: #00288E;
+  color: #00288e;
 }
 
 .photo-card .btn {
@@ -301,7 +322,7 @@ body {
 }
 
 .photo-icon-btn.btn-set-primary {
-  color: #00288E;
+  color: #00288e;
 }
 
 .photo-icon-btn.btn-delete-photo {
@@ -335,7 +356,7 @@ body {
 }
 
 .kpi-card::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 0;
@@ -344,10 +365,18 @@ body {
   border-radius: 12px 0 0 12px;
 }
 
-.kpi-card.c-warning::before { background: #f59e0b; }
-.kpi-card.c-primary::before { background: #00288E; }
-.kpi-card.c-success::before { background: #10b981; }
-.kpi-card.c-danger::before  { background: #ef4444; }
+.kpi-card.c-warning::before {
+  background: #f59e0b;
+}
+.kpi-card.c-primary::before {
+  background: #00288e;
+}
+.kpi-card.c-success::before {
+  background: #10b981;
+}
+.kpi-card.c-danger::before {
+  background: #ef4444;
+}
 
 .kpi-top {
   display: flex;
@@ -384,10 +413,22 @@ body {
   stroke-linejoin: round;
 }
 
-.kpi-icon.warning { background: #fef3c7; color: #d97706; }
-.kpi-icon.primary { background: #dbeafe; color: #00288E; }
-.kpi-icon.success { background: #d1fae5; color: #059669; }
-.kpi-icon.danger  { background: #fee2e2; color: #dc2626; }
+.kpi-icon.warning {
+  background: #fef3c7;
+  color: #d97706;
+}
+.kpi-icon.primary {
+  background: #dbeafe;
+  color: #00288e;
+}
+.kpi-icon.success {
+  background: #d1fae5;
+  color: #059669;
+}
+.kpi-icon.danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
 .kpi-label {
   color: #64748b;
@@ -407,10 +448,22 @@ body {
   white-space: nowrap;
 }
 
-.kpi-pill.urgent { background: #fee2e2; color: #b91c1c; }
-.kpi-pill.info   { background: #dbeafe; color: #1d4ed8; }
-.kpi-pill.flat   { background: #d1fae5; color: #065f46; }
-.kpi-pill.warn   { background: #fef3c7; color: #92400e; }
+.kpi-pill.urgent {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+.kpi-pill.info {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.kpi-pill.flat {
+  background: #d1fae5;
+  color: #065f46;
+}
+.kpi-pill.warn {
+  background: #fef3c7;
+  color: #92400e;
+}
 
 .kpi-value {
   font-size: 32px;
@@ -437,8 +490,8 @@ body {
    CALENDAR TABS
    ===================================================== */
 .cal-view-tab.is-active {
-  background: #00288E;
-  border-color: #00288E;
+  background: #00288e;
+  border-color: #00288e;
   color: #fff;
 }
 
@@ -457,7 +510,7 @@ body {
 }
 
 .d-footer a {
-  color: #00288E;
+  color: #00288e;
   text-decoration: none;
 }
 
@@ -481,9 +534,15 @@ body {
   place-items: center;
   background:
     radial-gradient(circle at top, rgba(59, 130, 246, 0.14), transparent 42%),
-    linear-gradient(135deg, rgba(241, 245, 249, 0.96), rgba(226, 232, 240, 0.98));
+    linear-gradient(
+      135deg,
+      rgba(241, 245, 249, 0.96),
+      rgba(226, 232, 240, 0.98)
+    );
   backdrop-filter: blur(10px);
-  transition: opacity 220ms ease, visibility 220ms ease;
+  transition:
+    opacity 220ms ease,
+    visibility 220ms ease;
 }
 
 .page-loader.is-hidden {
@@ -508,7 +567,7 @@ body {
   height: 52px;
   border-radius: 50%;
   border: 4px solid rgba(2, 40, 142, 0.12);
-  border-top-color: #00288E;
+  border-top-color: #00288e;
   border-right-color: rgba(59, 130, 246, 0.78);
   animation: dashboard-spin 900ms linear infinite;
   flex-shrink: 0;
@@ -533,7 +592,9 @@ body {
 }
 
 @keyframes dashboard-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* =====================================================
@@ -677,10 +738,18 @@ body {
   line-height: 1;
 }
 
-.stat-total { background: linear-gradient(135deg, #0f172a, #334155); }
-.stat-approved { background: linear-gradient(135deg, #059669, #10b981); }
-.stat-waiting { background: linear-gradient(135deg, #d97706, #f59e0b); }
-.stat-rejected { background: linear-gradient(135deg, #dc2626, #f43f5e); }
+.stat-total {
+  background: linear-gradient(135deg, #0f172a, #334155);
+}
+.stat-approved {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
+.stat-waiting {
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+}
+.stat-rejected {
+  background: linear-gradient(135deg, #dc2626, #f43f5e);
+}
 
 .report-table-wrap {
   border-radius: 16px;
