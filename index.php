@@ -23,7 +23,7 @@
   <?php
   $current_page = basename($_SERVER['PHP_SELF']);
   ?>
-  <nav class="landing-navbar navbar navbar-expand-lg">
+  <nav class="landing-navbar navbar navbar-expand-lg navbar-light">
     <div class="container-fluid px-0">
       <a class="navbar-brand" href="./index.php" style="color: #164d6d;">
         <img src="./assets/images/logo.png" alt="SatSet" height="40" style="margin-right:6px;"
@@ -33,7 +33,7 @@
 
       <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
         data-bs-target="#landingNav" aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <span class="navbar-toggler-lines" aria-hidden="true"></span>
       </button>
 
       <div class="collapse navbar-collapse" id="landingNav">
