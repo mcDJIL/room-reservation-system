@@ -210,34 +210,15 @@
           </div>
 
           <!-- Room Preview Card -->
-          <div class="room-preview-card">
+          <div class="room-preview-card" id="room-preview-card" style="display:none;">
             <div class="room-preview-img">
-              <img src="../../assets/static/images/bg.jpg" alt="Ruang Borobudur">
+              <img src="" alt="">
             </div>
             <div class="room-preview-info">
               <div class="room-preview-header">
-                <h4 class="room-preview-name">Ruang Borobudur</h4>
+                <h4 class="room-preview-name" id="room-preview-name"></h4>
               </div>
-              <div class="room-preview-tags">
-                <span class="room-feature-tag">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                    <path d="M0 7V6.08125C0 5.66319 0.213889 5.32292 0.641667 5.06042C1.06944 4.79792 1.63333 4.66667 2.33333 4.66667C2.45972 4.66667 2.58125 4.6691 2.69792 4.67396C2.81458 4.67882 2.92639 4.69097 3.03333 4.71042C2.89722 4.91458 2.79514 5.12847 2.72708 5.35208C2.65903 5.57569 2.625 5.80903 2.625 6.05208V7H0ZM3.5 7V6.05208C3.5 5.74097 3.58507 5.4566 3.75521 5.19896C3.92535 4.94132 4.16597 4.71528 4.47708 4.52083C4.78819 4.32639 5.16007 4.18056 5.59271 4.08333C6.02535 3.98611 6.49444 3.9375 7 3.9375C7.51528 3.9375 7.98924 3.98611 8.42188 4.08333C8.85451 4.18056 9.22639 4.32639 9.5375 4.52083C9.84861 4.71528 10.0868 4.94132 10.2521 5.19896C10.4174 5.4566 10.5 5.74097 10.5 6.05208V7H3.5ZM11.375 7V6.05208C11.375 5.79931 11.3434 5.56111 11.2802 5.3375C11.217 5.11389 11.1222 4.90486 10.9958 4.71042C11.1028 4.69097 11.2122 4.67882 11.324 4.67396C11.4358 4.6691 11.55 4.66667 11.6667 4.66667C12.3667 4.66667 12.9306 4.79549 13.3583 5.05312C13.7861 5.31076 14 5.65347 14 6.08125V7H11.375ZM7 3.5C6.51389 3.5 6.10069 3.32986 5.76042 2.98958C5.42014 2.64931 5.25 2.23611 5.25 1.75C5.25 1.25417 5.42014 0.838542 5.76042 0.503125C6.10069 0.167708 6.51389 0 7 0C7.49583 0 7.91146 0.167708 8.24687 0.503125C8.58229 0.838542 8.75 1.25417 8.75 1.75C8.75 2.23611 8.58229 2.64931 8.24687 2.98958C7.91146 3.32986 7.49583 3.5 7 3.5Z" fill="#505F76"/>
-                  </svg>
-                  8 Orang
-                </span>
-                <span class="room-feature-tag">
-                  <svg width="14" height="10" viewBox="0 0 14 10" fill="none">
-                    <path d="M7 9.91667C6.59167 9.91667 6.24653 9.77569 5.96458 9.49375C5.68264 9.21181 5.54167 8.86667 5.54167 8.45833C5.54167 8.05 5.68264 7.70486 5.96458 7.42292C6.24653 7.14097 6.59167 7 7 7C7.40833 7 7.75347 7.14097 8.03542 7.42292C8.31736 7.70486 8.45833 8.05 8.45833 8.45833C8.45833 8.86667 8.31736 9.21181 8.03542 9.49375C7.75347 9.77569 7.40833 9.91667 7 9.91667ZM3.70417 6.62083L2.47917 5.36667C3.05278 4.79306 3.72604 4.33854 4.49896 4.00313C5.27187 3.66771 6.10556 3.5 7 3.5C7.89444 3.5 8.72812 3.67014 9.50104 4.01042C10.274 4.35069 10.9472 4.8125 11.5208 5.39583L10.2958 6.62083C9.86806 6.19306 9.37222 5.85764 8.80833 5.61458C8.24444 5.37153 7.64167 5.25 7 5.25C6.35833 5.25 5.75556 5.37153 5.19167 5.61458C4.62778 5.85764 4.13194 6.19306 3.70417 6.62083ZM1.225 4.14167L0 2.91667C0.894444 2.00278 1.93958 1.28819 3.13542 0.772917C4.33125 0.257639 5.61944 0 7 0C8.38056 0 9.66875 0.257639 10.8646 0.772917C12.0604 1.28819 13.1056 2.00278 14 2.91667L12.775 4.14167C12.0264 3.39306 11.1587 2.80729 10.1719 2.38438C9.18507 1.96146 8.12778 1.75 7 1.75C5.87222 1.75 4.81493 1.96146 3.82812 2.38438C2.84132 2.80729 1.97361 3.39306 1.225 4.14167Z" fill="#505F76"/>
-                  </svg>
-                  WiFi
-                </span>
-                <span class="room-feature-tag">
-                  <svg width="12" height="11" viewBox="0 0 12 11" fill="none">
-                    <path d="M3.5 10.5V9.33333H1.16667C0.845833 9.33333 0.571181 9.2191 0.342708 8.99063C0.114236 8.76215 0 8.4875 0 8.16667V1.16667C0 0.845833 0.114236 0.571181 0.342708 0.342708C0.571181 0.114236 0.845833 0 1.16667 0H10.5C10.8208 0 11.0955 0.114236 11.324 0.342708C11.5524 0.571181 11.6667 0.845833 11.6667 1.16667V8.16667C11.6667 8.4875 11.5524 8.76215 11.324 8.99063C11.0955 9.2191 10.8208 9.33333 10.5 9.33333H8.16667V10.5H3.5ZM1.16667 8.16667H10.5V1.16667H1.16667V8.16667Z" fill="#505F76"/>
-                  </svg>
-                  Projector
-                </span>
-              </div>
+              <div class="room-preview-tags" id="room-preview-tags"></div>
             </div>
           </div>
         </div>
@@ -475,6 +456,8 @@
 
       const formatWaktu = (h, m) => String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
       let ubahManual=false;
+      let sedangInput=false;
+      let sudahUbah=false;
 
       function updateLiveIndicator() {
         if (!timeIndicator || !timeBadge) return;
@@ -516,7 +499,7 @@
           timeIndicator.style.top='0px';
         }
 
-        if (ishariIni && !ubahManual) {
+        if (ishariIni && !ubahManual && !sedangInput) {
           const sekarang = new Date();
           let jam = sekarang.getHours();
           let menit = sekarang.getMinutes();
@@ -602,18 +585,37 @@
       resetWaktuDefault();
       updateDateDisplay();
 
-      mulaiInput.addEventListener('change', function() {
-        ubahManual=true;
-        validasiBatasanWaktu(this);
-        updateSelectedBlock();
-        cekBentrok();
-      });
-      selesaiInput.addEventListener('change', function() {
-        ubahManual=true;
-        validasiBatasanWaktu(this);
-        updateSelectedBlock();
-        cekBentrok();
-      });
+      if (mulaiInput) {
+        mulaiInput.addEventListener('focus', function() {sedangInput=true;});
+        mulaiInput.addEventListener('blur', function() {sedangInput=false;});
+        mulaiInput.addEventListener('change', function() {
+          ubahManual=true;
+          validasiBatasanWaktu(this);
+
+          if (!sudahUbah && this.value) {
+            const [jam, menit] = this.value.split(':').map(Number);
+            let totalSelesai = jam * 60 + menit + 60;
+            let jamSelesai = Math.floor(totalSelesai / 60);
+            let menitSelesai = totalSelesai % 60;
+            if (jamSelesai > 18 || (jamSelesai === 18 && menitSelesai > 0)) { jamSelesai = 18; menitSelesai = 0; }
+            selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);
+          }
+          updateSelectedBlock();
+          cekBentrok();
+        });
+      }
+      
+      if (selesaiInput) {
+        selesaiInput.addEventListener('focus', function() {sedangInput=true;});
+        selesaiInput.addEventListener('blur', function() {sedangInput=false;});
+        selesaiInput.addEventListener('change', function() {
+          ubahManual=true;
+          sudahUbah=true;
+          validasiBatasanWaktu(this);
+          updateSelectedBlock();
+          cekBentrok();
+        });
+      }
 
       document.querySelectorAll('.booking-form [required]').forEach(function (field) {
           field.addEventListener('invalid', function (event) {
@@ -663,7 +665,9 @@
         );
         renderAgenda(filtered); //mengirim listAgenda yang sudah difilter ke fungsi renderAgenda
         updateLiveIndicator();
-        resetWaktuDefault();
+        if (!ubahManual) {
+          resetWaktuDefault();
+        }
       }
 
       document.getElementById('terms-link').addEventListener('click', function(e) {
@@ -690,6 +694,8 @@
           confirmButtonColor:'#00288E',
         });
       });
+
+
 
       function cekBentrok() {
         const mulai=mulaiInput.value;
@@ -726,15 +732,12 @@
       //javascript tidak memperhatikan urutan fungsi
       if (tanggalInput) {
         tanggalInput.addEventListener('change', function() {
+          ubahManual=false;
           updateDateDisplay();
           refreshCalendar();
           resetWaktuDefault();
           updateDateButtons();
         });
-      }
-
-      if (ruanganSelected) {
-        ruanganSelected.addEventListener('change', refreshCalendar);
       }
 
       const preselectRoomId = <?= $preselect_room_id ?>;

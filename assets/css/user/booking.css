@@ -200,6 +200,11 @@
   color: #00288E;
 }
 
+body.swal2-shown {
+  padding-right: 0 !important;
+  overflow: hidden;
+}
+
 /* Konfirmasi button */
 .btn-konfirmasi {
   width: 100%;
