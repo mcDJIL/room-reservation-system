@@ -392,16 +392,24 @@
         if (!input.value) return;
         
         const [jam, menit] = input.value.split(':').map(Number);
+        let diluar=false;
         
         if (jam >= 19 || jam < 8) {
-          if (jam >= 19) {
-            input.value = "18:00";
-          } else {
-            input.value = "08:00";
-          }
+          input.value=jam >= 19? "18:00":"08:00";
+          diluar=true;
+        } else if (jam === 18 && menit > 0) {
+          input.value="18:00";
+          diluar=true;
         }
-        else if (jam === 18 && menit > 0) {
-          input.value = "18:00";
+
+        if (diluar) {
+          Swal.fire({
+            icon:'warning',
+            text:'Jam operasional ruangan adalah 08:00 - 18:00 WIB',
+            confirmButtonText:'Saya Mengerti',
+            confirmButtonColor:'#00288E',
+            width:'360px',
+          });
         }
 
         if (ishariIni) {
@@ -587,7 +595,13 @@
 
       if (mulaiInput) {
         mulaiInput.addEventListener('focus', function() {sedangInput=true;});
-        mulaiInput.addEventListener('blur', function() {sedangInput=false;});
+        mulaiInput.addEventListener('blur', function() {
+          sedangInput=false;
+          validasiBatasanWaktu(this);
+        });
+        mulaiInput.addEventListener('input', function() {
+          validasiBatasanWaktu(this);
+        });
         mulaiInput.addEventListener('change', function() {
           ubahManual=true;
           validasiBatasanWaktu(this);
@@ -607,7 +621,13 @@
       
       if (selesaiInput) {
         selesaiInput.addEventListener('focus', function() {sedangInput=true;});
-        selesaiInput.addEventListener('blur', function() {sedangInput=false;});
+        selesaiInput.addEventListener('blur', function() {
+          sedangInput=false;
+          validasiBatasanWaktu(this);
+        });
+        selesaiInput.addEventListener('input', function() {
+          validasiBatasanWaktu(this);
+        });
         selesaiInput.addEventListener('change', function() {
           ubahManual=true;
           sudahUbah=true;
