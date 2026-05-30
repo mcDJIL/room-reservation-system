@@ -178,7 +178,108 @@
   border-color: #00288E;
 }
 
+/* ===================================================
+   CUSTOM TIME PICKER
+   =================================================== */
+.time-picker-wrapper {
+  position: relative;
+}
+
+.time-picker-display {
+  width: 100%;
+  background: #F2F4F6;
+  border: 1px solid #C4C5D5;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  color: #191C1E;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+  transition: border-color 0.2s;
+}
+
+.time-picker-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: #fff;
+  border: 1px solid #C4C5D5;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  z-index: 999;
+  display: none;
+  overflow: hidden;
+  width: 160px;
+}
+
+.time-picker-dropdown.open {
+  display: flex;
+}
+
+.time-col {
+  flex: 1;
+  height: 200px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.time-col::-webkit-scrollbar {
+  display: none;
+}
+
+.time-col-header {
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #505F76;
+  letter-spacing: 0.08em;
+  padding: 10px 0 6px;
+  position: sticky;
+  top: 0;
+  background: #fff;
+  border-bottom: 1px solid #E2E8F0;
+  z-index: 1;
+}
+
+.time-divider {
+  width: 1px;
+  background: #E2E8F0;
+  flex-shrink: 0;
+}
+
+.time-option {
+  display: block;
+  text-align: center;
+  padding: 8px 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #191C1E;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.time-option:hover {
+  background: #F2F4F6;
+}
+
+.time-option.selected {
+  background: #00288E;
+  color: #fff;
+  font-weight: 700;
+}
+
+.time-option.disabled {
+  color: #C4C5D5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .hint-message {
+  padding-top: 5px;
   font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 500;

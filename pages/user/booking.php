@@ -172,18 +172,49 @@
               <div class="row g-3 mb-0">
                 <div class="col-6">
                   <div class="form-field-group mb-0">
-                    <label class="field-label" for="mulai">Mulai</label>
-                    <div class="select-wrapper">
-                      <input class="field-input" type="time" id="mulai" name="mulai" min="08:00" max="18:00" required>
-                      <span class="error-message" id="bentrok-message">Jadwal bentrok</span>
+                    <label class="field-label">Mulai</label>
+                    <div class="time-picker-wrapper" id="mulai-wrapper">
+                      <div class="time-picker-display" id="mulai-display">
+                        <span id="mulai-display-text">--:--</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#505F76" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                      </div>
+                      <div class="time-picker-dropdown" id="mulai-dropdown">
+                        <div class="time-col" id="mulai-jam-col">
+                          <div class="time-col-header">JAM</div>
+                        </div>
+                        <div class="time-divider"></div>
+                        <div class="time-col" id="mulai-menit-col">
+                          <div class="time-col-header">MENIT</div>
+                        </div>
+                      </div>
+                      <input type="hidden" id="mulai" name="mulai">
                     </div>
                   </div>
                 </div>
                 <div class="col-6">
                   <div class="form-field-group mb-0">
-                    <label class="field-label" for="selesai">Selesai</label>
-                    <div class="select-wrapper">
-                      <input class="field-input" type="time" id="selesai" name="selesai" min="08:00" max="18:00" required>
+                    <label class="field-label">Selesai</label>
+                    <div class="time-picker-wrapper" id="selesai-wrapper">
+                      <div class="time-picker-display" id="selesai-display">
+                        <span id="selesai-display-text">--:--</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#505F76" stroke-width="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                      </div>
+                      <div class="time-picker-dropdown" id="selesai-dropdown">
+                        <div class="time-col" id="selesai-jam-col">
+                          <div class="time-col-header">JAM</div>
+                        </div>
+                        <div class="time-divider"></div>
+                        <div class="time-col" id="selesai-menit-col">
+                          <div class="time-col-header">MENIT</div>
+                        </div>
+                      </div>
+                      <input type="hidden" id="selesai" name="selesai">
                     </div>
                   </div>
                 </div>
@@ -405,8 +436,9 @@
         if (diluar) {
           Swal.fire({
             icon:'warning',
-            text:'Jam operasional ruangan adalah 08:00 - 18:00 WIB',
-            confirmButtonText:'Saya Mengerti',
+            title:'Jadwal Bentrok',
+            text:'Maaf, jadwal yang Anda pilih bertabrakan dengan acara lain. Silakan sesuaikan kembali jadwal atau ruangan Anda.',
+            confirmButtonText:'Atur Ulang Jadwal',
             confirmButtonColor:'#00288E',
             width:'360px',
           });
@@ -515,12 +547,14 @@
           if (jam < 8 || jam >= 18) { jam = 8; menit = 0; }
 
           mulaiInput.value = formatWaktu(jam, menit);
+          pickerMulai.setValue(formatWaktu(jam, menit));
 
           let totalSelesai = (jam * 60) + menit + 60;
           let jamSelesai = Math.floor(totalSelesai / 60) % 24;
           let menitSelesai = totalSelesai % 60;
           if (jamSelesai > 18 || (jamSelesai === 18 && menitSelesai > 0)) { jamSelesai = 18; menitSelesai = 0; }
           selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);
+          pickerSelesai.setValue(formatWaktu(jamSelesai, menitSelesai));
         }
 
         updateSelectedBlock();
@@ -800,6 +834,154 @@
       }
 
       refreshCalendar();
+
+      function buatTimePicker(prefix, jamMin, jamMax, onChangeCb) {
+        const display = document.getElementById(prefix + '-display');
+        const displayTxt = document.getElementById(prefix + '-display-text');
+        const dropdown = document.getElementById(prefix + '-dropdown');
+        const jamCol = document.getElementById(prefix + '-jam-col');
+        const menitCol = document.getElementById(prefix + '-menit-col');
+        const hiddenInput = document.getElementById(prefix);
+
+        let selectedJam = null;
+        let selectedMenit = null;
+
+        // Render jam
+        for (let j = jamMin; j <= jamMax; j++) {
+          const el = document.createElement('div');
+          el.className = 'time-option';
+          el.textContent = String(j).padStart(2, '0');
+          el.dataset.val = j;
+          el.addEventListener('click', function() {
+            selectedJam = j;
+            jamCol.querySelectorAll('.time-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            // Disable menit 01-59 jika jam = 18
+            menitCol.querySelectorAll('.time-option').forEach(function(opt) {
+              const menitVal = parseInt(opt.dataset.val);
+              if (selectedJam === 18 && menitVal > 0) {
+                opt.classList.add('disabled');
+              } else {
+                opt.classList.remove('disabled');
+              }
+            });
+
+            // Jika menit yang terpilih sekarang tidak valid, reset ke 00
+            if (selectedJam === 18 && selectedMenit > 0) {
+              selectedMenit = 0;
+              menitCol.querySelectorAll('.time-option').forEach(o => {
+                o.classList.toggle('selected', parseInt(o.dataset.val) === 0);
+              });
+            }
+            updateDisplay();
+            if (onChangeCb) onChangeCb();
+          });
+          jamCol.appendChild(el);
+        }
+
+        // Render menit
+        for (let m = 0; m < 60; m++) {
+          const el = document.createElement('div');
+          el.className = 'time-option';
+          el.textContent = String(m).padStart(2, '0');
+          el.dataset.val = m;
+          el.addEventListener('click', function() {
+            selectedMenit = m;
+            menitCol.querySelectorAll('.time-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            updateDisplay();
+            if (onChangeCb) onChangeCb();
+          });
+          menitCol.appendChild(el);
+        }
+
+        function updateDisplay() {
+          if (selectedJam !== null && selectedMenit !== null) {
+            const val = formatWaktu(selectedJam, selectedMenit);
+            displayTxt.textContent = val;
+            hiddenInput.value = val;
+          }
+        }
+
+        // Toggle dropdown
+        display.addEventListener('click', function() {
+          const isOpen = dropdown.classList.contains('open');
+          // Tutup semua picker lain
+          document.querySelectorAll('.time-picker-dropdown.open').forEach(d => {
+            d.classList.remove('open');
+            d.previousElementSibling && d.previousElementSibling.classList.remove('open');
+          });
+          if (!isOpen) {
+            dropdown.classList.add('open');
+            display.classList.add('open');
+            // Scroll ke selected
+            const hariIni = '<?= $tanggal_hari_ini ?>';
+            const isHariIni = tanggalInput && tanggalInput.value === hariIni;
+            jamCol.querySelectorAll('.time-option').forEach(el => {
+              const j = parseInt(el.dataset.val);
+              if (isHariIni && j < new Date().getHours()) {
+                el.classList.add('disabled');
+              } else {
+                el.classList.remove('disabled');
+              }
+            });
+            setTimeout(() => {
+              const selJam = jamCol.querySelector('.selected');
+              if (selJam) selJam.scrollIntoView({ block: 'center' });
+              const selMenit = menitCol.querySelector('.selected');
+              if (selMenit) selMenit.scrollIntoView({ block: 'center' });
+            }, 50);
+          }
+        });
+
+        // Tutup kalau klik di luar
+        document.addEventListener('click', function(e) {
+          if (!display.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+            display.classList.remove('open');
+          }
+        });
+
+        // API untuk set nilai dari luar
+        return {
+          setValue: function(val) {
+            if (!val) return;
+            const [j, m] = val.split(':').map(Number);
+            selectedJam = j;
+            selectedMenit = m;
+            jamCol.querySelectorAll('.time-option').forEach(o => {
+              o.classList.toggle('selected', parseInt(o.dataset.val) === j);
+            });
+            menitCol.querySelectorAll('.time-option').forEach(o => {
+              o.classList.toggle('selected', parseInt(o.dataset.val) === m);
+            });
+            updateDisplay();
+          },
+          getValue: function() {
+            if (selectedJam === null || selectedMenit === null) return '';
+            return formatWaktu(selectedJam, selectedMenit);
+          }
+        };
+      }
+
+      // Inisialisasi kedua picker
+      const pickerMulai = buatTimePicker('mulai', 8, 18, function() {
+        ubahManual = true;
+        if (!sudahUbah && mulaiInput.value) {
+          const [j, m] = mulaiInput.value.split(':').map(Number);
+          let ts = j * 60 + m + 60;
+          let js = Math.floor(ts / 60), ms = ts % 60;
+          if (js > 18 || (js === 18 && ms > 0)) { js = 18; ms = 0; }
+          pickerSelesai.setValue(formatWaktu(js, ms));
+        }
+        updateSelectedBlock();
+        cekBentrok();
+      });
+      const pickerSelesai = buatTimePicker('selesai', 8, 18, function() {
+        sudahUbah = true;
+        updateSelectedBlock();
+        cekBentrok();
+      });
 
       const bookingForm = document.querySelector('.booking-form');
       if (bookingForm) {
