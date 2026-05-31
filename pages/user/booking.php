@@ -436,9 +436,8 @@
         if (diluar) {
           Swal.fire({
             icon:'warning',
-            title:'Jadwal Bentrok',
-            text:'Maaf, jadwal yang Anda pilih bertabrakan dengan acara lain. Silakan sesuaikan kembali jadwal atau ruangan Anda.',
-            confirmButtonText:'Atur Ulang Jadwal',
+            text:'Jam operasional ruangan adalah 08:00 - 18:00 WIB',
+            confirmButtonText:'Saya Mengerti',
             confirmButtonColor:'#00288E',
             width:'360px',
           });
@@ -547,14 +546,12 @@
           if (jam < 8 || jam >= 18) { jam = 8; menit = 0; }
 
           mulaiInput.value = formatWaktu(jam, menit);
-          pickerMulai.setValue(formatWaktu(jam, menit));
 
           let totalSelesai = (jam * 60) + menit + 60;
           let jamSelesai = Math.floor(totalSelesai / 60) % 24;
           let menitSelesai = totalSelesai % 60;
           if (jamSelesai > 18 || (jamSelesai === 18 && menitSelesai > 0)) { jamSelesai = 18; menitSelesai = 0; }
           selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);
-          pickerSelesai.setValue(formatWaktu(jamSelesai, menitSelesai));
         }
 
         updateSelectedBlock();
@@ -749,8 +746,6 @@
         });
       });
 
-
-
       function cekBentrok() {
         const mulai=mulaiInput.value;
         const selesai=selesaiInput.value;
@@ -833,8 +828,6 @@
         });
       }
 
-      refreshCalendar();
-
       function buatTimePicker(prefix, jamMin, jamMax, onChangeCb) {
         const display = document.getElementById(prefix + '-display');
         const displayTxt = document.getElementById(prefix + '-display-text');
@@ -857,13 +850,17 @@
             jamCol.querySelectorAll('.time-option').forEach(o => o.classList.remove('selected'));
             this.classList.add('selected');
             // Disable menit 01-59 jika jam = 18
+            const hariIniJamKlik = '<?= $tanggal_hari_ini ?>';
+            const isHariIniJamKlik = tanggalInput && tanggalInput.value === hariIniJamKlik;
+            const jamSkrgJamKlik  = new Date().getHours();
+            const menitSkrgJamKlik = new Date().getMinutes();
             menitCol.querySelectorAll('.time-option').forEach(function(opt) {
               const menitVal = parseInt(opt.dataset.val);
-              if (selectedJam === 18 && menitVal > 0) {
-                opt.classList.add('disabled');
-              } else {
-                opt.classList.remove('disabled');
-              }
+              let nonaktif=false;
+              if (selectedJam === 18 && menitVal > 0) nonaktif = true;
+              if (isHariIniJamKlik && selectedJam === jamSkrgJamKlik && menitVal <= menitSkrgJamKlik) nonaktif = true;
+              if (isHariIniJamKlik && selectedJam < jamSkrgJamKlik) nonaktif = true;
+              opt.classList.toggle('disabled', nonaktif);
             });
 
             // Jika menit yang terpilih sekarang tidak valid, reset ke 00
@@ -925,6 +922,16 @@
                 el.classList.remove('disabled');
               }
             });
+            const selectedJamEl = jamCol.querySelector('.time-option.selected');
+            const selectedJamVal = selectedJamEl ? parseInt(selectedJamEl.dataset.val) : null;
+            menitCol.querySelectorAll('.time-option').forEach(function(opt) {
+              const menitVal = parseInt(opt.dataset.val);
+              let nonaktif = false;
+              if (selectedJamVal === 18 && menitVal > 0) nonaktif = true;
+              if (isHariIni && selectedJamVal !== null && selectedJamVal === jamSkrgBuka && menitVal <= menitSkrgBuka) nonaktif = true;
+              if (isHariIni && selectedJamVal !== null && selectedJamVal < jamSkrgBuka) nonaktif = true;
+              opt.classList.toggle('disabled', nonaktif);
+            });
             setTimeout(() => {
               const selJam = jamCol.querySelector('.selected');
               if (selJam) selJam.scrollIntoView({ block: 'center' });
@@ -982,6 +989,8 @@
         updateSelectedBlock();
         cekBentrok();
       });
+
+      refreshCalendar();
 
       const bookingForm = document.querySelector('.booking-form');
       if (bookingForm) {
