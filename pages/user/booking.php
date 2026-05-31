@@ -419,51 +419,6 @@
         return h * 60 + m;
       }
 
-      function validasiBatasanWaktu(input) {
-        if (!input.value) return;
-        
-        const [jam, menit] = input.value.split(':').map(Number);
-        let diluar=false;
-        
-        if (jam >= 19 || jam < 8) {
-          input.value=jam >= 19? "18:00":"08:00";
-          diluar=true;
-        } else if (jam === 18 && menit > 0) {
-          input.value="18:00";
-          diluar=true;
-        }
-
-        if (diluar) {
-          Swal.fire({
-            icon:'warning',
-            text:'Jam operasional ruangan adalah 08:00 - 18:00 WIB',
-            confirmButtonText:'Saya Mengerti',
-            confirmButtonColor:'#00288E',
-            width:'360px',
-          });
-        }
-
-        if (ishariIni) {
-          const sekarang = new Date();
-          const menitSekarang = sekarang.getHours() * 60 + sekarang.getMinutes();
-          const menitInput = jam * 60 + menit;
-          if (menitInput < menitSekarang) {
-            input.value = formatWaktu(sekarang.getHours(), sekarang.getMinutes());
-          }
-        }
-
-        if (mulaiInput.value && selesaiInput.value) {
-          const [jm, mm] = mulaiInput.value.split(':').map(Number);
-          const [js, ms] = selesaiInput.value.split(':').map(Number);
-          const totalMulai   = jm * 60 + mm;
-          const totalSelesai = js * 60 + ms;
-
-          if (totalSelesai - totalMulai < 60) {
-            selesaiInput.value = formatWaktu(jm + 1, mm);
-          }
-        }
-      }
-
       function updateSelectedBlock() {
         if (!mulaiInput.value || !selesaiInput.value) return;
         const startMin = timeToMinutes(mulaiInput.value);
@@ -495,7 +450,6 @@
 
       const formatWaktu = (h, m) => String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
       let ubahManual=false;
-      let sedangInput=false;
       let sudahUbah=false;
 
       function updateLiveIndicator() {
@@ -538,7 +492,7 @@
           timeIndicator.style.top='0px';
         }
 
-        if (ishariIni && !ubahManual && !sedangInput) {
+        if (ishariIni && !ubahManual) {
           const sekarang = new Date();
           let jam = sekarang.getHours();
           let menit = sekarang.getMinutes();
@@ -587,8 +541,8 @@
 
       function updateDateButtons() {
         if (!btnPrev || !tanggalInput) return;
-        const today="<?= $tanggal_hari_ini; ?>";
-        if (tanggalInput.value<=today) btnPrev.classList.add('disabled');
+        const tanggalMin="<?= $dateMinimum; ?>";
+        if (tanggalInput.value<=tanggalMin) btnPrev.classList.add('disabled');
         else btnPrev.classList.remove('disabled');
       }
 
@@ -623,50 +577,6 @@
       updateDateButtons();
       resetWaktuDefault();
       updateDateDisplay();
-
-      if (mulaiInput) {
-        mulaiInput.addEventListener('focus', function() {sedangInput=true;});
-        mulaiInput.addEventListener('blur', function() {
-          sedangInput=false;
-          validasiBatasanWaktu(this);
-        });
-        mulaiInput.addEventListener('input', function() {
-          validasiBatasanWaktu(this);
-        });
-        mulaiInput.addEventListener('change', function() {
-          ubahManual=true;
-          validasiBatasanWaktu(this);
-
-          if (!sudahUbah && this.value) {
-            const [jam, menit] = this.value.split(':').map(Number);
-            let totalSelesai = jam * 60 + menit + 60;
-            let jamSelesai = Math.floor(totalSelesai / 60);
-            let menitSelesai = totalSelesai % 60;
-            if (jamSelesai > 18 || (jamSelesai === 18 && menitSelesai > 0)) { jamSelesai = 18; menitSelesai = 0; }
-            selesaiInput.value = formatWaktu(jamSelesai, menitSelesai);
-          }
-          updateSelectedBlock();
-          cekBentrok();
-        });
-      }
-      
-      if (selesaiInput) {
-        selesaiInput.addEventListener('focus', function() {sedangInput=true;});
-        selesaiInput.addEventListener('blur', function() {
-          sedangInput=false;
-          validasiBatasanWaktu(this);
-        });
-        selesaiInput.addEventListener('input', function() {
-          validasiBatasanWaktu(this);
-        });
-        selesaiInput.addEventListener('change', function() {
-          ubahManual=true;
-          sudahUbah=true;
-          validasiBatasanWaktu(this);
-          updateSelectedBlock();
-          cekBentrok();
-        });
-      }
 
       document.querySelectorAll('.booking-form [required]').forEach(function (field) {
           field.addEventListener('invalid', function (event) {
