@@ -6,6 +6,15 @@ require_once __DIR__ . '/../../config/connection.php';
 
 $response = ['success' => false, 'message' => '', 'photos' => []];
 
+function log_upload_error($message, array $context = [])
+{
+    $logLine = '[room-upload] ' . $message;
+    if (!empty($context)) {
+        $logLine .= ' | ' . json_encode($context, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    }
+    error_log($logLine);
+}
+
 function bytes_to_human($bytes)
 {
     $bytes = (int) $bytes;
@@ -91,6 +100,10 @@ if (!isset($_FILES) || empty($_FILES)) {
 $uploadDir = __DIR__ . '/../../assets/images/uploads';
 if (!is_dir($uploadDir)) {
     if (!mkdir($uploadDir, 0755, true)) {
+        log_upload_error('Failed to create upload directory', [
+            'uploadDir' => $uploadDir,
+            'lastError' => error_get_last(),
+        ]);
         $response['message'] = 'Failed to create upload directory';
         echo json_encode($response);
         exit;
@@ -126,11 +139,26 @@ if ($q) {
     mysqli_stmt_bind_result($q, $cnt);
     if (mysqli_stmt_fetch($q) && $cnt > 0) $hasPrimary = true;
     mysqli_stmt_close($q);
+} else {
+    log_upload_error('Failed to prepare primary photo check query', [
+        'room_id' => $room_id,
+        'dbError' => mysqli_error($conn),
+    ]);
 }
 
 foreach ($files as $index => $file) {
     if ($file['error'] !== UPLOAD_ERR_OK) {
-        $uploadErrors[] = file_upload_error_message($file['error']);
+        $errorMessage = file_upload_error_message($file['error']);
+        $uploadErrors[] = $errorMessage;
+        log_upload_error('Upload error from PHP file array', [
+            'room_id' => $room_id,
+            'fileName' => $file['name'] ?? '',
+            'tmpName' => $file['tmp_name'] ?? '',
+            'size' => $file['size'] ?? null,
+            'type' => $file['type'] ?? '',
+            'errorCode' => $file['error'],
+            'message' => $errorMessage,
+        ]);
         continue;
     }
     $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -147,12 +175,43 @@ foreach ($files as $index => $file) {
         $ins = mysqli_prepare($conn, 'INSERT INTO room_photos (room_id, photo, is_primary) VALUES (?, ?, ?)');
         if ($ins) {
             mysqli_stmt_bind_param($ins, 'isi', $room_id, $dbPath, $is_primary);
-            mysqli_stmt_execute($ins);
+            if (!mysqli_stmt_execute($ins)) {
+                log_upload_error('Failed to insert uploaded photo into database', [
+                    'room_id' => $room_id,
+                    'photo' => $dbPath,
+                    'is_primary' => $is_primary,
+                    'dbError' => mysqli_stmt_error($ins),
+                ]);
+                $uploadErrors[] = 'Gagal menyimpan data foto ke database.';
+                mysqli_stmt_close($ins);
+                @unlink($targetPath);
+                continue;
+            }
             $photoId = mysqli_insert_id($conn);
             mysqli_stmt_close($ins);
 
             $response['photos'][] = ['id' => $photoId, 'photo' => $dbPath, 'is_primary' => $is_primary];
+        } else {
+            log_upload_error('Failed to prepare photo insert query', [
+                'room_id' => $room_id,
+                'photo' => $dbPath,
+                'dbError' => mysqli_error($conn),
+            ]);
+            $uploadErrors[] = 'Gagal menyiapkan query database.';
+            @unlink($targetPath);
         }
+    } else {
+        log_upload_error('move_uploaded_file failed', [
+            'room_id' => $room_id,
+            'fileName' => $file['name'] ?? '',
+            'tmpName' => $file['tmp_name'] ?? '',
+            'targetPath' => $targetPath,
+            'size' => $file['size'] ?? null,
+            'errorCode' => $file['error'] ?? null,
+            'is_uploaded_file' => isset($file['tmp_name']) ? is_uploaded_file($file['tmp_name']) : null,
+            'lastError' => error_get_last(),
+        ]);
+        $uploadErrors[] = 'Gagal memindahkan file upload ke folder tujuan.';
     }
 }
 
