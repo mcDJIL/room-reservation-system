@@ -1,0 +1,159 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #eef3fb;
+  color: #1a2433;
+}
+
+.proof-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.proof-card {
+  width: 100%;
+  max-width: 860px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #d8deea;
+  padding: 28px;
+  box-shadow: 0 20px 45px rgba(8, 21, 45, 0.08);
+}
+
+.proof-header {
+  border-bottom: 1px dashed #c8d3e6;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+}
+
+.proof-header h1 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.proof-header p {
+  margin: 6px 0 0;
+  color: #5a667f;
+}
+
+.proof-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 24px;
+}
+
+.proof-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.proof-grid span {
+  color: #5a667f;
+  font-size: 0.85rem;
+}
+
+.proof-grid strong {
+  font-size: 0.98rem;
+}
+
+.status-approved {
+  color: #137333;
+}
+
+.proof-reason {
+  margin-top: 20px;
+  padding: 14px;
+  border: 1px solid #d8deea;
+  border-radius: 10px;
+  background: #f9fbff;
+}
+
+.proof-reason h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.proof-reason p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.proof-footer {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.proof-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.proof-actions button,
+.proof-actions a,
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid #0f3aa3;
+  background: #0f3aa3;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.proof-actions a,
+.btn-back {
+  background: #fff;
+  color: #0f3aa3;
+}
+
+.error-card {
+  text-align: center;
+}
+
+@media (max-width: 720px) {
+  .proof-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .proof-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+
+  .proof-page {
+    display: block;
+    padding: 0;
+  }
+
+  .proof-card {
+    max-width: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

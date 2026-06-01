@@ -1,3 +1,8 @@
+<?php
+include __DIR__ . '/../../includes/admin/mini_log_query.php';
+include __DIR__ . '/../../includes/admin/calendar_query.php';
+?>
+
 <section class="container-fluid px-0 mt-4">
   <div class="row g-3">
     <div class="col-lg-8">
@@ -19,7 +24,7 @@
           </div>
 
           <div class="d-flex gap-2 flex-wrap mb-3">
-            <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab is-active">Bulan</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab">Bulan</button>
             <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab">Minggu</button>
             <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab">Hari</button>
             <button type="button" class="btn btn-sm btn-outline-secondary cal-view-tab">Agenda</button>
@@ -37,23 +42,43 @@
           <h6 class="mb-0 mt-1">Mini Log Aktivitas</h6>
         </div>
         <div class="card-body">
-          <ul class="list-group list-group-flush small">
-            <li class="list-group-item px-0"><span class="text-secondary">10:04</span> · Dapa baru saja login</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:58</span> · Alpan menyetujui peminjaman Lab Komputer</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-            <li class="list-group-item px-0"><span class="text-secondary">10:04</span> · Dapa baru saja login</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:58</span> · Alpan menyetujui peminjaman Lab Komputer</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-            <li class="list-group-item px-0"><span class="text-secondary">10:04</span> · Dapa baru saja login</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:58</span> · Alpan menyetujui peminjaman Lab Komputer</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-            <li class="list-group-item px-0"><span class="text-secondary">10:04</span> · Dapa baru saja login</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:58</span> · Alpan menyetujui peminjaman Lab Komputer</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-            <li class="list-group-item px-0"><span class="text-secondary">09:12</span> · Rina menambahkan ruangan baru</li>
-          </ul>
+            <ul class="list-group list-group-flush small">
+
+            <?php while($row = mysqli_fetch_assoc($qLog)) : ?>
+
+            <?php
+            $time = date('H:i', strtotime($row['created_at']));
+
+            if ($row['status'] === 'approved' && $row['admin_name']) {
+                $text = "{$row['admin_name']} menyetujui peminjaman {$row['room_name']} dari {$row['user_name']}";
+            }
+            elseif ($row['status'] === 'rejected' && $row['admin_name']) {
+                $text = "{$row['admin_name']} menolak peminjaman {$row['room_name']} dari {$row['user_name']}";
+            }
+            else {
+                $text = "{$row['user_name']} mengajukan peminjaman {$row['room_name']}";
+            }
+            ?>
+
+            <li class="list-group-item px-0">
+                <span class="text-secondary"><?= $time ?></span>
+                · <?= htmlspecialchars($text) ?>
+            </li>
+
+            <?php endwhile; ?>
+
+            </ul>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+window.calendarEvents = <?= json_encode($calendarEvents ?? []) ?>;
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+
+<script src="../../assets/js/calendar.js"></script>
