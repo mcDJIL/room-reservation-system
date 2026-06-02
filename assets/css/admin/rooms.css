@@ -1,0 +1,62 @@
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+#pager-pages {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.pager-gap {
+  min-width: 22px;
+  text-align: center;
+  color: var(--t-muted);
+  user-select: none;
+}
+
+.pager-btn {
+  appearance: none;
+  border: 1px solid transparent;
+  background: transparent;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t-muted);
+  transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.pager-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--t-base);
+}
+
+.pager-btn.is-active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.pager-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.pager-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}

@@ -38,119 +38,41 @@ const NAV = [{
   items: [{
     key: 'dashboard',
     text: 'Dashboard',
-    href: 'index.html',
+    href: 'dashboard.php',
     icon: '<path d="M3 12 12 3l9 9"/><path d="M5 10v10h14V10"/>'
-  }, {
-    key: 'pro',
-    text: 'Go Pro',
-    href: '#',
-    badge: {
-      kind: 'pro',
-      text: 'PRO'
-    },
-    icon: '<path d="M12 2 15 8l6.5 1-4.8 4.6L18 20l-6-3-6 3 1.3-6.4L2.5 9 9 8z"/>'
   }]
 }, {
-  label: 'Communications',
-  items: [{
-    key: 'email',
-    text: 'Email',
-    href: 'email.html',
-    icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
-  }, {
-    key: 'compose',
-    text: 'Compose',
-    href: 'compose.html',
-    icon: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 1 1 3 3L7 19l-4 1 1-4z"/>'
-  }, {
-    key: 'calendar',
-    text: 'Calendar',
-    href: 'calendar.html',
-    icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>'
-  }, {
-    key: 'chat',
-    text: 'Chat',
-    href: 'chat.html',
-    icon: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'
-  }]
-}, {
-  label: 'Components',
-  items: [{
-    key: 'charts',
-    text: 'Charts',
-    href: 'charts.html',
-    badge: {
-      kind: 'new',
-      text: 'NEW'
+  label: 'Manajemen',
+  items: [
+    {
+      key: 'ruangan',
+      text: 'Ruangan',
+      href: 'rooms.php',
+      icon: '<path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/>'
     },
-    icon: '<path d="M3 20V4M7 20v-6M11 20v-10M15 20v-4M19 20V8"/>'
-  }, {
-    key: 'forms',
-    text: 'Forms',
-    href: 'forms.html',
-    icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 10h10M7 14h7"/>'
-  }, {
-    key: 'ui',
-    text: 'UI Elements',
-    href: 'ui.html',
-    icon: '<circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/>'
-  }, {
-    key: 'buttons',
-    text: 'Buttons',
-    href: 'buttons.html',
-    icon: '<rect x="3" y="8" width="18" height="8" rx="4"/>'
-  }, {
-    key: 'tables',
-    text: 'Tables',
-    icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 16h18M9 4v16"/>',
-    children: [{
-      key: 'basic-table',
-      text: 'Basic Table',
-      href: 'basic-table.html'
-    }, {
-      key: 'datatable',
-      text: 'Data Table',
-      href: 'datatable.html'
-    }]
-  }, {
-    key: 'maps',
-    text: 'Maps',
-    icon: '<path d="M9 20V4l6 4v16z"/><path d="M3 7l6-3v16l-6 3z"/><path d="M15 8l6-3v16l-6 3"/>',
-    children: [{
-      key: 'google-maps',
-      text: 'Google Map',
-      href: 'google-maps.html'
-    }, {
-      key: 'vector-maps',
-      text: 'Vector Map',
-      href: 'vector-maps.html'
-    }]
-  }, {
-    key: 'pages',
-    text: 'Pages',
-    icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
-    children: [{
-      key: 'blank',
-      text: 'Blank',
-      href: 'blank.html'
-    }, {
-      key: '404',
-      text: '404',
-      href: '404.html'
-    }, {
-      key: '500',
-      text: '500',
-      href: '500.html'
-    }, {
-      key: 'signin',
-      text: 'Sign In',
-      href: 'signin.html'
-    }, {
-      key: 'signup',
-      text: 'Sign Up',
-      href: 'signup.html'
-    }]
-  }]
+    {
+      key: 'peminjaman',
+      text: 'Peminjaman',
+      href: 'approvals.php',
+      icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8.5 15.5 11 18l4.5-4.5"/>'
+    },
+    {
+      key: 'pengguna',
+      text: 'Pengguna',
+      href: 'users.php',
+      icon: '<path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="10" cy="8" r="3"/><path d="M22 21v-2a3.5 3.5 0 0 0-2.5-3.35"/><path d="M16.5 5.5a3 3 0 1 1 0 5.999"/>'
+    },
+  ]
+}, {
+  label: 'Laporan',
+  items: [
+    {
+      key: 'cetak-laporan',
+      text: 'Cetak Laporan',
+      href: 'report.php',
+      icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M10 9H8"/>'
+    }
+  ]
 }];
 const BRAND_LOGO = `<svg viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
   <path fill="#ffffff" d="M14.747 9.125c.527-1.426 1.736-2.573 3.317-2.573c1.643 0 2.792 1.085 3.318 2.573l6.077 16.867c.186.496.248.931.248 1.147c0 1.209-.992 2.046-2.139 2.046c-1.303 0-1.954-.682-2.264-1.611l-.931-2.915h-8.62l-.93 2.884c-.31.961-.961 1.642-2.232 1.642c-1.24 0-2.294-.93-2.294-2.17c0-.496.155-.868.217-1.023l6.233-16.867zm.34 11.256h5.891l-2.883-8.992h-.062l-2.946 8.992z"/>
@@ -1432,41 +1354,13 @@ function buildItems() {
     }
   }
 
-  // Static actions
-  items.push({
-    kind: 'action',
-    label: 'Toggle theme (light / dark)',
-    section: 'Action',
-    action: () => {
-      const root = document.documentElement;
-      const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      root.setAttribute('data-theme', next);
-      root.setAttribute('data-bs-theme', next);
-      try {
-        localStorage.setItem('dash26-theme', next);
-      } catch {/* no localStorage */}
-      if (window.syncTheme) window.syncTheme();
-      // Update the toggle button icon if init.js wired one.
-      const toggle = document.getElementById('themeToggle');
-      if (toggle) toggle.click(); // no-op if already in the right state, or just nudge it
-    },
-    icon: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>'
-  });
   items.push({
     kind: 'link',
     label: 'View on GitHub',
     section: 'External',
-    href: 'https://github.com/puikinsh/Adminator-admin-dashboard',
+    href: 'https://github.com/mcDJIL/room-reservation-system',
     target: '_blank',
     icon: '<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>'
-  });
-  items.push({
-    kind: 'link',
-    label: 'Documentation',
-    section: 'External',
-    href: 'https://puikinsh.github.io/Adminator-admin-dashboard/',
-    target: '_blank',
-    icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>'
   });
   return items;
 }
@@ -5150,9 +5044,6 @@ body.has-drawer-open .drawer-backdrop {
 .kpi-card::before {
   content: "";
   position: absolute;
-  inset: 0 0 auto auto;
-  width: 180px;
-  height: 180px;
   background: radial-gradient(circle at top right, currentColor, transparent 65%);
   opacity: 0.08;
   pointer-events: none;

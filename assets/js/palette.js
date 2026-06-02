@@ -47,7 +47,24 @@ let allItems = [];
 let filtered = [];
 let cursor = 0;
 
-function buildItems() {
+async function checkHrefExists(href) {
+  try {
+    // External links we keep regardless
+    if (/^https?:\/\//i.test(href)) return true;
+    // Skip anchors
+    if (href === '#') return false;
+    // Try a HEAD request first; fall back to GET if HEAD not allowed
+    const res = await fetch(href, { method: 'HEAD' });
+    if (res && res.ok) return true;
+    // Some servers block HEAD; try GET without downloading body
+    const res2 = await fetch(href, { method: 'GET' });
+    return res2 && res2.ok;
+  } catch (e) {
+    return false;
+  }
+}
+
+async function buildItems() {
   // Flatten the NAV manifest into a single list of selectable rows.
   const items = [];
 
@@ -55,22 +72,26 @@ function buildItems() {
     for (const item of section.items) {
       if (item.children) {
         for (const child of item.children) {
+          if (child.href && await checkHrefExists(child.href)) {
+            items.push({
+              kind: 'page',
+              label: child.text,
+              section: `${section.label} › ${item.text}`,
+              href: child.href,
+              icon: item.icon,
+            });
+          }
+        }
+      } else if (item.href && item.href !== '#') {
+        if (await checkHrefExists(item.href)) {
           items.push({
             kind: 'page',
-            label: child.text,
-            section: `${section.label} › ${item.text}`,
-            href: child.href,
+            label: item.text,
+            section: section.label,
+            href: item.href,
             icon: item.icon,
           });
         }
-      } else if (item.href && item.href !== '#') {
-        items.push({
-          kind: 'page',
-          label: item.text,
-          section: section.label,
-          href: item.href,
-          icon: item.icon,
-        });
       }
     }
   }
@@ -212,9 +233,9 @@ function scrollCursorIntoView() {
   }
 }
 
-export function open() {
+export async function open() {
   ensureMounted();
-  if (allItems.length === 0) allItems = buildItems();
+  if (allItems.length === 0) allItems = await buildItems();
   input.value = '';
   update('');
   document.body.classList.add('has-palette-open');

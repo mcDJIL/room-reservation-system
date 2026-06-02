@@ -1,4 +1,6 @@
-'DB_HOST' => 'localhost',
-'DB_NAME' => 'room_reservation_system_db',
-'DB_USER' => 'root',
-'DB_PASS' => '',
+<?php
+
+$DB_HOST = '127.0.0.1';
+$DB_NAME = 'satset_db';
+$DB_USER = 'root';
+$DB_PASS = '';

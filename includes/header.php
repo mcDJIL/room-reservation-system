@@ -1,10 +1,14 @@
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard · 2026 Redesign Preview</title>
+<?php
+  include '../../config/middleware.php';
+  include __DIR__ . '/meta.php';
+?>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
   integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+<link rel="stylesheet" href="../../assets/css/admin/dashboard.css">
+<link rel="stylesheet" href="../../assets/css/admin/rooms.css">
 <link rel="stylesheet" href="../../assets/css/dark-mode-dashboard.css">
+<link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon">
 <script>
   (function () {
     function syncTheme() {
@@ -40,4 +44,3 @@
 <script defer="defer" src="../../assets/js/vendor-chartjs.js"></script>
 <script defer="defer" src="../../assets/js/vendors.js"></script>
 <script defer="defer" src="../../assets/js/2026.js"></script>
-<script defer src="../../assets/js/charts.js"></script>

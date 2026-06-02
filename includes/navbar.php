@@ -1,27 +1,23 @@
 <?php
 if (!isset($crumbs)) $crumbs = '';
 // render crumbs
-function renderCrumbs($crumbsAttr) {
-  if (!$crumbsAttr) return '';
-  $parts = array_filter(array_map('trim', explode('|', $crumbsAttr)));
-  $out = '';
+$crumbsHtml = '';
+if ($crumbs) {
+  $parts = array_filter(array_map('trim', explode('|', $crumbs)));
   $sep = '<svg class="sep" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>';
   foreach ($parts as $i => $p) {
-    $cls = ($i === count($parts)-1) ? ' class="current"' : '';
-    $out .= ($i>0? $sep : '') . '<span'.$cls.'>'.esc($p).'</span>';
+    $cls = ($i === count($parts) - 1) ? ' class="current"' : '';
+    $crumbsHtml .= ($i > 0 ? $sep : '') . '<span' . $cls . '>' . htmlspecialchars($p, ENT_QUOTES) . '</span>';
   }
-  return $out;
 }
+?>
 
-$crumbsHtml = renderCrumbs($crumbs);
-
-echo <<<HTML
 <header class="d-topbar">
   <div class="crumbs">
     <button class="hamburger" data-drawer-open aria-label="Open navigation">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    $crumbsHtml
+    <?php echo $crumbsHtml; ?>
   </div>
   <div class="topbar-actions">
     <button class="cmd" data-palette-open>
@@ -67,66 +63,20 @@ echo <<<HTML
       </div>
     </div>
 
-    <div class="dd-wrap">
-      <button class="icon-btn" data-dropdown aria-label="Messages">
-        <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-        <span class="count info">3</span>
-      </button>
-      <div class="dd-menu" role="menu">
-        <div class="dd-head">
-          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-          Messages
-        </div>
-        <div class="dd-list">
-          <a class="dd-item" href="#">
-            <div class="dd-avatar a1">JD</div>
-            <div class="dd-body">
-              <div class="dd-row-head"><strong>John Doe</strong><span class="dd-time">5 MIN</span></div>
-              <div class="dd-preview">Want to create your own customized data generator for your app…</div>
-            </div>
-          </a>
-          <a class="dd-item" href="#">
-            <div class="dd-avatar a2">MD</div>
-            <div class="dd-body">
-              <div class="dd-row-head"><strong>Moo Doe</strong><span class="dd-time">15 MIN</span></div>
-              <div class="dd-preview">Want to create your own customized data generator for your app…</div>
-            </div>
-          </a>
-          <a class="dd-item" href="#">
-            <div class="dd-avatar a3">LD</div>
-            <div class="dd-body">
-              <div class="dd-row-head"><strong>Lee Doe</strong><span class="dd-time">25 MIN</span></div>
-              <div class="dd-preview">Want to create your own customized data generator for your app…</div>
-            </div>
-          </a>
-        </div>
-        <a class="dd-footer" href="#">View all messages →</a>
-      </div>
-    </div>
-
     <button class="icon-btn" id="themeToggle" aria-label="Toggle theme"></button>
 
     <div class="dd-wrap">
-      <div class="avatar" data-dropdown tabindex="0" role="button" aria-label="Account menu">JD</div>
+      <div class="avatar" data-dropdown tabindex="0" role="button" aria-label="Account menu">AD</div>
       <div class="dd-menu dd-profile" role="menu">
         <div class="dd-profile-head">
-          <div class="dd-profile-name">John Doe</div>
-          <div class="dd-profile-email">john@adminator.app</div>
+          <div class="dd-profile-name"><?php echo htmlspecialchars($_SESSION['name'] ?? '', ENT_QUOTES); ?></div>
+          <div class="dd-profile-email"><?php echo htmlspecialchars($_SESSION['email'] ?? '', ENT_QUOTES); ?></div>
         </div>
-        <a class="dd-menu-item" href="#">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-          Settings
+        <a class="dd-menu-item" href="../../index.php">
+          <i class="fa-regular fa-home"></i>
+          Beranda
         </a>
-        <a class="dd-menu-item" href="#">
-          <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          Profile
-        </a>
-        <a class="dd-menu-item" href="email.html">
-          <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-          Messages
-        </a>
-        <div class="dd-divider"></div>
-        <a class="dd-menu-item danger" href="#">
+        <a class="dd-menu-item danger" href="../../actions/auth/logout.php">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg>
           Logout
         </a>
@@ -134,4 +84,3 @@ echo <<<HTML
     </div>
   </div>
 </header>
-HTML;
