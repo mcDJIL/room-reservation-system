@@ -158,6 +158,7 @@ $crumbs = 'Manajemen | Ruangan';
         <!-- Bootstrap modals -->
 
         <script>
+            document.addEventListener('DOMContentLoaded', function () {
             // Real-time search functionality
             const searchInput = document.getElementById('search-input');
             const statusFilter = document.querySelector('select[name="status"]');
@@ -597,6 +598,7 @@ $crumbs = 'Manajemen | Ruangan';
                         .catch(() => alert('Terjadi kesalahan jaringan'));
                 });
             }
+            });
         </script>
 
         <!-- Add Modal -->
