@@ -22,6 +22,7 @@ body {
   background: #fff;
   overflow-x: hidden;
   max-width: 100%;
+  padding-top: 80px;
 }
 
 html {
@@ -34,11 +35,14 @@ html {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25) !important;
   padding: 0 4rem !important;
   height: 80px !important;
-  position: sticky !important;
+  position: fixed !important;
   top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
   z-index: 1000 !important;
   width: 100%;
   max-width: 100%;
+  overflow: visible;
 }
 
 .landing-navbar .navbar-brand {
@@ -754,7 +758,12 @@ html {
   .section-title { font-size: 2rem; }
   .rooms-tabs .nav-link { font-size: 1rem; padding: 0.4rem 0.75rem 0.75rem; }
   .keunggulan-img { min-height: 300px; }
-  .landing-navbar { padding: 0 1.25rem !important; }
+  .landing-navbar { 
+    padding: 0 1.25rem !important; 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   .landing-navbar .navbar-toggler {
     border: 1px solid var(--border-color);
     background: #fff;
@@ -765,6 +774,12 @@ html {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    position: absolute;
+    top: 18px;
+    right: 1.25rem;
+    z-index: 3000;
+    pointer-events: auto;
+    touch-action: manipulation;
   }
   .landing-navbar .navbar-toggler-lines {
     position: relative;
@@ -805,11 +820,16 @@ html {
   .landing-navbar .navbar-collapse {
     background: #fff;
     width: 100%;
-    margin-top: 0.75rem;
+    margin-top: 0;
     padding: 1rem 1rem 1.25rem;
     border-top: 1px solid rgba(16, 24, 40, 0.08);
     border-radius: 0 0 18px 18px;
     box-shadow: 0 12px 30px rgba(16, 24, 40, 0.08);
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 2000;
   }
   .landing-navbar .navbar-nav {
     width: 100%;
@@ -865,6 +885,7 @@ html {
 @media (max-width: 575.98px) {
   .hero-title { font-size: 1.5rem; }
   .section-title { font-size: 1.5rem; }
+  body { padding-top: 64px; }
   .landing-navbar { height: 64px; }
   .landing-navbar .navbar-brand { font-size: 1.5rem; }
   .btn-login { font-size: 0.85rem; padding: 0.35rem 0.9rem; }
