@@ -660,6 +660,12 @@
       }
       // ======= END ROOM PREVIEW ======= //
 
+      if(ruanganSelected) {
+        ruanganSelected.addEventListener('change', function() {
+          refreshCalendar();
+        });
+      }
+
       let roomId = ruanganSelected?ruanganSelected.value:null; //ternary operator
       let tanggal = tanggalInput?tanggalInput.value:'<?= $tanggal_hari_ini; ?>'; //ternary operator
       function refreshCalendar() {
@@ -769,13 +775,25 @@
         const targetRoom = listRuangan.find(r => r.id == preselectRoomId);
         if (targetRoom) {
           gedungSelected.value = targetRoom.building_id;
-          gedungSelected.dispatchEvent(new Event('change'));
-
-          setTimeout(function() {
-            ruanganSelected.value = preselectRoomId;
-            ruanganSelected.dispatchEvent(new Event('change'));
-          }, 100);
+          const wrapperRuangan = ruanganSelected.closest('.select-wrapper');
+          ruanganSelected.disabled = false;
+          if (wrapperRuangan) wrapperRuangan.classList.remove('hide-arrow');
+          ruanganSelected.innerHTML = '<option value="" disabled selected hidden>Pilih ruangan</option>';
+          listRuangan
+            .filter(r => r.building_id == targetRoom.building_id)
+            .forEach(function(r) {
+              const opt = document.createElement('option');
+              opt.value = r.id;
+              opt.textContent = r.room_name + ' (' + r.capacity + ' org)';
+              ruanganSelected.appendChild(opt);
+            });
+          ruanganSelected.value = preselectRoomId;
+          ruanganSelected.dispatchEvent(new Event('change'));
         }
+      }
+
+      if (!preselectRoomId) {
+        refreshCalendar();
       }
 
       function renderAgenda(agendaData) { //membuat blok agenda yang sudah ada
@@ -964,8 +982,6 @@
         updateSelectedBlock();
         cekBentrok();
       });
-
-      refreshCalendar();
 
       const bookingForm = document.querySelector('.booking-form');
       if (bookingForm) {
