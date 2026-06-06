@@ -2,13 +2,11 @@
 session_start();
 include '../../config/connection.php';
 
-// Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../../pages/auth/login.php');
     exit;
 }
 
-// Check if reservation ID is provided
 if (!isset($_POST['reservation_id']) || !is_numeric($_POST['reservation_id'])) {
     $_SESSION['error'] = 'ID Reservasi tidak valid.';
     header('Location: ../../pages/user/history.php');
@@ -19,7 +17,6 @@ $reservation_id = (int) $_POST['reservation_id'];
 $user_id = (int) $_SESSION['user_id'];
 $cancel_reason = isset($_POST['cancel_reason']) ? trim($_POST['cancel_reason']) : '';
 
-// Validate cancel reason
 if (empty($cancel_reason)) {
     $_SESSION['error'] = 'Alasan pembatalan tidak boleh kosong.';
     header('Location: ../../pages/user/history.php');
@@ -32,7 +29,6 @@ if (strlen($cancel_reason) > 500) {
     exit;
 }
 
-// Get reservation details
 $check_sql = "
     SELECT re.*, r.reservation_date, r.start_hour
     FROM reservations re
@@ -58,15 +54,12 @@ if (!$reservation) {
     exit;
 }
 
-// Check if reservation can be cancelled
-// Only allow cancellation for 'waiting' and 'approved' status
 if (!in_array($reservation['status'], ['waiting', 'approved'])) {
     $_SESSION['error'] = 'Reservasi dengan status ' . $reservation['status'] . ' tidak dapat dibatalkan.';
     header('Location: ../../pages/user/history.php');
     exit;
 }
 
-// Check if reservation is not in the past
 $reservation_datetime = strtotime($reservation['reservation_date'] . ' ' . $reservation['start_hour']);
 $now = time();
 
@@ -76,15 +69,6 @@ if ($reservation_datetime < $now) {
     exit;
 }
 
-// Check if reservation is at least 24 hours away
-$hours_until_reservation = ($reservation_datetime - $now) / 3600;
-if ($hours_until_reservation < 24) {
-    $_SESSION['error'] = 'Reservasi harus dibatalkan minimal 24 jam sebelum waktu reservasi.';
-    header('Location: ../../pages/user/history.php');
-    exit;
-}
-
-// Update reservation status to cancelled
 $update_sql = "
     UPDATE reservations
     SET status = 'cancelled', 
