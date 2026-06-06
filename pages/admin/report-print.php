@@ -42,7 +42,7 @@ $printUrl = 'report-print.php' . ($printQuery !== '' ? '?' . $printQuery : '');
         }
 
         .print-brand small {
-            color: #64748b;
+            color: #000;
             text-transform: uppercase;
             letter-spacing: .08em;
             font-weight: 700;
@@ -62,7 +62,7 @@ $printUrl = 'report-print.php' . ($printQuery !== '' ? '?' . $printQuery : '');
         }
 
         .print-card {
-            border: 1px solid #e2e8f0;
+            border: 1px solid #000;
             border-radius: 14px;
             padding: 14px 16px;
             background: #fff;
@@ -70,9 +70,9 @@ $printUrl = 'report-print.php' . ($printQuery !== '' ? '?' . $printQuery : '');
 
         .print-card span {
             display: block;
-            color: #64748b;
             font-size: 12px;
             margin-bottom: 8px;
+            color: #000;
         }
 
         .print-card strong {
@@ -94,20 +94,20 @@ $printUrl = 'report-print.php' . ($printQuery !== '' ? '?' . $printQuery : '');
 
         .print-table th,
         .print-table td {
-            border: 1px solid #cbd5e1;
+            border: 1px solid #000;
             padding: 10px 8px;
             vertical-align: top;
             font-size: 12px;
+            color: #000;
         }
 
         .print-table th {
-            background: #eff6ff;
             text-transform: uppercase;
             letter-spacing: .04em;
         }
 
         .print-note {
-            color: #64748b;
+            color: #000;
             font-size: 12px;
         }
 
@@ -186,7 +186,7 @@ $printUrl = 'report-print.php' . ($printQuery !== '' ? '?' . $printQuery : '');
             <tbody>
                 <?php if (empty($filteredReservations)): ?>
                     <tr>
-                        <td colspan="10" style="text-align:center; color:#64748b;">Tidak ada data reservasi yang cocok dengan filter.</td>
+                        <td colspan="10" style="text-align:center; color:#000;">Tidak ada data reservasi yang cocok dengan filter.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($filteredReservations as $index => $row): ?>
