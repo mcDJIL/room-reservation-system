@@ -60,6 +60,22 @@ include '../../actions/history/function.php';
       <p class="history-subtitle">Kelola dan pantau status pemesanan ruangan Anda.</p>
     </div>
 
+    <?php if (isset($_SESSION['success'])): ?>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <?= esc($_SESSION['success']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <?= esc($_SESSION['error']) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
     <form class="filter-bar" method="get" action="">
       <div class="filter-field">
         <label class="filter-label" for="cariRuangan">Cari Ruangan / ID</label>
@@ -141,6 +157,9 @@ include '../../actions/history/function.php';
                         <span class="btn-cetak-bukti btn-cetak-bukti-disabled">Menunggu Approval</span>
                       <?php endif; ?>
                       <button type="button" class="btn-detail" data-bs-toggle="modal" data-bs-target="#detailModal<?= esc($row['reservation_id']) ?>">Detail</button>
+                      <?php if (in_array($row['status'], ['waiting', 'approved'])): ?>
+                        <button type="button" class="btn-cancel" data-bs-toggle="modal" data-bs-target="#cancelModal<?= esc($row['reservation_id']) ?>">Batalkan</button>
+                      <?php endif; ?>
                     </div>
                   </td>
                 </tr>
@@ -216,6 +235,43 @@ include '../../actions/history/function.php';
         </div>
       </div>
     </div>
+
+    <?php if (in_array($row['status'], ['waiting', 'approved'])): ?>
+    <div class="modal fade" id="cancelModal<?= esc($row['reservation_id']) ?>" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Batalkan Reservasi #<?= esc($row['display_number'] ?? $row['reservation_id']) ?></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form method="POST" action="../../actions/booking/cancel.php">
+            <div class="modal-body">
+              <p class="text-muted mb-3">Anda akan membatalkan reservasi untuk:</p>
+              <div class="detail-row mb-2"><strong><?= esc($row['room_name']) ?></strong></div>
+              <div class="detail-row mb-3"><small><?= esc(format_date_id($row['reservation_date'])) ?> • <?= esc(substr($row['start_hour'], 0, 5)) ?> - <?= esc(substr($row['end_hour'], 0, 5)) ?></small></div>
+              
+              <label for="cancelReason<?= esc($row['reservation_id']) ?>" class="form-label">Alasan Pembatalan <span class="text-danger">*</span></label>
+              <textarea 
+                class="form-control" 
+                id="cancelReason<?= esc($row['reservation_id']) ?>" 
+                name="cancel_reason" 
+                rows="4" 
+                placeholder="Jelaskan alasan pembatalan (maksimal 500 karakter)"
+                maxlength="500"
+                required
+              ></textarea>
+              <small class="text-muted d-block mt-1">Pembatalan hanya dapat dilakukan minimal 24 jam sebelum jadwal reservasi.</small>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+              <input type="hidden" name="reservation_id" value="<?= esc($row['reservation_id']) ?>">
+              <button type="submit" class="btn btn-danger">Batalkan Reservasi</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <?php endif; ?>
   <?php endforeach; ?>
 <?php endif; ?>
 
