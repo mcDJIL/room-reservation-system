@@ -153,7 +153,7 @@ include '../../actions/history/function.php';
                     <div class="action-buttons">
                       <?php if ($row['status'] === 'approved'): ?>
                         <a href="../../pages/user/proof.php?id=<?= esc($row['reservation_id']) ?>" class="btn-cetak-bukti" target="_blank" rel="noopener noreferrer">Cetak Bukti</a>
-                      <?php else: ?>
+                      <?php elseif ($row['status'] === 'waiting'): ?>
                         <span class="btn-cetak-bukti btn-cetak-bukti-disabled">Menunggu Approval</span>
                       <?php endif; ?>
                       <button type="button" class="btn-detail" data-bs-toggle="modal" data-bs-target="#detailModal<?= esc($row['reservation_id']) ?>">Detail</button>
