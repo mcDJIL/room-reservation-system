@@ -622,6 +622,8 @@ $crumbs = 'Manajemen | Ruangan';
                                     <select class="form-select" id="add-building" name="building_id" required>
                                         <option value="1">Gedung Pascasarjana</option>
                                         <option value="2">Gedung D4</option>
+                                        <option value="3">Gedung SAW</option>
+                                        <option value="4">Gedung Student Center</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
