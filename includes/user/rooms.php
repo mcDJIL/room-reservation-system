@@ -84,7 +84,7 @@ include './actions/room/index.php';
     <?php if (!empty($selectedFacilities)): ?>
       <div class="alert alert-info alert-dismissible fade show mb-3" role="alert">
         <strong>Filter fasilitas aktif:</strong> <?= implode(', ', $selectedFacilities) ?>
-        <a href="hero.php" class="float-end text-decoration-none me-4">Reset filter</a>
+        <a href="./index.php#daftar-ruangan" class="float-end text-decoration-none me-4">Reset filter</a>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     <?php endif; ?>
