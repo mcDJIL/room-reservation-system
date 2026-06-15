@@ -29,6 +29,10 @@ function status_label($status)
     return 'Ditolak';
   }
 
+  if ($status === 'cancelled') {
+    return 'Dibatalkan';
+  }
+
   return 'Menunggu';
 }
 
@@ -40,6 +44,10 @@ function status_class($status)
 
   if ($status === 'rejected') {
     return 'status-rejected';
+  }
+
+  if ($status === 'cancelled') {
+    return 'status-cancelled';
   }
 
   return 'status-pending';

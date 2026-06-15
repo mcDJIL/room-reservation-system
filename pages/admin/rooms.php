@@ -87,7 +87,7 @@ $crumbs = 'Manajemen | Ruangan';
                                             ?>
                                             <tr class="data-row" data-id="<?= $id ?>" data-name="<?= $name ?>"
                                                 data-building="<?= $building ?>" data-capacity="<?= $capacity ?>"
-                                                data-status="<?= $status_text ?>">
+                                                    data-status="<?= $status_text ?>" data-active="<?= $room['is_active'] ?>">
                                                 <td>
                                                     <div class="fw-bold"><?= $name ?></div>
                                                 </td>
@@ -158,6 +158,7 @@ $crumbs = 'Manajemen | Ruangan';
         <!-- Bootstrap modals -->
 
         <script>
+            document.addEventListener('DOMContentLoaded', function () {
             // Real-time search functionality
             const searchInput = document.getElementById('search-input');
             const statusFilter = document.querySelector('select[name="status"]');
@@ -260,7 +261,7 @@ $crumbs = 'Manajemen | Ruangan';
                             const statusClass = room.is_active == 1 ? 'success' : 'danger';
                             const building = room.building_name || 'Tanpa Gedung';
 
-                            return `<tr class="data-row" data-id="${room.id}" data-name="${room.room_name}" data-building="${building}" data-capacity="${room.capacity}" data-status="${statusText}">
+                            return `<tr class="data-row" data-id="${room.id}" data-name="${room.room_name}" data-building="${building}" data-capacity="${room.capacity}" data-status="${statusText}" data-active="${room.is_active}">
                             <td><div class="fw-bold">${room.room_name}</div></td>
                             <td><span class="badge primary">${building}</span></td>
                             <td>${room.capacity} Orang</td>
@@ -349,6 +350,255 @@ $crumbs = 'Manajemen | Ruangan';
             }
 
             renderPagination(initialPagination);
+
+            const modalDetailEl = document.getElementById('modalDetail');
+            const modalEditEl = document.getElementById('modalEdit');
+            const modalDeleteEl = document.getElementById('modalDelete');
+
+            function roomPhotoUrl(photoPath) {
+                if (!photoPath) {
+                    return 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><rect width="800" height="500" fill="#e2e8f0"/><rect x="70" y="70" width="660" height="360" rx="28" fill="#f8fafc" stroke="#cbd5e1" stroke-width="8"/><path d="M170 340l110-120 90 92 70-70 140 148H170z" fill="#cbd5e1"/><circle cx="290" cy="185" r="38" fill="#cbd5e1"/><text x="400" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#64748b">Gambar ruangan belum tersedia</text></svg>');
+                }
+                if (photoPath.startsWith('http://') || photoPath.startsWith('https://') || photoPath.startsWith('data:') || photoPath.startsWith('../') || photoPath.startsWith('/')) {
+                    return photoPath;
+                }
+                return '../../assets/images/' + photoPath.replace(/^\/+/, '');
+            }
+
+            function renderRoomGallery(photos, roomId) {
+                const gallery = document.getElementById('photo-gallery');
+                if (!gallery) return;
+
+                gallery.classList.remove('photo-gallery--empty');
+                if (!photos || !photos.length) {
+                    gallery.innerHTML = '<div class="photo-gallery-empty">Belum ada foto ruangan.</div>';
+                    gallery.classList.add('photo-gallery--empty');
+                    return;
+                }
+
+                gallery.innerHTML = photos.map((photo) => {
+                    const isPrimary = Number(photo.is_primary) === 1;
+                    const imgSrc = roomPhotoUrl(photo.photo_url || photo.photo);
+                    return `
+                        <div class="photo-card ${isPrimary ? 'is-primary' : ''}" data-photo-id="${photo.id}">
+                            <img src="${imgSrc}" alt="Foto ruangan" loading="lazy">
+                            <div class="photo-card-body">
+                                <div class="photo-card-meta">
+                                    <span class="photo-card-badge ${isPrimary ? 'primary' : ''}">${isPrimary ? 'Primary' : 'Foto'}</span>
+                                </div>
+                                <div class="photo-card-actions">
+                                    <button type="button" class="btn btn-outline-primary photo-icon-btn btn-set-primary" data-room-id="${roomId}" data-photo-id="${photo.id}" aria-label="Jadikan primary" title="Jadikan primary">
+                                        <i class="fa-solid fa-star"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger photo-icon-btn btn-delete-photo" data-room-id="${roomId}" data-photo-id="${photo.id}" aria-label="Hapus foto" title="Hapus foto">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                }).join('');
+
+                gallery.querySelectorAll('.btn-set-primary').forEach((button) => {
+                    button.addEventListener('click', function () {
+                        const payload = new URLSearchParams({ room_id: this.dataset.roomId, photo_id: this.dataset.photoId });
+                        fetch('../../actions/room/set_primary_photo.php', {
+                            method: 'POST',
+                            body: payload,
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                if (!data.success) {
+                                    alert(data.message || 'Gagal mengubah primary');
+                                    return;
+                                }
+                                if (window.showToast) {
+                                    window.showToast(data.message || 'Foto utama berhasil diubah', 'success');
+                                }
+                                loadRoomGallery(this.dataset.roomId);
+                            })
+                            .catch(() => alert('Terjadi kesalahan jaringan'));
+                    });
+                });
+
+                gallery.querySelectorAll('.btn-delete-photo').forEach((button) => {
+                    button.addEventListener('click', function () {
+                        if (!window.confirm('Hapus foto ini?')) return;
+                        const payload = new URLSearchParams({ room_id: this.dataset.roomId, photo_id: this.dataset.photoId });
+                        fetch('../../actions/room/delete_photo.php', {
+                            method: 'POST',
+                            body: payload,
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                if (!data.success) {
+                                    alert(data.message || 'Gagal menghapus foto');
+                                    return;
+                                }
+                                if (window.showToast) {
+                                    window.showToast(data.message || 'Foto berhasil dihapus', 'success');
+                                }
+                                loadRoomGallery(this.dataset.roomId);
+                            })
+                            .catch(() => alert('Terjadi kesalahan jaringan'));
+                    });
+                });
+            }
+
+            function loadRoomGallery(roomId) {
+                const gallery = document.getElementById('photo-gallery');
+                if (!gallery || !roomId) return;
+
+                gallery.classList.add('photo-gallery--empty');
+                gallery.innerHTML = '<div class="photo-gallery-empty">Memuat foto...</div>';
+
+                fetch('../../actions/room/photos.php?room_id=' + encodeURIComponent(roomId))
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (!data.success) {
+                            renderRoomGallery([], roomId);
+                            return;
+                        }
+                        renderRoomGallery(data.photos || [], roomId);
+                    })
+                    .catch(() => {
+                        renderRoomGallery([], roomId);
+                    });
+            }
+
+            function openRoomDetail(row) {
+                if (!modalDetailEl || !row) return;
+
+                document.getElementById('d-name').textContent = row.dataset.name || '';
+                document.getElementById('d-building').textContent = row.dataset.building || '';
+                document.getElementById('d-capacity').textContent = row.dataset.capacity || '';
+                const isActive = row.dataset.active;
+                document.getElementById('d-status').textContent = typeof isActive !== 'undefined' ? (String(isActive) === '1' ? 'Aktif' : 'Tidak Aktif') : (row.dataset.status || '');
+
+                const photoBtn = document.getElementById('photo-upload-btn');
+                if (photoBtn) photoBtn.dataset.roomId = row.dataset.id || '';
+
+                loadRoomGallery(row.dataset.id || '');
+                bootstrap.Modal.getOrCreateInstance(modalDetailEl).show();
+            }
+
+            function openRoomEdit(row) {
+                if (!modalEditEl || !row) return;
+
+                document.getElementById('e-id').value = row.dataset.id || '';
+                document.getElementById('e-name').value = row.dataset.name || '';
+                document.getElementById('e-building').value = row.dataset.building || '';
+                document.getElementById('e-capacity').value = row.dataset.capacity || '';
+                document.getElementById('e-status').value = String(row.dataset.active) === '1' ? 'Aktif' : 'Tidak Aktif';
+
+                bootstrap.Modal.getOrCreateInstance(modalEditEl).show();
+            }
+
+            function openRoomDelete(row) {
+                if (!modalDeleteEl || !row) return;
+
+                document.getElementById('del-id').value = row.dataset.id || '';
+                document.getElementById('del-name').textContent = row.dataset.name || '';
+
+                bootstrap.Modal.getOrCreateInstance(modalDeleteEl).show();
+            }
+
+            function refreshCurrentRooms() {
+                const query = searchInput ? searchInput.value : '';
+                const status = statusFilter ? statusFilter.value : '';
+                performSearch(query, status, currentPage);
+            }
+
+            if (tbody) {
+                tbody.addEventListener('click', (event) => {
+                    const actionButton = event.target.closest('.btn-view, .btn-edit, .btn-delete');
+                    if (!actionButton) return;
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const row = actionButton.closest('tr.data-row');
+                    if (!row) return;
+
+                    if (actionButton.classList.contains('btn-view')) {
+                        openRoomDetail(row);
+                        return;
+                    }
+
+                    if (actionButton.classList.contains('btn-edit')) {
+                        openRoomEdit(row);
+                        return;
+                    }
+
+                    openRoomDelete(row);
+                }, true);
+            }
+
+            const formEdit = document.getElementById('form-edit');
+            if (formEdit) {
+                formEdit.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    const payload = new URLSearchParams({
+                        id: document.getElementById('e-id')?.value || '',
+                        name: document.getElementById('e-name')?.value || '',
+                        building: document.getElementById('e-building')?.value || '',
+                        capacity: document.getElementById('e-capacity')?.value || '0',
+                        status: document.getElementById('e-status')?.value || 'Tidak Aktif'
+                    });
+
+                    fetch('../../actions/room/update.php', {
+                        method: 'POST',
+                        body: payload,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (!data.success) {
+                                alert(data.message || 'Gagal memperbarui ruangan');
+                                return;
+                            }
+
+                            if (window.showToast) {
+                                window.showToast(data.message || 'Ruangan berhasil diperbarui', 'success');
+                            }
+
+                            bootstrap.Modal.getOrCreateInstance(modalEditEl).hide();
+                            refreshCurrentRooms();
+                        })
+                        .catch(() => alert('Terjadi kesalahan jaringan'));
+                });
+            }
+
+            const formDelete = document.getElementById('form-delete');
+            if (formDelete) {
+                formDelete.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    const payload = new URLSearchParams({ id: document.getElementById('del-id')?.value || '' });
+
+                    fetch('../../actions/room/delete.php', {
+                        method: 'POST',
+                        body: payload,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (!data.success) {
+                                alert(data.message || 'Gagal menghapus ruangan');
+                                return;
+                            }
+
+                            if (window.showToast) {
+                                window.showToast(data.message || 'Ruangan berhasil dihapus', 'success');
+                            }
+
+                            bootstrap.Modal.getOrCreateInstance(modalDeleteEl).hide();
+                            refreshCurrentRooms();
+                        })
+                        .catch(() => alert('Terjadi kesalahan jaringan'));
+                });
+            }
+            });
         </script>
 
         <!-- Add Modal -->
@@ -372,6 +622,8 @@ $crumbs = 'Manajemen | Ruangan';
                                     <select class="form-select" id="add-building" name="building_id" required>
                                         <option value="1">Gedung Pascasarjana</option>
                                         <option value="2">Gedung D4</option>
+                                        <option value="3">Gedung SAW</option>
+                                        <option value="4">Gedung Student Center</option>
                                     </select>
                                 </div>
                                 <div class="col-md-4">
@@ -455,7 +707,7 @@ $crumbs = 'Manajemen | Ruangan';
                         <h5 class="modal-title" id="modalEditLabel">Edit Ruangan</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <form method=update.php id="form-edit">
+                    <form action="../../actions/room/update.php" method="post" id="form-edit">
                         <div class="modal-body">
                             <input type="hidden" id="e-id" name="id">
                             <div class="mb-3">

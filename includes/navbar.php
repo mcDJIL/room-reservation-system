@@ -26,42 +26,6 @@ if ($crumbs) {
       <kbd class="kbd">⌘K</kbd>
     </button>
 
-    <div class="dd-wrap">
-      <button class="icon-btn" data-dropdown aria-label="Notifications">
-        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        <span class="count danger">3</span>
-      </button>
-      <div class="dd-menu" role="menu">
-        <div class="dd-head">
-          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          Notifications
-        </div>
-        <div class="dd-list">
-          <a class="dd-item" href="#">
-            <div class="dd-avatar a1">JD</div>
-            <div class="dd-body">
-              <div class="dd-text"><strong>John Doe</strong> liked your <em>post</em></div>
-              <div class="dd-time">5 MIN AGO</div>
-            </div>
-          </a>
-          <a class="dd-item" href="#">
-            <div class="dd-avatar a2">MD</div>
-            <div class="dd-body">
-              <div class="dd-text"><strong>Moo Doe</strong> liked your <em>cover image</em></div>
-              <div class="dd-time">7 MIN AGO</div>
-            </div>
-          </a>
-          <a class="dd-item" href="#">
-            <div class="dd-avatar a3">LD</div>
-            <div class="dd-body">
-              <div class="dd-text"><strong>Lee Doe</strong> commented on your <em>video</em></div>
-              <div class="dd-time">10 MIN AGO</div>
-            </div>
-          </a>
-        </div>
-        <a class="dd-footer" href="#">View all notifications →</a>
-      </div>
-    </div>
 
     <button class="icon-btn" id="themeToggle" aria-label="Toggle theme"></button>
 

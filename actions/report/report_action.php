@@ -21,6 +21,10 @@ function report_status_label(string $status): string
         return 'Rejected';
     }
 
+    if ($value === 'cancelled') {
+        return 'Cancelled';
+    }
+
     return 'Waiting';
 }
 
@@ -34,6 +38,10 @@ function report_status_class(string $status): string
 
     if ($value === 'rejected') {
         return 'danger';
+    }
+
+    if ($value === 'cancelled') {
+        return 'Cancelled';
     }
 
     return 'warning';
@@ -100,6 +108,7 @@ $summaryTotal = count($filteredReservations);
 $summaryWaiting = count(array_filter($filteredReservations, fn($row) => ($row['status'] ?? '') === 'waiting'));
 $summaryApproved = count(array_filter($filteredReservations, fn($row) => ($row['status'] ?? '') === 'approved'));
 $summaryRejected = count(array_filter($filteredReservations, fn($row) => ($row['status'] ?? '') === 'rejected'));
+$summaryRejected += count(array_filter($filteredReservations, fn($row) => ($row['status'] ?? '') === 'cancelled'));
 
 $yearOptions = [];
 $currentYear = (int)date('Y');

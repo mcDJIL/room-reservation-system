@@ -31,8 +31,7 @@
         SatSet
       </a>
 
-      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
-        data-bs-target="#landingNav" aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler border-0 shadow-none" type="button" aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-lines" aria-hidden="true"></span>
       </button>
 

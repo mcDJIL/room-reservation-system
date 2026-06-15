@@ -12,7 +12,7 @@ $status_f = trim($_GET['status'] ?? '');
 $page    = max(1, intval($_GET['page'] ?? 1));
 $per = isset($_GET['per_page']) ? intval($_GET['per_page']) : 15;
 
-$allowed_status = ['waiting', 'approved', 'rejected'];
+$allowed_status = ['waiting', 'approved', 'rejected', 'cancelled'];
 if (!in_array($status_f, $allowed_status, true)) $status_f = '';
 
 $where  = '1';
@@ -98,6 +98,7 @@ $rooms = $conn->query("SELECT r.id, r.room_name, b.name AS building_name
                                     <option value="waiting"  <?= $status_f==='waiting'  ? 'selected':'' ?>>Waiting</option>
                                     <option value="approved" <?= $status_f==='approved' ? 'selected':'' ?>>Approved</option>
                                     <option value="rejected" <?= $status_f==='rejected' ? 'selected':'' ?>>Rejected</option>
+                                    <option value="cancelled" <?= $status_f==='cancelled' ? 'selected':'' ?>>Cancelled</option>
                                 </select>
                                 <button type="submit" class="btn btn-primary" style="font-size:12px;padding:7px 14px;">Cari</button>
                             </div>

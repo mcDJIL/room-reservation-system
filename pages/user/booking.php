@@ -35,6 +35,23 @@
       $agenda[]=$row;
     }
   }
+
+  $image_placeholder="data:image/svg+xml;utf8," . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500"><rect width="800" height="500" fill="#e2e8f0"/><rect x="70" y="70" width="660" height="360" rx="28" fill="#f8fafc" stroke="#cbd5e1" stroke-width="8"/><path d="M170 340l110-120 90 92 70-70 140 148H170z" fill="#cbd5e1"/><circle cx="290" cy="185" r="38" fill="#cbd5e1"/><text x="400" y="455" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" fill="#64748b">Gambar ruangan belum tersedia</text></svg>');
+  function renderRoomPicture(string $placeholder):string {
+    return '
+      <div class="room-preview-card" id="room-preview-card" style="display:none;">
+        <div class="room-preview-img">
+          <img id="room-preview-photo" src="" alt="" data-placeholder="' . htmlspecialchars($placeholder, ENT_QUOTES) . '" onerror="this.onerror=null;this.src=this.dataset.placeholder;">
+        </div>
+        <div class="room-preview-info">
+          <div class="room-preview-header">
+            <h4 class="room-preview-name" id="room-preview-name"></h4>
+          </div>
+          <div class="room-preview-tags" id="room-preview-tags"></div>
+        </div>
+      </div>
+    ';
+  }
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -241,17 +258,7 @@
           </div>
 
           <!-- Room Preview Card -->
-          <div class="room-preview-card" id="room-preview-card" style="display:none;">
-            <div class="room-preview-img">
-              <img src="" alt="">
-            </div>
-            <div class="room-preview-info">
-              <div class="room-preview-header">
-                <h4 class="room-preview-name" id="room-preview-name"></h4>
-              </div>
-              <div class="room-preview-tags" id="room-preview-tags"></div>
-            </div>
-          </div>
+          <?= renderRoomPicture($image_placeholder);?>
         </div>
 
         <!-- ===== RIGHT: Schedule Visualizer ===== -->
@@ -616,19 +623,68 @@
         });
       }
 
+      // ======= ROOM PREVIEW ======= //
+      if(ruanganSelected) {
+        ruanganSelected.addEventListener('change', async function () {
+          const id=this.value;
+          const card=document.getElementById('room-preview-card');
+          if (!id) {
+            card.style.display='none';
+            return;
+          }
+          try {
+            const res=await fetch('../../actions/room/room_action.php?id=' + encodeURIComponent(id), {
+              headers:{'X-Requested-With': 'XMLHttpRequest'}
+            });
+            const data=await res.json();
+            if (!res.ok || !data.success) {
+              card.style.display='none';
+              return;
+            }
+            const room=data.room;
+            const placeholder=document.getElementById('room-preview-photo').dataset.placeholder;
+            document.getElementById('room-preview-photo').src=room.photo_url || placeholder;
+            document.getElementById('room-preview-name').textContent=room.room_name;
+            const tagsEl=document.getElementById('room-preview-tags');
+            tagsEl.innerHTML='';
+            (room.facilities || []).forEach(function(f) {
+              const span=document.createElement('span');
+              span.className='room-detail-facility';
+              span.textContent=f;
+              tagsEl.appendChild(span);
+            });
+            card.style.display='';
+          }
+          catch(e) {document.getElementById('room-preview-card').style.display='none';}
+        });
+      }
+      // ======= END ROOM PREVIEW ======= //
+
+      if(ruanganSelected) {
+        ruanganSelected.addEventListener('change', function() {
+          refreshCalendar();
+        });
+      }
+
       let roomId = ruanganSelected?ruanganSelected.value:null; //ternary operator
       let tanggal = tanggalInput?tanggalInput.value:'<?= $tanggal_hari_ini; ?>'; //ternary operator
       function refreshCalendar() {
         roomId = ruanganSelected ? ruanganSelected.value : null; //ternary operator
         tanggal = tanggalInput ? tanggalInput.value : ''; //ternary operator
+
+        console.log('roomId:', roomId);         // ← tambah
+        console.log('tanggal:', tanggal);       // ← tambah
+        console.log('listAgenda:', listAgenda); // ← tambah
         const filtered = listAgenda.filter(a => //listAgenda dimisalkan 'a'
           a.room_id == roomId && a.reservation_date == tanggal //difilter dengan kondisi tersebut
         );
+        console.log('filtered:', filtered);
         renderAgenda(filtered); //mengirim listAgenda yang sudah difilter ke fungsi renderAgenda
         updateLiveIndicator();
         if (!ubahManual) {
           resetWaktuDefault();
         }
+        cekBentrok();
       }
 
       document.getElementById('terms-link').addEventListener('click', function(e) {
@@ -656,6 +712,7 @@
         });
       });
 
+      let bentrokTimer=null;
       function cekBentrok() {
         const mulai=mulaiInput.value;
         const selesai=selesaiInput.value;
@@ -685,7 +742,21 @@
           mulaiInput.classList.add('bentrok');
           selesaiInput.classList.add('bentrok');
           if (bentrokMsg) bentrokMsg.style.display='block';
-        }
+
+          clearTimeout(bentrokTimer);
+          bentrokTimer=setTimeout(function() {
+            Swal.fire({
+              icon:'warning',
+              title:'Jadwal Bentrok',
+              text:'Maaf, jadwal yang Anda pilih bertabrakan dengan acara lain. Silakan sesuaikan kembali waktu atau ruangan Anda.',
+              confirmButtonText:'Atur Ulang Jadwal',
+              confirmButtonColor:'#00288E',
+              width:'450px',
+            });
+          }, 500);
+        } else clearTimeout(bentrokTimer);
+
+        return adaBentrok;
       }
       
       //javascript tidak memperhatikan urutan fungsi
@@ -704,13 +775,25 @@
         const targetRoom = listRuangan.find(r => r.id == preselectRoomId);
         if (targetRoom) {
           gedungSelected.value = targetRoom.building_id;
-          gedungSelected.dispatchEvent(new Event('change'));
-
-          setTimeout(function() {
-            ruanganSelected.value = preselectRoomId;
-            ruanganSelected.dispatchEvent(new Event('change'));
-          }, 100);
+          const wrapperRuangan = ruanganSelected.closest('.select-wrapper');
+          ruanganSelected.disabled = false;
+          if (wrapperRuangan) wrapperRuangan.classList.remove('hide-arrow');
+          ruanganSelected.innerHTML = '<option value="" disabled selected hidden>Pilih ruangan</option>';
+          listRuangan
+            .filter(r => r.building_id == targetRoom.building_id)
+            .forEach(function(r) {
+              const opt = document.createElement('option');
+              opt.value = r.id;
+              opt.textContent = r.room_name + ' (' + r.capacity + ' org)';
+              ruanganSelected.appendChild(opt);
+            });
+          ruanganSelected.value = preselectRoomId;
+          ruanganSelected.dispatchEvent(new Event('change'));
         }
+      }
+
+      if (!preselectRoomId) {
+        refreshCalendar();
       }
 
       function renderAgenda(agendaData) { //membuat blok agenda yang sudah ada
@@ -900,14 +983,16 @@
         cekBentrok();
       });
 
-      refreshCalendar();
-
       const bookingForm = document.querySelector('.booking-form');
       if (bookingForm) {
         bookingForm.addEventListener('submit', function(event) {
           if (!this.checkValidity()) {
             event.preventDefault();
             this.classList.add('was-validated');
+          }
+          if (cekBentrok()) {
+            event.preventDefault();
+            return;
           }
         });
       }

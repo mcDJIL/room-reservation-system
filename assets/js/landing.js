@@ -4,6 +4,29 @@ document.addEventListener('DOMContentLoaded', function () {
     return;
   }
 
+  var collapseEl = document.getElementById('landingNav');
+  var collapseInstance = null;
+  if (collapseEl && window.bootstrap) {
+    collapseInstance = bootstrap.Collapse.getOrCreateInstance(collapseEl, { toggle: false });
+  }
+
+  function closeMobileNavbar() {
+    if (collapseInstance && window.innerWidth < 992) {
+      collapseInstance.hide();
+    }
+  }
+
+  var toggleBtn = navbar.querySelector('.navbar-toggler');
+  if (toggleBtn && collapseInstance) {
+    toggleBtn.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', !isExpanded);
+      collapseInstance.toggle();
+    });
+  }
+
   var homeLink = navbar.querySelector('.nav-link[href$="index.php"]');
   var navLinks = Array.prototype.slice.call(navbar.querySelectorAll('.nav-link[href^="#"]'));
   var sections = navLinks.map(function (link) {
@@ -75,8 +98,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   navLinks.forEach(function (link) {
     link.addEventListener('click', function () {
+      closeMobileNavbar();
       window.requestAnimationFrame(updateActiveFromScroll);
     });
+  });
+
+  navbar.querySelectorAll('.nav-register, .btn-login, .btn-danger').forEach(function (link) {
+    link.addEventListener('click', closeMobileNavbar);
   });
 
   var scrollTimeout = null;

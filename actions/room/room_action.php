@@ -76,7 +76,7 @@ if (!$room) {
 $facilities = array_values(array_filter(array_map('trim', explode(',', (string) $room['facility']))));
 $status_label = ((int) $room['is_booked'] > 0) ? 'Sedang Dipakai' : 'Tersedia';
 $status_class = ((int) $room['is_booked'] > 0) ? 'danger' : 'success';
-$photo_path = !empty($room['photo']) ? './assets/images/' . $room['photo'] : $image_placeholder;
+$photo_path = !empty($room['photo']) ? '../../assets/images/' . $room['photo'] : $image_placeholder;
 
 sendRoomResponse(200, [
     'success' => true,

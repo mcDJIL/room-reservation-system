@@ -105,7 +105,7 @@ $printUrl = 'report-print.php' . ($printQuery !== '' ? '?' . $printQuery : '');
                             <strong><?php echo $summaryWaiting; ?></strong>
                         </div>
                         <div class="report-stat stat-rejected">
-                            <span>Rejected</span>
+                            <span>Rejected & Cancelled</span>
                             <strong><?php echo $summaryRejected; ?></strong>
                         </div>
                     </div>
